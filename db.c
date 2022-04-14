@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 #include <unistd.h>
 #include <sqlite3.h>
 #include <sys/types.h>
@@ -8,17 +9,10 @@
 
 int fInicializaDB(sqlite3 **db, identificadores *id) {
 
-	char *user, dir[100], cr, *errodbChar = 0;
+	char dir[20] = ".luof", cr, *errodbChar = 0;
 	int errodbInt;
 	struct stat st;
 
-	user = getlogin();
-	if (user == NULL) {
-		printf("Erro: não foi possível reconhecer o usuário\n");
-		return 1;
-	}
-
-	sprintf(dir, "/home/%s/.luof", user);
 	if (stat(dir, &st) == -1) {
 		printf("Criar novo Banco de Dados? [s/n]:  ");
 		scanf("%c", &cr);
@@ -34,7 +28,7 @@ int fInicializaDB(sqlite3 **db, identificadores *id) {
 		}
 
 		//cria banco de dados
-		sprintf(dir, "/home/%s/.luof/luof.db", user);
+		strcpy(dir, ".luof/luof.db");
 		errodbInt = sqlite3_open(dir, db);
 		if (errodbInt) {
 			printf("Erro: não foi possível criar banco de dados - %s\n", sqlite3_errmsg(*db));
@@ -66,7 +60,7 @@ int fInicializaDB(sqlite3 **db, identificadores *id) {
 		id->siteFim = 0,
 		id->catIni = 0,
 		id->catFim = 0;
-		sprintf(dir, "/home/%s/.luof/ids.txt", user);
+		strcpy(dir, ".luof/ids.txt");
 		FILE *ids = fopen(dir, "w");
 		if (ids == NULL) {
 			printf("Erro: não foi possível criar ids.txt\n");
@@ -76,7 +70,7 @@ int fInicializaDB(sqlite3 **db, identificadores *id) {
 		fclose(ids);
 	}
 	else {
-		sprintf(dir, "/home/%s/.luof/luof.db", user);
+		strcpy(dir, ".luof/luof.db");
 		errodbInt = sqlite3_open(dir, db);
 		if (errodbInt) {
 			printf("Erro: erro ao acessar bd - %s\n", sqlite3_errmsg(*db));
@@ -84,7 +78,7 @@ int fInicializaDB(sqlite3 **db, identificadores *id) {
 			return 1;
 		}
 
-		sprintf(dir, "/home/%s/.luof/ids.txt", user);
+		strcpy(dir, ".luof/ids.txt");
 		FILE *ids = fopen(dir, "r");
 		fscanf(ids, "%d", &id->siteIni);
 		fscanf(ids, "%d", &id->siteFim);
@@ -97,9 +91,10 @@ int fInicializaDB(sqlite3 **db, identificadores *id) {
 }
 
 void fFinalizaDB(sqlite3 *db, identificadores id) {
-	char dir[100], *user = getlogin();
-	sprintf(dir, "/home/%s/.luof/ids.txt", user);
+	
+	char dir[] = ".luof/ids.txt";
 	FILE *ids = fopen(dir, "w");
+
 	if (ids == NULL)
 		printf("Erro: não foi possível escrever em ids.txt\n");
 	else {
@@ -107,10 +102,5 @@ void fFinalizaDB(sqlite3 *db, identificadores id) {
 		fclose(ids);
 	}
 	sqlite3_close(db);
-}
 
-int fVerificaExistenciaDB(sqlite3 *db, site s) {
-}
-
-void fIncluiDB(sqlite3 *db, site s) {
 }

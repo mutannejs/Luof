@@ -7,6 +7,7 @@
 typedef struct site {
 	char *nome;
 	char *categoria;
+	int idcat;
 	char *link;
 	char *texto;
 } site;
@@ -26,8 +27,6 @@ typedef struct identificadores {//para falar qual será o id do próximo element
 // --- Protótipo das funções ---
 int fInicializaDB(sqlite3 **db, identificadores *id);
 void fFinalizaDB(sqlite3 *db, identificadores id);
-//void fVerificaExistenciaDB(sqlite3 *db, site s);
-//void fIncluiDB(sqlite3 *db, site s);
 
 //void fMenu();
 //void fHelp();

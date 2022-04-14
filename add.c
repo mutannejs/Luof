@@ -73,6 +73,7 @@ void fAddSite(int argc, char *argv[]) {
 	printf("\n%s\n", insertDB);
 
 	fFinalizaDB(db, id);
+	liberaString(4, &s.nome, &s.categoria, &s.link, &s.texto);
 }
 
 /*void fAddCategory() {
