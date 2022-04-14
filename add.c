@@ -57,6 +57,7 @@ void fAddSite(int argc, char *argv[]) {
 	}
 
 	//verifica se já existe na categoria um favorito com esse nome e se a categoria existe
+	//CONTINUAR AQUI (APRENDER A PESQUISAR NO BANCO)
 
 	//Pede o link e o comentario caso não tenham sido passados com argumento
 	if (link == 0) {
@@ -70,10 +71,10 @@ void fAddSite(int argc, char *argv[]) {
 
 	//adiciona no bd
 	concatenaString(9, &insertDB, "INSERT INTO site VALUES (\"", s.nome, "\", \"", s.categoria, "\", \"", s.link, "\", \"", s.texto, "\");");
-	printf("\n%s\n", insertDB);
+	printf("%s\n", insertDB);
 
 	fFinalizaDB(db, id);
-	liberaString(4, &s.nome, &s.categoria, &s.link, &s.texto);
+	liberaString(5, &s.nome, &s.categoria, &s.link, &s.texto, &insertDB);
 }
 
 /*void fAddCategory() {

@@ -26,7 +26,7 @@ int main(int argc, char *argv[]) {
 		fHelp();
 	}
 	else*/ if (strcmp(argv[1], "-as") == 0 || strcmp(argv[1], "--add-site") == 0) {
-		fAddSite();
+		fAddSite(argc, argv);
 	}
 	/*else if (strcmp(argv[1], "-ac") == 0 || strcmp(argv[1], "--add-category") == 0) {
 		fAddCategory(argc, argv);
