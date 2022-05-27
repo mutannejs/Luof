@@ -4,6 +4,7 @@
 #include <unistd.h>
 #include <sys/types.h>
 #include <sys/stat.h>
+#include "Corda/corda.h"
 #include "luof.h"
 
 /* Lembrando que antes do programa estar em total funcionamento, tudo que será criado estará na pasta atual do programa, portanto, no final será necessário modificar todos os caminhos para o programa usar a home do usuario.
@@ -18,6 +19,7 @@ int fInicializaDB(FILE **aLuof) {
 	if (stat(dir, &st) == -1) {//se ainda não existe o DB
 		printf("Criar novo Banco de Dados? [s/n]: ");
 		scanf(" %c", &vBooleana);
+		limpaBuffer();
 		if (vBooleana != 's') {
 			printf("Saindo...\n");
 			return 1;
@@ -49,17 +51,9 @@ int fInicializaDB(FILE **aLuof) {
 	return 0;
 }
 
-void fFinalizaDB(sqlite3 *db, identificadores id) {
+void fFinalizaDB(FILE **aLuof, FILE **aCat) {
 	
-	char dir[] = ".luof/ids.txt";
-	FILE *ids = fopen(dir, "w");
-
-	if (ids == NULL)
-		printf("Erro: não foi possível escrever em ids.txt\n");
-	else {
-		fprintf(ids, "%d\n%d\n%d\n%d", id.siteIni, id.siteFim, id.catIni, id.catFim);
-		fclose(ids);
-	}
-	sqlite3_close(db);
+	fclose(*aLuof);
+	fclose(*aCat);
 
 }

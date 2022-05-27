@@ -12,7 +12,7 @@ void fAddSite(int argc, char *argv[]) {
 	FILE *aLuof, *aCat;
 
 	// inicializa o banco de dados
-	int rInicializaDB = fInicializaDB(&aLuof, &aCat);
+	int rInicializaDB = fInicializaDB(&aLuof);
 	if (rInicializaDB)
 		return;
 
@@ -67,9 +67,11 @@ void fAddSite(int argc, char *argv[]) {
 		leString(&s.texto);
 	}
 
+	printf("\n%s\n%s\n%s\n%s\n", s.nome, s.categoria, s.link, s.texto);
+
 	//ADICIONA NO BANCO DE DADOS
 
-	fFinalizaDB(aLuof, aCat);
+	fFinalizaDB(&aLuof, &aCat);//ERRO
 	liberaString(4, &s.nome, &s.categoria, &s.link, &s.texto);
 }
 
