@@ -1,32 +1,28 @@
 #ifndef LUOF_H
 #define LUOF_H
 
-#include <sqlite3.h>
+/* fNome é usado para funções
+ * aNome é usado para arquivos
+ * rNome é usado para retorno de função
+ * nome é usado para outras variáveis
+ * */
 
 // --- Structs ---
 typedef struct site {
 	char *nome;
 	char *categoria;
-	int idcat;
 	char *link;
 	char *texto;
 } site;
 
 typedef struct categoria {
 	char *categoria;
-	char *catPai;
+	char *catRaiz;
 } categoria;
 
-typedef struct identificadores {//para falar qual será o id do próximo elemento (focando em sempre preencher os primeiros)
-	int siteIni;
-	int siteFim;
-	int catIni;
-	int catFim;
-} identificadores;
-
 // --- Protótipo das funções ---
-int fInicializaDB(sqlite3 **db, identificadores *id);
-void fFinalizaDB(sqlite3 *db, identificadores id);
+int fInicializaDB(FILE **aLuof);
+void fFinalizaDB(FILE **aLuof, FILE **aCat);
 
 //void fMenu();
 //void fHelp();

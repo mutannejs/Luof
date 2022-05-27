@@ -2,21 +2,23 @@
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
-#include <sqlite3.h>
 #include <sys/types.h>
 #include <sys/stat.h>
 #include "luof.h"
 
-int fInicializaDB(sqlite3 **db, identificadores *id) {
+/* Lembrando que antes do programa estar em total funcionamento, tudo que será criado estará na pasta atual do programa, portanto, no final será necessário modificar todos os caminhos para o programa usar a home do usuario.
+ * */
+int fInicializaDB(FILE **aLuof) {
 
-	char dir[20] = ".luof", cr, *errodbChar = 0;
+	char dir[20] = ".luof";//mudar para /home/$usuario/.luof
+	char vBooleana, *errodbChar = 0;
 	int errodbInt;
 	struct stat st;
 
-	if (stat(dir, &st) == -1) {
-		printf("Criar novo Banco de Dados? [s/n]:  ");
-		scanf("%c", &cr);
-		if (cr != 's') {
+	if (stat(dir, &st) == -1) {//se ainda não existe o DB
+		printf("Criar novo Banco de Dados? [s/n]: ");
+		scanf(" %c", &vBooleana);
+		if (vBooleana != 's') {
 			printf("Saindo...\n");
 			return 1;
 		}
@@ -28,63 +30,20 @@ int fInicializaDB(sqlite3 **db, identificadores *id) {
 		}
 
 		//cria banco de dados
-		strcpy(dir, ".luof/luof.db");
-		errodbInt = sqlite3_open(dir, db);
-		if (errodbInt) {
-			printf("Erro: não foi possível criar banco de dados - %s\n", sqlite3_errmsg(*db));
-			sqlite3_close(*db);
+		strcpy(dir, ".luof/luof");
+		*aLuof = fopen(dir, "w");
+		if (*aLuof == NULL) {
+			printf("Erro: não foi possível criar banco de dados\n");
 			return 1;
 		}
-
-		//cria tabelas
-		char criaTabelas[] = "CREATE TABLE site ( "
-			"id INT PRIMARY KEY UNIQUE NOT NULL, "
-			"nome TEXT, "
-			"categoria INT, "
-			"link TEXT, "
-			"comentario TEXT);"
-			" "
-			"CREATE TABLE categoria ( "
-			"id INT PRIMARY KEY UNIQUE NOT NULL, "
-			"categoria TEXT, "
-			"catPai INT);";
-		errodbInt = sqlite3_exec(*db, criaTabelas, 0, 0, &errodbChar);
-		if (errodbInt != SQLITE_OK) {
-			printf("Erro: não foi possível criar as tabelas para o banco de dados: %s\n", errodbChar);
-			sqlite3_free(errodbChar);
-			return 1;
-		}
-
-		//inicia identificadores
-		id->siteIni = 0,
-		id->siteFim = 0,
-		id->catIni = 0,
-		id->catFim = 0;
-		strcpy(dir, ".luof/ids.txt");
-		FILE *ids = fopen(dir, "w");
-		if (ids == NULL) {
-			printf("Erro: não foi possível criar ids.txt\n");
-			return 1;
-		}
-		fprintf(ids, "0\n0\n0\n0");
-		fclose(ids);
 	}
-	else {
-		strcpy(dir, ".luof/luof.db");
-		errodbInt = sqlite3_open(dir, db);
-		if (errodbInt) {
-			printf("Erro: erro ao acessar bd - %s\n", sqlite3_errmsg(*db));
-			sqlite3_close(*db);
+	else {//se existe o DB
+		strcpy(dir, ".luof/luof");
+		*aLuof = fopen(dir, "w");
+		if (*aLuof == NULL) {
+			printf("Erro: Não foi possível acessar o banco de dados\n");
 			return 1;
 		}
-
-		strcpy(dir, ".luof/ids.txt");
-		FILE *ids = fopen(dir, "r");
-		fscanf(ids, "%d", &id->siteIni);
-		fscanf(ids, "%d", &id->siteFim);
-		fscanf(ids, "%d", &id->catIni);
-		fscanf(ids, "%d", &id->catFim);
-		fclose(ids);
 	}
 
 	return 0;

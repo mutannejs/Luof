@@ -5,8 +5,8 @@
  *
  * Sobre:
  * 	Luof é um gerencioador de links, foi feito para armazenar informações
- *	de uma página como no "Favoritos" de um browser, sendo facíl de
- * 	gerencia-las e modificalas.
+ *	de uma página como no "Favoritos" de um browser, tudo pelo terminal,
+ *	sendo facíl de gerencia-las e modificalas.
  *
  * Criador:
  * 	Murillo J. S.
@@ -25,9 +25,13 @@ int main(int argc, char *argv[]) {
 	else if (strcmp(argv[1], "-h") == 0 || strcmp(argv[1], "--help") == 0) {
 		fHelp();
 	}
-	else*/ if (strcmp(argv[1], "-as") == 0 || strcmp(argv[1], "--add-site") == 0) {
+	else*/ 
+	
+	//ele deve ser um else if
+	if (strcmp(argv[1], "-as") == 0 || strcmp(argv[1], "--add-site") == 0) {
 		fAddSite(argc, argv);
 	}
+
 	/*else if (strcmp(argv[1], "-ac") == 0 || strcmp(argv[1], "--add-category") == 0) {
 		fAddCategory(argc, argv);
 	}

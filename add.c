@@ -1,20 +1,18 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <sqlite3.h>
-#include "luof.h"
 #include "Corda/corda.h"
+#include "luof.h"
 
 void fAddSite(int argc, char *argv[]) {
 
+	//variaveis
 	site s;
-	sqlite3 *db;
-	identificadores id;
 	int nome = 0, cat = 0, link = 0, text = 0;
-	char *insertDB;
+	FILE *aLuof, *aCat;
 
 	// inicializa o banco de dados
-	int rInicializaDB = fInicializaDB(&db, &id);
+	int rInicializaDB = fInicializaDB(&aLuof, &aCat);
 	if (rInicializaDB)
 		return;
 
@@ -69,12 +67,10 @@ void fAddSite(int argc, char *argv[]) {
 		leString(&s.texto);
 	}
 
-	//adiciona no bd
-	concatenaString(9, &insertDB, "INSERT INTO site VALUES (\"", s.nome, "\", \"", s.categoria, "\", \"", s.link, "\", \"", s.texto, "\");");
-	printf("%s\n", insertDB);
+	//ADICIONA NO BANCO DE DADOS
 
-	fFinalizaDB(db, id);
-	liberaString(5, &s.nome, &s.categoria, &s.link, &s.texto, &insertDB);
+	fFinalizaDB(aLuof, aCat);
+	liberaString(4, &s.nome, &s.categoria, &s.link, &s.texto);
 }
 
 /*void fAddCategory() {
