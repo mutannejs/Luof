@@ -1,15 +1,10 @@
 /* ----------------------- Links Uteis ou Favoritos (luof) ---------------------
  *
- * Versão:
- * 	1.0.
- *
  * Sobre:
- * 	Luof é um gerencioador de links, foi feito para armazenar informações
+ * 	Luof é um gerenciador de links, foi feito para armazenar informações
  *	de uma página como no "Favoritos" de um browser, tudo pelo terminal,
  *	sendo facíl de gerencia-las e modificalas.
  *
- * Criador:
- * 	Murillo J. S.
  */
 
 #include <stdio.h>
@@ -29,13 +24,13 @@ int main(int argc, char *argv[]) {
 	
 	//ele deve ser um else if
 	if (strcmp(argv[1], "-as") == 0 || strcmp(argv[1], "--add-site") == 0) {
-		fAddSite(argc, argv);
+		fAddSite();
 	}
-
 	/*else if (strcmp(argv[1], "-ac") == 0 || strcmp(argv[1], "--add-category") == 0) {
-		fAddCategory(argc, argv);
-	}
-	else if (strcmp(argv[1], "-ds") == 0 || strcmp(argv[1], "--delete-site") == 0) {
+		fAddCategory();
+	}*/
+
+	/*else if (strcmp(argv[1], "-ds") == 0 || strcmp(argv[1], "--delete-site") == 0) {
 		fDeleteSite();
 	}
 	else if (strcmp(argv[1], "-dc") == 0 || strcmp(argv[1], "--delete-category") == 0) {

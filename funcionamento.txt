@@ -1,0 +1,6 @@
+Em .luof existe um arquivo chamado "luof" onde está guardado o nome de todas as categorias (seguindo a hierarquia correta), e para cada categoria existe um arquivo (categorias com o mesmo nome compartilham o mesmo arquivo) no diretório onde está guardado os dados do site. Os dados do site são exatamente iguais aos dados passados pelo usuário.
+
+No main é verificado qual funcionalidade o usuário deseja fazer, então é passado para esta função em específica.
+
+fAddSite() : ele passa para fInicializaDB() que verifica se já existe o diretório e o arquivo .luof dentro dele, se algum destes não existir, ele é criado ou apenas é retornado o erro. Se existir o arquivo .luof é aberto em FILE **aLuof.
+É pedido o nome e a categoria. Depois é verificado se a categoria já existe e se o site também já existe, apenas se a categoria já existir e o site não existir será passado adiante. É pedido então o link e o texto. Por fim o site será adicionado no final do arquivo da categoria.

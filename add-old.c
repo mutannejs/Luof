@@ -7,21 +7,19 @@ void fAddSite() {
 
 	//variaveis
 	sSite s;
+	sLista listaCategoria;
 	sCat categoria;
-	sBanco db;
+	char nomeArqCat[110];//guardará o conteudo do arquivo da categoria para fazer a cópia e inserção do novo site
+	FILE *aLuof;//arquivo com as categorias
+	FILE *aCat;//arquivo da categoria especifica
 
 	// inicializa o banco de dados (se existir guarda em aLuof o arquivo com as categorias, se não pergunta se quer cria-lo)
-	int rInicializaDB = fInicializaDB(&db);
+	int rInicializaDB = fInicializaDB(&aLuof);
 	if (rInicializaDB)
 		return;
 
 	//preenche uma sLista com todas as categorias
-	fPreencheListaCat(&db);
-
-	//percurso(db.listaCategorias);
-
-	//prenche o campo ehCat
-	s.ehCat = '0';
+	listaCategoria = preencheCat(&aLuof);
 
 	//Pede o nome e a categoria
 	printf("Nome:\n");
@@ -30,24 +28,19 @@ void fAddSite() {
 	printf("Categoria:\n");
 	scanf(" %[^\n]", s.categoria);
 
-	//Se a categoria é a raiz guarda no arquivo raiz
-	/*if (strcmp(s.categoria, "/") == 0) {
-		strcpy(s.categoria, "raiz");
-		categoria = NULL;
-		//TODO
-	}*/
-	//else {
-		//verifica se a categoria existe
-		char *rBuscaCat = fBuscaCat(&db, s, &categoria);
-		if (rBuscaCat != NULL) {
-			printf("Categoria \"%s\" não encontrada.\n", rBuscaCat);
-			return;
-		}
-	//}
+	//verifica se a categoria existe
+	char *rBuscaCat = fBuscaCat(listaCategoria, s, &categoria);
+	if (rBuscaCat != NULL) {
+		printf("Categoria \"%s\" não encontrada.\n", rBuscaCat);
+		return;
+	}
 	//verifica se já existe um favorito com esse nome na categoria e se o arquivo pode ser aberto
-	int rBuscaFavorito = fBuscaFavorito(&db, &s, '0');
-	if (rBuscaFavorito) {
-		printf("O site já existe.\n");
+	int rBuscaFavorito = fBuscaFavorito(&aCat, s, categoria, '0');
+	switch (rBuscaFavorito) {
+		case 0:	printf("Arquivo referente à categoria não encontrado.\n");
+			return;
+		case 1:	printf("O site já existe.\n");
+			return;
 	}
 
 	//Pede o link e comentario
@@ -57,14 +50,20 @@ void fAddSite() {
 	printf("Texto:\n");
 	scanf(" %[^\n]", s.texto);
 
+	//prenche o campo ehCat
+	s.ehCat = '0';
+
 	//adiciona no banco de dados
-	fAdicionaFavorito(&db, s, categoria);
+	strcpy(nomeArqCat, ".luof/");
+	strcpy(&nomeArqCat[6], categoria.nome);
+	aCat = freopen(nomeArqCat, "a", aCat);//reabre o arquivo para escrever no fim dele
+	fprintf(aCat, "%s\n%s\n%s\n%s\n%c\n", s.nome, s.categoria, s.link, s.texto, s.ehCat);
 
 	//fecha os arquivos abertos
-	fFinalizaDB(&db);
+	fFinalizaDB(&aLuof, &aCat);
 }
 
-void percurso(sLista l) {
+/*void percurso(sLista l) {
 	if (!emptyList(l)) {
 		printf("inicio lista\n");
 		sIterador it = criaIt(l);
@@ -82,29 +81,29 @@ void percurso(sLista l) {
 	else {
 		printf("lista vazia\n");
 	}
-}
+}*/
 
-/*void fAddCategory() {
+void fAddCategory() {
 
 	//variaveis
 	sSite c;//será usado para guardar a categoria (como será armazenada)
+	sLista listaCategoria;
 	sCat categoria;
-	sBanco db;
+	char nomeArqCat[110];//guardará o conteudo do arquivo da categoria para fazer a cópia e inserção do novo site
+	FILE *aLuof;//arquivo com as categorias
+	FILE *aCat;//arquivo da categoria especifica
 
 	// inicializa o banco de dados (se existir guarda em aLuof o arquivo com as categorias, se não pergunta se quer cria-lo)
-	int rInicializaDB = fInicializaDB(&db);
+	int rInicializaDB = fInicializaDB(&aLuof);
 	if (rInicializaDB)
 		return;
 
 	//preenche uma sLista com todas as categorias
-	fPreencheListaCat(&db);
+	listaCategoria = preencheCat(&aLuof);
 
 	//Pede a categoria
 	printf("Categoria pai:\n");
 	scanf(" %[^\n]", c.categoria);
-	//Se a categoria é a raiz guarda em raiz
-	if (strcmp(s.categoria, "/") == 0)
-		strcpy(s.categoria, "raiz");
 
 	printf("Categoria:\n");
 	scanf(" %[^\n]", c.nome);
@@ -115,22 +114,20 @@ void percurso(sLista l) {
 	c.ehCat = '1';
 
 	//verifica se a categoria pai existe
-	char *rBuscaCat = fBuscaCat(&db, c, &categoria);
+	char *rBuscaCat = fBuscaCat(listaCategoria, c, &categoria);
 	if (rBuscaCat != NULL) {
 		printf("Categoria \"%s\" não encontrada.\n", rBuscaCat);
 		return;
 	}
-	//verifica se já existe um favorito com esse nome na categoria e se o arquivo pode ser aberto
-	int rBuscaFavorito = fBuscaFavorito(&db, &c, '1');
-	if (rBuscaFavorito) {
-		printf("A categoria já existe.\n");
+	//verifica se já existe a categoria e se o arquivo pode ser aberto
+	int rBuscaFavorito = fBuscaFavorito(&aCat, c, categoria, '1');
+	switch (rBuscaFavorito) {
+		case 0:	printf("Arquivo referente à categoria não encontrado.\n");
+			return;
+		case 1:	printf("A categoria já existe.\n");
+			return;
 	}
 
-	//adiciona no banco de dados
-	fAdicionaCatLuof(&db, c, categoria);
-	fAdicionaFavorito(&db, c, categoria);
+	fFinalizaDB(&aLuof, &aCat);
 
-	//fecha os arquivos abertos
-	fFinalizaDB(&db);
-
-}*/
+}

@@ -1,36 +1,65 @@
 #ifndef LUOF_H
 #define LUOF_H
 
+#include "lista-iterador.h"
+#include "pilha.h"
+
 /* fNome é usado para funções
- * aNome é usado para arquivos
  * rNome é usado para retorno de função
+ * aNome é usado para arquivos
+ * sNome é usado para struct's
  * nome é usado para outras variáveis
  * */
 
 // --- Structs ---
-typedef struct site {
-	char *nome;
-	char *categoria;
-	char *link;
-	char *texto;
-} site;
+typedef struct sSite {
+	char nome[100];
+	char categoria[1000];
+	char link[500];
+	char texto[5000];
+	char ehCat;
+} sSite;
 
-typedef struct categoria {
-	char *categoria;
-	char *catRaiz;
-} categoria;
+typedef struct sCat {
+	char nome[100];
+	sLista catFilhos;
+} sCat;
+
+typedef struct sBanco {
+	FILE *aLuof;
+	FILE *aCat;
+	sLista listaCategorias;
+	sLista listaSites;
+} sBanco;
 
 // --- Protótipo das funções ---
+/*
 int fInicializaDB(FILE **aLuof);
 void fFinalizaDB(FILE **aLuof, FILE **aCat);
+sLista preencheListaCat(FILE **aLuof);
+sLista preencheListaSite(FILE **aCat);
+//void percurso(sLista l);
+*/
+int fInicializaDB(sBanco *db);
+void fFinalizaDB(sBanco *db);
+void fPreencheListaCat(sBanco *db);
+int fPreencheListaSite(sBanco *db, sCat *c);
+int fBuscaFavorito(sBanco *db, sSite *s, char favorito);
+char* fBuscaCat(sBanco *db, sSite s, sCat *c);
+void percurso(sLista l);
 
 //void fMenu();
 //void fHelp();
 
-void fAddSite(int argc, char *argv[]);
-/*void fAddCategory();
+void fAddSite();
+//void fAddCategory();
+void fAdicionaFavorito(sBanco *db, sSite s, sCat c);
+void fAdicionaCatLuof(sBanco *db, sSite s, sCat c);
+/*
+*/
+//void fCriaCategoria(char *categoria);
 
-void fDeleteSite();
+/*void fDeleteSite();
 void fDeleteCategory();
 
 void fListAll();
