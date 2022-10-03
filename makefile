@@ -1,7 +1,7 @@
 all: run
 
-run: main.o add.o db.o lista-iterador.o pilha.o
-	gcc -o run main.o add.o db.o lista-iterador.o pilha.o
+run: main.o add.o db.o lista-iterador.o pilha.o teste.o
+	gcc -o run main.o add.o db.o lista-iterador.o pilha.o teste.o
 
 main.o: main.c luof.h
 	gcc -o main.o main.c -c -W -Wall -pedantic
@@ -17,6 +17,9 @@ lista-iterador.o: lista-iterador.c lista-iterador.h
 
 pilha.o: pilha.c pilha.h
 	gcc -o pilha.o pilha.c -c -W -Wall -pedantic
+
+teste.o: teste.c luof.h
+	gcc -o teste.o teste.c -c -W -Wall -pedantic
 
 clean:
 	rm *.o run

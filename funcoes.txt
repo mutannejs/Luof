@@ -1,0 +1,34 @@
+//cria o banco de dados caso não exista (é feito uma pergunta para saber se o usuário deseja fazer isso).
+//se já existir o banco de dados abre o arquivo db->aLuof
+//retorna 1 para erro (mensagens de erro na própria função), e 0 para sucesso
+int fInicializaDB(sBanco *db);
+
+//fecha o arquivo aLuof, aCat e libera as estruturas criadas(db->raiz, db->listaCategorias, db->listaSites - falta fazer)
+void fFinalizaDB(sBanco *db);
+
+//preenche a estrutura listaCategorias. Funciona praticamente como uma árvore de sCat, que mostra a hierarquia das categorias
+void fPreencheListaCat(sBanco *db);
+
+//preenche a estrutura listaSites referente a categoria do site que será adicionado. É uma lista de sSite
+//retorna 0 para erro no arquivo, e 1 para sucesso
+int fPreencheListaSite(sBanco *db, sLista listaSites, sCat *c);
+
+//busca na estrutura listaSites o site passado como argumento
+//se encontrar completa os campos link, texto, ehCat com o que já está no arquivo
+//retorna 1 se encontrar e 0 se não encontrar
+int fBuscaFavorito(sBanco *db, sSite *s, char favorito);
+
+//busca na estrutura listaCategorias a categoria do site passado como argumento (seguindo a hierarquia correta)
+//se não encontrou a categoria retorna o nome dela, caso contrário retorna NULL
+char* fBuscaCat(sBanco *db, sSite s, sCat *c);
+
+//percorre a estrutura sLista l e printa categoria por categoria, mostrando onde a "recursão" começa e termina
+void percursoCategorias(sLista l);
+
+//percorre a estrutura sLista l e printa site por site
+void printaSite(sLista l);
+
+//Escreve no arquivo aLuof a árvore de categorias
+void fEscreveLuof(sBanco *db, sLista listaCategorias, int hierarquia);
+
+

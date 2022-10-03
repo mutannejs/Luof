@@ -17,8 +17,12 @@ void fAddSite() {
 
 	//preenche uma sLista com todas as categorias
 	fPreencheListaCat(&db);
-
-	//percurso(db.listaCategorias);
+	
+	/*//TESTE
+	printf("\nPERCURSO CATEGORIAS:\n");
+	percursoCategorias(db.listaCategorias);
+	printf("\nLISTA RAIZ:\n");
+	printaSite(db.raiz);*/
 
 	//prenche o campo ehCat
 	s.ehCat = '0';
@@ -31,23 +35,25 @@ void fAddSite() {
 	scanf(" %[^\n]", s.categoria);
 
 	//Se a categoria é a raiz guarda no arquivo raiz
-	/*if (strcmp(s.categoria, "/") == 0) {
-		strcpy(s.categoria, "raiz");
-		categoria = NULL;
-		//TODO
-	}*/
-	//else {
+	if (strcmp(s.categoria, "/") == 0) {
+		strcpy(s.categoria, "luof");
+		db.listaSites = db.raiz;
+		db.aCat = NULL;
+	}
+	else {
 		//verifica se a categoria existe
 		char *rBuscaCat = fBuscaCat(&db, s, &categoria);
 		if (rBuscaCat != NULL) {
 			printf("Categoria \"%s\" não encontrada.\n", rBuscaCat);
 			return;
 		}
-	//}
+	}
+	
 	//verifica se já existe um favorito com esse nome na categoria e se o arquivo pode ser aberto
 	int rBuscaFavorito = fBuscaFavorito(&db, &s, '0');
 	if (rBuscaFavorito) {
 		printf("O site já existe.\n");
+		return;
 	}
 
 	//Pede o link e comentario
@@ -64,7 +70,7 @@ void fAddSite() {
 	fFinalizaDB(&db);
 }
 
-void percurso(sLista l) {
+/*void percurso(sLista l) {
 	if (!emptyList(l)) {
 		printf("inicio lista\n");
 		sIterador it = criaIt(l);
@@ -82,7 +88,7 @@ void percurso(sLista l) {
 	else {
 		printf("lista vazia\n");
 	}
-}
+}*/
 
 /*void fAddCategory() {
 

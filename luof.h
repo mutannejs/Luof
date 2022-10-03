@@ -28,25 +28,23 @@ typedef struct sCat {
 typedef struct sBanco {
 	FILE *aLuof;
 	FILE *aCat;
+	sLista raiz;
 	sLista listaCategorias;
 	sLista listaSites;
 } sBanco;
 
 // --- Protótipo das funções ---
-/*
-int fInicializaDB(FILE **aLuof);
-void fFinalizaDB(FILE **aLuof, FILE **aCat);
-sLista preencheListaCat(FILE **aLuof);
-sLista preencheListaSite(FILE **aCat);
-//void percurso(sLista l);
-*/
 int fInicializaDB(sBanco *db);
 void fFinalizaDB(sBanco *db);
 void fPreencheListaCat(sBanco *db);
 int fPreencheListaSite(sBanco *db, sCat *c);
+int fPreencheRaiz(sBanco *db);
 int fBuscaFavorito(sBanco *db, sSite *s, char favorito);
 char* fBuscaCat(sBanco *db, sSite s, sCat *c);
-void percurso(sLista l);
+void fEscreveLuof(sBanco *db, sLista listaCategorias, int hierarquia);
+
+void percursoCategorias(sLista l);
+void printaSite(sLista l);
 
 //void fMenu();
 //void fHelp();

@@ -15,7 +15,7 @@ int fInicializaDB(sBanco *db) {
 	struct stat st;
 
 	if (stat(dir, &st) == -1) {//se ainda não existe o DB
-		printf("Criar novo Banco de Dados? [s/n]: ");
+		printf("Criar novo Banco de dados? [s/n]: ");
 		scanf(" %c", &vBooleana);
 		if (vBooleana != 's') {
 			printf("Saindo...\n");
@@ -35,6 +35,8 @@ int fInicializaDB(sBanco *db) {
 			printf("Erro: não foi possível criar banco de dados\n");
 			return 1;
 		}
+
+		printf("Banco de dados criado com sucesso\n\n");
 	}
 	else {//se existe o DB
 		strcpy(dir, ".luof/luof");
@@ -50,8 +52,10 @@ int fInicializaDB(sBanco *db) {
 
 void fFinalizaDB(sBanco *db) {
 	
-	fclose(db->aLuof);
-	fclose(db->aCat);
+	if(db->aLuof)
+		fclose(db->aLuof);
+	if(db->aCat)
+		fclose(db->aCat);
 
 }
 
@@ -73,7 +77,9 @@ void fPreencheListaCat(sBanco *db) {
 	sLista temp = l;//usado para quando a lista usada mudar
 
 	//pega linha por linha do arquivo .luof/luof
-	while (fgets(linhaCat, 100, db->aLuof) != NULL) {
+	//while (fgets(linhaCat, 100, db->aLuof) != NULL) {	
+	fgets(linhaCat, 100, db->aLuof);
+	while (strcmp(linhaCat, "##\n") != 0) {
 
 		//muda o \n no fim da linha para \0
 		int tamLinha = strlen(linhaCat);
@@ -113,11 +119,16 @@ void fPreencheListaCat(sBanco *db) {
 		}
 
 		nivelHieA = nivelHieN;
+		
+		fgets(linhaCat, 100, db->aLuof);
+	
 	}
 
 	freeStack(&p);
-
+	
 	db->listaCategorias = l;
+	
+	fPreencheRaiz(db);
 
 }
 
@@ -215,9 +226,9 @@ int fPreencheListaSite(sBanco *db, sCat *c) {
 	//pega linha por linha do arquivo da categoria, faz a comparação usando a primeira linha de um site, e depois pega as outras três referentes ao mesmo site
         while (fgets(nomeTemp, 100, db->aCat) != NULL) {
 
-                //guarda em siteTemp o nome
-                tamanho = strlen(nomeTemp);
-                nomeTemp[tamanho-1] = '\0';
+        //guarda em siteTemp o nome
+        tamanho = strlen(nomeTemp);
+        nomeTemp[tamanho-1] = '\0';
 		strcpy(siteTemp.nome, nomeTemp);
 
 		//guarda em siteTemp a categoria
@@ -246,6 +257,51 @@ int fPreencheListaSite(sBanco *db, sCat *c) {
 
 	return 1;
 
+}
+
+int fPreencheRaiz(sBanco *db) {
+	
+	//usado para armazenar temporariamente os sites
+	sSite siteTemp;
+	char nomeTemp[100], ehCategoria[3];
+	int tamanho;
+
+	db->raiz = criaLista(struct sSite);
+
+	//pega linha por linha do arquivo aLuof(logo após "##\n"), faz a comparação usando a primeira linha de um site, e depois pega as outras três referentes ao mesmo site
+        while (fgets(nomeTemp, 100, db->aLuof) != NULL) {
+
+        //guarda em siteTemp o nome
+        tamanho = strlen(nomeTemp);
+        nomeTemp[tamanho-1] = '\0';
+		strcpy(siteTemp.nome, nomeTemp);
+
+		//guarda em siteTemp a categoria
+		fgets(siteTemp.categoria, 1000, db->aLuof);
+		tamanho = strlen(siteTemp.categoria);
+		siteTemp.categoria[tamanho-1] = '\0';
+
+		//guarda em siteTemp o link
+		fgets(siteTemp.link, 500, db->aLuof);
+		tamanho = strlen(siteTemp.link);
+		siteTemp.link[tamanho-1] = '\0';
+
+		//guarda em siteTemp o texto
+		fgets(siteTemp.texto, 5000, db->aLuof);
+		tamanho = strlen(siteTemp.texto);
+		siteTemp.texto[tamanho-1] = '\0';
+
+		//guarda em siteTemp o ehCat e ignora o '\n'
+		fgets(ehCategoria, 3, db->aLuof);
+		siteTemp.ehCat = ehCategoria[0];
+
+		//adiciona o site na lista
+		pushBackList(db->raiz, &siteTemp);
+
+	}
+
+	return 1;
+	
 }
 
 int fBuscaFavorito(sBanco *db, sSite *s, char favorito) {
@@ -312,20 +368,57 @@ void fAdicionaFavorito(sBanco *db, sSite s, sCat c) {
 		insereAntIt(&it, &s);
 	}
 
-	//reabre o arquivo para sobreescreve-lo
-	strcpy(nomeArqCat, ".luof/");
-	strcpy(&nomeArqCat[6], c.nome);
-	db->aCat = freopen(nomeArqCat, "w", db->aCat);
+	//se a categoria é a raiz
+	if (strcmp(s.categoria, "luof") == 0) {
+		//reabre o arquivo aLuof para sobreescreve-lo
+		strcpy(nomeArqCat, ".luof/luof");
+		db->aLuof = freopen(nomeArqCat, "w", db->aLuof);
 
-	//escreve a lista no arquivo da categoria
-	iteraInicio(&it);
-	do {
-		siteDoIterador = retornaItera(&it);
-		fprintf(db->aCat, "%s\n%s\n%s\n%s\n%c\n", siteDoIterador->nome, siteDoIterador->categoria, siteDoIterador->link, siteDoIterador->texto, siteDoIterador->ehCat);
-		iteraProximo(&it);
-	} while (!inicioIt(&it));
+		//escreve a árvore de categorias no arquivo aLuof
+		fEscreveLuof(db, db->listaCategorias, 0);
+		
+		//marca o fim da árvore de categorias
+		fprintf(db->aLuof, "##\n");
+		
+		//escreve os favoritos da raiz
+		iteraInicio(&it);
+		do {
+			siteDoIterador = retornaItera(&it);
+			fprintf(db->aLuof, "%s\n%s\n%s\n%s\n%c\n", siteDoIterador->nome, siteDoIterador->categoria, siteDoIterador->link, siteDoIterador->texto, siteDoIterador->ehCat);
+			iteraProximo(&it);
+		} while (!inicioIt(&it));
+	}
+	else {
+		//reabre o arquivo para sobreescreve-lo
+		strcpy(nomeArqCat, ".luof/");
+		strcpy(&nomeArqCat[6], c.nome);
+		db->aCat = freopen(nomeArqCat, "w", db->aCat);
+
+		//escreve a lista no arquivo da categoria
+		iteraInicio(&it);
+		do {
+			siteDoIterador = retornaItera(&it);
+			fprintf(db->aCat, "%s\n%s\n%s\n%s\n%c\n", siteDoIterador->nome, siteDoIterador->categoria, siteDoIterador->link, siteDoIterador->texto, siteDoIterador->ehCat);
+			iteraProximo(&it);
+		} while (!inicioIt(&it));
+	}
 
 }
 
 void fAdiocionaCatLuof(sBanco *db, sSite s, sCat c) {
+}
+
+void fEscreveLuof(sBanco *db, sLista listaCategorias, int hierarquia) {
+	
+	if (!emptyList(listaCategorias)) {
+		sIterador it = criaIt(listaCategorias);
+		do {
+			sCat *cat = (struct sCat*) retornaItera(&it);
+			//escreve no arquivo
+			fprintf(db->aLuof, "%d%s\n", hierarquia, cat->nome);
+			//------------------
+			fEscreveLuof(db, cat->catFilhos, hierarquia+1);
+			iteraProximo(&it);
+		} while (!inicioIt(&it));
+	}
 }
