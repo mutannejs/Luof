@@ -1,7 +1,7 @@
 all: run
 
-run: main.o add.o db.o lista-iterador.o pilha.o teste.o
-	gcc -o run main.o add.o db.o lista-iterador.o pilha.o teste.o
+run: main.o add.o dbluof.o dbcat.o lista-iterador.o pilha.o teste.o
+	gcc -o run main.o add.o dbluof.o dbcat.o lista-iterador.o pilha.o teste.o
 
 main.o: main.c luof.h
 	gcc -o main.o main.c -c -W -Wall -pedantic
@@ -9,8 +9,11 @@ main.o: main.c luof.h
 add.o: add.c luof.h
 	gcc -o add.o add.c -c -W -Wall -pedantic
 
-db.o: db.c luof.h
-	gcc -o db.o db.c -c -W -Wall -pedantic
+dbluof.o: dbluof.c luof.h
+	gcc -o dbluof.o dbluof.c -c -W -Wall -pedantic
+
+dbcat.o: dbcat.c luof.h
+	gcc -o dbcat.o dbcat.c -c -W -Wall -pedantic
 
 lista-iterador.o: lista-iterador.c lista-iterador.h
 	gcc -o lista-iterador.o lista-iterador.c -c -W -Wall -pedantic

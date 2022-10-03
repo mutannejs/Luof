@@ -34,14 +34,17 @@ typedef struct sBanco {
 } sBanco;
 
 // --- Protótipo das funções ---
+//dbluof
 int fInicializaDB(sBanco *db);
 void fFinalizaDB(sBanco *db);
 void fPreencheListaCat(sBanco *db);
-int fPreencheListaSite(sBanco *db, sCat *c);
 int fPreencheRaiz(sBanco *db);
+void fEscreveLuof(sBanco *db, sLista listaCategorias, int hierarquia);
+
+//dbcat
+int fPreencheListaSite(sBanco *db, sCat *c);
 int fBuscaFavorito(sBanco *db, sSite *s, char favorito);
 char* fBuscaCat(sBanco *db, sSite s, sCat *c);
-void fEscreveLuof(sBanco *db, sLista listaCategorias, int hierarquia);
 
 void percursoCategorias(sLista l);
 void printaSite(sLista l);
