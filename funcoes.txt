@@ -3,8 +3,11 @@
 //retorna 1 para erro (mensagens de erro na própria função), e 0 para sucesso
 int fInicializaDB(sBanco *db);
 
-//fecha o arquivo aLuof, aCat e libera as estruturas criadas(db->raiz, db->listaCategorias, db->listaSites - falta fazer)
+//fecha o arquivo aLuof, aCat e libera as estruturas criadas(db->raiz, db->listaCategorias, db->listaSites)
 void fFinalizaDB(sBanco *db);
+
+//libera a árvore de categorias, porém db->listaCategorias deve ser liberado logo após. É usado em fFinalizaDB
+void fLiberaCats(sLista listaCategorias);
 
 //preenche a estrutura listaCategorias. Funciona praticamente como uma árvore de sCat, que mostra a hierarquia das categorias
 void fPreencheListaCat(sBanco *db);

@@ -26,14 +26,13 @@ int main(int argc, char *argv[]) {
 	if (strcmp(argv[1], "-as") == 0 || strcmp(argv[1], "--add-site") == 0) {
 		fAddSite();
 	}
-	/*else if (strcmp(argv[1], "-ac") == 0 || strcmp(argv[1], "--add-category") == 0) {
+	else if (strcmp(argv[1], "-ac") == 0 || strcmp(argv[1], "--add-category") == 0) {
 		fAddCategory();
-	}*/
-
-	/*else if (strcmp(argv[1], "-ds") == 0 || strcmp(argv[1], "--delete-site") == 0) {
+	}
+	else if (strcmp(argv[1], "-ds") == 0 || strcmp(argv[1], "--delete-site") == 0) {
 		fDeleteSite();
 	}
-	else if (strcmp(argv[1], "-dc") == 0 || strcmp(argv[1], "--delete-category") == 0) {
+	/*else if (strcmp(argv[1], "-dc") == 0 || strcmp(argv[1], "--delete-category") == 0) {
 		fDeleteCategory();
 	}
 	else if (strcmp(argv[1], "-la") == 0 || strcmp(argv[1], "--list-all") == 0) {

@@ -10,11 +10,22 @@
  * */
 int fInicializaDB(sBanco *db) {
 
-	char dir[50] = ".luof";//mudar para /home/$usuario/.luof
+	char dir[300];
 	char vBooleana;
 	struct stat st;
+	
+	//seta a variável caminhoDB com o caminho para o banco de dados
+	/* --- quando caminhoDB estiver com o caminho da home do usuário ---
+	char *login;
+	login = getlogin();
+	sprintf(caminhoDB, "/home/%s/.luof/", login);
+	------------------------------------------------------------------*/
+	strcpy(caminhoDB, ".luof/");
+	tamCaminhoDB = strlen(caminhoDB);
+	
+	strcpy(dir, caminhoDB);
 
-	if (stat(dir, &st) == -1) {//se ainda não existe o DB
+	if (stat(caminhoDB, &st) == -1) {//se ainda não existe o DB
 		printf("Criar novo Banco de dados? [s/n]: ");
 		scanf(" %c", &vBooleana);
 		if (vBooleana != 's') {
@@ -23,13 +34,13 @@ int fInicializaDB(sBanco *db) {
 		}
 
 		//cria diretório .luof
-		if (mkdir(dir, S_IRWXU) == -1) {
+		if (mkdir(caminhoDB, S_IRWXU) == -1) {
 			printf("Erro: não foi possível criar diretório na home do usuário\n");
 			return 1;
 		}
 
 		//cria banco de dados
-		strcpy(dir, ".luof/luof");
+		fSetaCaminhoArquivo(dir, "luof");
 		db->aLuof = fopen(dir, "w");
 		if (db->aLuof == NULL) {
 			printf("Erro: não foi possível criar banco de dados\n");
@@ -39,7 +50,7 @@ int fInicializaDB(sBanco *db) {
 		printf("Banco de dados criado com sucesso\n\n");
 	}
 	else {//se existe o DB
-		strcpy(dir, ".luof/luof");
+		fSetaCaminhoArquivo(dir, "luof");
 		db->aLuof = fopen(dir, "r");
 		if (db->aLuof == NULL) {
 			printf("Erro: Não foi possível acessar o banco de dados\n");
@@ -52,18 +63,49 @@ int fInicializaDB(sBanco *db) {
 
 void fFinalizaDB(sBanco *db) {
 	
-	if(db->aLuof)
+	//fecha arquivos
+	if (db->aLuof)
 		fclose(db->aLuof);
-	if(db->aCat)
+	if (db->aCat)
 		fclose(db->aCat);
 
+	//libera estruturas do banco
+	if (db->listaCategorias) {
+		fLiberaCats(db->listaCategorias);
+		freeList(db->listaCategorias);
+	}
+	if (db->listaSites != db->raiz)
+		freeList(db->listaSites);
+	if (db->raiz)
+		freeList(db->raiz);
+
+}
+
+void fSetaCaminhoArquivo(char *arq, char *nome) {
+	strcpy(arq, caminhoDB);
+	strcpy(&arq[tamCaminhoDB], nome);
+}
+
+void fLiberaCats(sLista listaCategorias) {
+	
+	if (!emptyList(listaCategorias)) {
+		sIterador it = criaIt(listaCategorias);
+		do {
+			sCat *cat = (struct sCat*) retornaItera(&it);
+			fLiberaCats(cat->catFilhos);
+			//libera a lista na volta da recursão
+			freeList(cat->catFilhos);
+			//--------------
+			iteraProximo(&it);
+		} while (!inicioIt(&it));
+	}
 }
 
 void fPreencheListaCat(sBanco *db) {
 
 	//informa se hove uma mudança entre categoriaPai para categoriaFilho (mudança na hierarquia) - Hie de hierarquia, N de novo, A de antigo
 	int nivelHieN = 0, nivelHieA = 0;
-	char linhaCat[100];
+	char linhaCat[100], *rFgets;
 
 	//será usado para inserir os elementos na lista
 	sCat c, *swapFilho;
@@ -78,8 +120,8 @@ void fPreencheListaCat(sBanco *db) {
 
 	//pega linha por linha do arquivo .luof/luof
 	//while (fgets(linhaCat, 100, db->aLuof) != NULL) {	
-	fgets(linhaCat, 100, db->aLuof);
-	while (strcmp(linhaCat, "##\n") != 0) {
+	rFgets = fgets(linhaCat, 100, db->aLuof);
+	while (rFgets != NULL && strcmp(linhaCat, "##\n") != 0) {
 
 		//muda o \n no fim da linha para \0
 		int tamLinha = strlen(linhaCat);
@@ -132,7 +174,7 @@ void fPreencheListaCat(sBanco *db) {
 
 }
 
-int fPreencheRaiz(sBanco *db) {
+void fPreencheRaiz(sBanco *db) {
 	
 	//usado para armazenar temporariamente os sites
 	sSite siteTemp;
@@ -142,7 +184,7 @@ int fPreencheRaiz(sBanco *db) {
 	db->raiz = criaLista(struct sSite);
 
 	//pega linha por linha do arquivo aLuof(logo após "##\n"), faz a comparação usando a primeira linha de um site, e depois pega as outras três referentes ao mesmo site
-        while (fgets(nomeTemp, 100, db->aLuof) != NULL) {
+    while (fgets(nomeTemp, 100, db->aLuof) != NULL) {
 
         //guarda em siteTemp o nome
         tamanho = strlen(nomeTemp);
@@ -172,8 +214,6 @@ int fPreencheRaiz(sBanco *db) {
 		pushBackList(db->raiz, &siteTemp);
 
 	}
-
-	return 1;
 	
 }
 

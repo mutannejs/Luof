@@ -33,34 +33,42 @@ typedef struct sBanco {
 	sLista listaSites;
 } sBanco;
 
+//variaveis globais
+char caminhoDB[300];
+int tamCaminhoDB;
+
 // --- Protótipo das funções ---
 //dbluof
 int fInicializaDB(sBanco *db);
 void fFinalizaDB(sBanco *db);
+void fSetaCaminhoArquivo(char *arq, char *nome);
+void fLiberaCats(sLista listaCategorias);
 void fPreencheListaCat(sBanco *db);
-int fPreencheRaiz(sBanco *db);
+void fPreencheRaiz(sBanco *db);
 void fEscreveLuof(sBanco *db, sLista listaCategorias, int hierarquia);
 
 //dbcat
+char* fBuscaCat(sBanco *db, sSite s, sCat *c);
 int fPreencheListaSite(sBanco *db, sCat *c);
 int fBuscaFavorito(sBanco *db, sSite *s, char favorito);
-char* fBuscaCat(sBanco *db, sSite s, sCat *c);
+void fAdicionaFavorito(sBanco *db, sSite s, sCat c);
+void fAdicionaCatLuof(sBanco *db, sSite s, sCat c);
 
+//teste
 void percursoCategorias(sLista l);
 void printaSite(sLista l);
 
 //void fMenu();
 //void fHelp();
 
+//add-delete
 void fAddSite();
-//void fAddCategory();
-void fAdicionaFavorito(sBanco *db, sSite s, sCat c);
-void fAdicionaCatLuof(sBanco *db, sSite s, sCat c);
-/*
-*/
+void fAddCategory();
+//void fDeleteSite();
+
 //void fCriaCategoria(char *categoria);
 
-/*void fDeleteSite();
+/*
 void fDeleteCategory();
 
 void fListAll();
