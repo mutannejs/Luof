@@ -166,6 +166,10 @@ void insereAntIt(sIterador *i, void *e) {
 		i->it->ant = no;
 		i->lista->qtd++;
 	}
+	else {
+		pushFrontList(i->lista, e);
+		iteraInicio(i);
+	}
 }
 
 void insereProxIt(sIterador *i, void *e) {
@@ -179,6 +183,10 @@ void insereProxIt(sIterador *i, void *e) {
 		i->it->prox = no;
 		i->lista->qtd++;
 	}
+	else {
+		pushBackList(i->lista, e);
+		iteraInicio(i);
+	}
 }
 
 int removeIt(sIterador *i) {
@@ -187,7 +195,10 @@ int removeIt(sIterador *i) {
 	sNode *no = i->it;
 	i->it->ant->prox = i->it->prox;
 	i->it->prox->ant = i->it->ant;
-	iteraProximo(i);
+	if (sizeList(i->lista) == 1)
+		i->it = NULL;
+	else
+		iteraProximo(i);
 	free(no->elem);
 	free(no);
 	i->lista->qtd--;
@@ -250,14 +261,14 @@ void* retornaItera(sIterador *i) {
 }
 
 int inicioIt(sIterador *i) {
-	if (i->it == i->lista->sentinela->prox)
+	if (i->it == i->lista->sentinela->prox || emptyList(i->lista))
 		return 1;
 	else
 		return 0;
 }
 
 int fimIt(sIterador *i) {
-	if (i->it == i->lista->sentinela->ant)
+	if (i->it == i->lista->sentinela->ant || emptyList(i->lista))
 		return 1;
 	else
 		return 0;

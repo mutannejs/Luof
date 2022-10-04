@@ -23,18 +23,29 @@ void percursoCategorias(sLista l) {
 	}
 }
 
-void printaSite(sLista l) {
-	
-	sIterador it = criaIt(l);
-	sSite *fav;
+void printaListaSites(sLista l) {
+	if (!emptyList(l)) {
+		sIterador it = criaIt(l);
+		sSite *fav;
 
-	do {
-		fav = retornaItera(&it);
-		printf("Nome: %s\n", fav->nome);
-		printf("Categoria: %s\n", fav->categoria);
-		printf("Link: %s\n", fav->link);
-		printf("Texto: %s\n", fav->texto);
-		printf("ehCat: %c\n\n", fav->ehCat);
-		iteraProximo(&it);
-	} while (!inicioIt(&it));
+		do {
+			fav = retornaItera(&it);
+			printaSite(*fav);
+			iteraProximo(&it);
+		} while (!inicioIt(&it));
+	}
+	else {
+		printf("lista vazia\n");
+	}
+}
+
+
+void printaSite(sSite s) {
+	
+	printf("Nome: %s\n", s.nome);
+	printf("Categoria: %s\n", s.categoria);
+	printf("Link: %s\n", s.link);
+	printf("Texto: %s\n", s.texto);
+	printf("ehCat: %c\n\n", s.ehCat);
+
 }

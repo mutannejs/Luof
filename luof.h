@@ -54,10 +54,13 @@ int fBuscaFavorito(sBanco *db, sSite *s, char favorito);
 void fAdicionaFavorito(sBanco *db, sSite s, sCat c);
 void fRemoveFavorito(sBanco *db, sSite s, sCat c);
 void fAdicionaCatLuof(sBanco *db, sSite s, sCat c);
+void fRemoveCatLuof(sBanco *db, sSite s, sCat c);
+void fRemoveArqCat(sBanco *db, sSite s);
 
 //teste
 void percursoCategorias(sLista l);
-void printaSite(sLista l);
+void printaListaSites(sLista l);
+void printaSite(sSite s);
 
 //void fMenu();
 //void fHelp();
@@ -66,12 +69,9 @@ void printaSite(sLista l);
 void fAddSite();
 void fAddCategory();
 void fDeleteSite();
-
-//void fCriaCategoria(char *categoria);
-
-/*
 void fDeleteCategory();
 
+/*
 void fListAll();
 void fListCategory();
 void fSeeAll();

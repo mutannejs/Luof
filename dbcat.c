@@ -251,59 +251,6 @@ void fAdicionaFavorito(sBanco *db, sSite s, sCat c) {
 
 }
 
-void fAdicionaCatLuof(sBanco *db, sSite s, sCat c) {
-	
-	sCat cNova;//para a categoria ser inserida na árvore de categorias
-	char nomeArqCat[400];
-	sIterador it = criaIt(db->raiz);//para atualizar o arquivo aLuof
-	sSite *siteDoIterador;
-	FILE *nCat;//usado para criar um novo arquivo caso necessário
-	
-	//seta os valores da categoria para ser inserida na árvore
-	strcpy(cNova.nome, s.nome);
-	cNova.catFilhos = criaLista(struct sCat);
-	
-	//adiciona a categoria nova na árvore de categorias
-	pushBackList(c.catFilhos, &cNova);
-	
-	//se a categoria pai não for a raiz atualiza o arquivo aLuof (se for, o arquivo será atualizado ao usar fAdicionaFavorito())
-	if (strcmp(s.categoria, "luof") != 0) {
-		
-		//reabre o arquivo aLuof para sobreescreve-lo
-		fSetaCaminhoArquivo(nomeArqCat, "luof");
-		db->aLuof = freopen(nomeArqCat, "w", db->aLuof);
-
-		//escreve a árvore de categorias no arquivo aLuof
-		fEscreveLuof(db, db->listaCategorias, 0);
-		
-		//marca o fim da árvore de categorias
-		fprintf(db->aLuof, "##\n");
-		
-		//escreve os favoritos da raiz
-		it = criaIt(db->raiz);
-		do {
-			siteDoIterador = retornaItera(&it);
-			fprintf(db->aLuof, "%s\n%s\n%s\n%s\n%c\n", siteDoIterador->nome, siteDoIterador->categoria, siteDoIterador->link, siteDoIterador->texto, siteDoIterador->ehCat);
-			iteraProximo(&it);
-		} while (!inicioIt(&it));
-	}
-	
-	//cria o arquivo referente a categoria caso ainda não exista nenhum arquivo com esse nome
-	//se não entrar no if significa que a categoria pai possui o mesmo nome da nova categoria
-	if (strcmp(c.nome, cNova.nome) != 0) {
-
-		fSetaCaminhoArquivo(nomeArqCat, s.nome);
-		
-		nCat = fopen(nomeArqCat, "r");
-		//se nCat == NULL significa que o arquivo não existe, então ele é criado e em ambos os casos fechado
-		if (!nCat)
-			nCat = fopen(nomeArqCat, "w");
-			
-		fclose(nCat);
-	}
-	
-}
-
 void fRemoveFavorito(sBanco *db, sSite s, sCat c) {
 
 	char nomeArqCat[400];
@@ -371,4 +318,170 @@ void fRemoveFavorito(sBanco *db, sSite s, sCat c) {
 		} while (!inicioIt(&it));
 	}
 
+}
+
+void fAdicionaCatLuof(sBanco *db, sSite s, sCat c) {
+	
+	sCat cNova;//para a categoria ser inserida na árvore de categorias
+	char nomeArqCat[400];
+	sIterador it = criaIt(db->raiz);//para atualizar o arquivo aLuof
+	sSite *siteDoIterador;
+	FILE *nCat;//usado para criar um novo arquivo caso necessário
+	
+	//seta os valores da categoria para ser inserida na árvore
+	strcpy(cNova.nome, s.nome);
+	cNova.catFilhos = criaLista(struct sCat);
+	
+	//adiciona a categoria nova na árvore de categorias
+	pushBackList(c.catFilhos, &cNova);
+	
+	//se a categoria pai não for a raiz atualiza o arquivo aLuof (se for, o arquivo será atualizado ao usar fAdicionaFavorito())
+	if (strcmp(s.categoria, "luof") != 0) {
+		
+		//reabre o arquivo aLuof para sobreescreve-lo
+		fSetaCaminhoArquivo(nomeArqCat, "luof");
+		db->aLuof = freopen(nomeArqCat, "w", db->aLuof);
+
+		//escreve a árvore de categorias no arquivo aLuof
+		fEscreveLuof(db, db->listaCategorias, 0);
+		
+		//marca o fim da árvore de categorias
+		fprintf(db->aLuof, "##\n");
+		
+		//escreve os favoritos da raiz
+		it = criaIt(db->raiz);
+		do {
+			siteDoIterador = retornaItera(&it);
+			fprintf(db->aLuof, "%s\n%s\n%s\n%s\n%c\n", siteDoIterador->nome, siteDoIterador->categoria, siteDoIterador->link, siteDoIterador->texto, siteDoIterador->ehCat);
+			iteraProximo(&it);
+		} while (!inicioIt(&it));
+	}
+	
+	//cria o arquivo referente a categoria caso ainda não exista nenhum arquivo com esse nome
+	//se não entrar no if significa que a categoria pai possui o mesmo nome da nova categoria
+	if (strcmp(c.nome, cNova.nome) != 0) {
+
+		fSetaCaminhoArquivo(nomeArqCat, s.nome);
+		
+		nCat = fopen(nomeArqCat, "r");
+		//se nCat == NULL significa que o arquivo não existe, então ele é criado e em ambos os casos fechado
+		if (!nCat)
+			nCat = fopen(nomeArqCat, "w");
+			
+		fclose(nCat);
+	}
+	
+}
+
+void fRemoveCatLuof(sBanco *db, sSite s, sCat c) {
+	
+	char nomeArqCat[400];
+	
+	int encontrou = 0;//diz se encontrou a categoria
+	sSite *siteDoIterador;
+	sIterador it = criaIt(c.catFilhos);//para atualizar o arquivo aLuof
+	
+	//remove a categoria da árvore de categorias
+	do {
+		siteDoIterador = retornaItera(&it);
+		if (strcmp(siteDoIterador->nome, s.nome) == 0) {
+			encontrou = 1;
+			removeIt(&it);
+		}
+		else {
+			iteraProximo(&it);
+		}
+	} while(encontrou == 0 && !inicioIt(&it));
+	
+	//se a categoria pai não for a raiz atualiza o arquivo aLuof (se for, o arquivo será atualizado ao usar fRemoveFavorito())
+	if (strcmp(s.categoria, "luof") != 0) {
+		
+		//reabre o arquivo aLuof para sobreescreve-lo
+		fSetaCaminhoArquivo(nomeArqCat, "luof");
+		db->aLuof = freopen(nomeArqCat, "w", db->aLuof);
+
+		//escreve a árvore de categorias no arquivo aLuof
+		fEscreveLuof(db, db->listaCategorias, 0);
+		
+		//marca o fim da árvore de categorias
+		fprintf(db->aLuof, "##\n");
+		
+		//escreve os favoritos da raiz
+		it = criaIt(db->raiz);
+		do {
+			siteDoIterador = retornaItera(&it);
+			fprintf(db->aLuof, "%s\n%s\n%s\n%s\n%c\n", siteDoIterador->nome, siteDoIterador->categoria, siteDoIterador->link, siteDoIterador->texto, siteDoIterador->ehCat);
+			iteraProximo(&it);
+		} while (!inicioIt(&it));
+	}
+	
+}
+
+void fRemoveArqCat(sBanco *db, sSite s) {
+	
+	//para a categoria que terá seus sites removidos
+	sCat cNova;
+	char nomeArqCat[400];
+	
+	//seta os valores da categoria para ser criada a lista com seus sites
+	strcpy(cNova.nome, s.nome);
+	cNova.catFilhos = criaLista(struct sCat);
+	
+	//cria uma lista de favoritos pertecentes à categoria
+	if (fPreencheListaSite(db, &cNova) == 0) {
+		printf("Erro no arquivo da categoria excluida\n");
+		return;
+	}
+	
+	//se a lista estiver vazia exclui o arquivo
+	if (emptyList(db->listaSites)) {
+		fSetaCaminhoArquivo(nomeArqCat, s.nome);
+		remove(nomeArqCat);
+		return;
+	}
+	
+	char categoria[1000];
+	//seta em categoria o caminho da categoria excluida
+	if (strcmp(s.categoria, "luof") == 0) {
+		strcpy(categoria, s.nome);
+	}
+	else {
+		strcpy(categoria, s.categoria);
+		strcpy(&categoria[strlen(s.categoria)], "/");
+		strcpy(&categoria[strlen(s.categoria)+1], s.nome);
+	}
+	
+	//remove os sites da categoria na listaSites
+	sSite *siteDoIterador;
+	
+	int qtdLista;
+	sIterador it = criaIt(db->listaSites);//para atualizar o arquivo aCat
+	do {
+		qtdLista = sizeList(db->listaSites);
+		siteDoIterador = retornaItera(&it);
+		if (strcmp(siteDoIterador->categoria, categoria) == 0)
+			removeIt(&it);
+		else
+			iteraProximo(&it);
+	} while (!emptyList(db->listaSites) && (!inicioIt(&it) || qtdLista != sizeList(db->listaSites)));
+	
+	//se a lista da categoria ficou vazia remove o arquivo, caso contrário só atualiza o arquivo
+	if (emptyList(db->listaSites)) {
+		fSetaCaminhoArquivo(nomeArqCat, s.nome);
+		remove(nomeArqCat);
+	}
+	else {
+		//abre o arquivo para sobreescreve-lo
+		fSetaCaminhoArquivo(nomeArqCat, s.nome);
+		db->aCat = fopen(nomeArqCat, "w");
+
+		//escreve a lista no arquivo da categoria
+		it = criaIt(db->listaSites);
+		do {
+			siteDoIterador = retornaItera(&it);
+			fprintf(db->aCat, "%s\n%s\n%s\n%s\n%c\n", siteDoIterador->nome, siteDoIterador->categoria, siteDoIterador->link, siteDoIterador->texto, siteDoIterador->ehCat);
+			iteraProximo(&it);
+		} while (!inicioIt(&it));
+	}
+	
 }

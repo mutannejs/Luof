@@ -118,23 +118,12 @@ void fAddCategory() {
 		printf("A categoria já existe.\n");
 		return;
 	}
-	
-	printf("\nNome: %s\n", c.nome);
-	printf("Categoria: %s\n", c.categoria);
-	printf("Link: %s\n", c.link);
-	printf("Texto: %s\n", c.texto);
-	printf("ehCat: %c\n\n", c.ehCat);
-	printf("cat: %s\n", categoria.nome);
-	printf("a lista estah Vazia?: %d\n", emptyList(categoria.catFilhos));
 
-	//adiciona no banco de dados
+	//adiciona na árvore de categorias
 	fAdicionaCatLuof(&db, c, categoria);
 	
-	printf("......\n");
-	
+	//adiciona no banco de dados
 	fAdicionaFavorito(&db, c, categoria);
-	
-	printf("......\n");
 
 	//fecha os arquivos abertos
 	fFinalizaDB(&db);
@@ -194,5 +183,68 @@ void fDeleteSite() {
 	fFinalizaDB(&db);
 	
 	printf("Favorito removido com sucesso.\n");
+	
+}
+
+void fDeleteCategory() {
+	
+	//variaveis
+	sSite c;//será usado para guardar a categoria (como será armazenada)
+	sCat categoria;
+	sBanco db;
+
+	// inicializa o banco de dados (se existir guarda em aLuof o arquivo com as categorias, se não pergunta se quer cria-lo)
+	int rInicializaDB = fInicializaDB(&db);
+	if (rInicializaDB)
+		return;
+
+	//preenche uma sLista com todas as categorias
+	fPreencheListaCat(&db);
+
+	//Pede a categoria
+	printf("Categoria pai:\n");
+	scanf(" %[^\n]", c.categoria);
+
+	//Se a categoria pai é a raiz, db->listaSites aponta para o arquivo raiz
+	if (strcmp(c.categoria, "/") == 0) {
+		strcpy(c.categoria, "luof");
+		db.listaSites = db.raiz;
+		db.aCat = NULL;
+		
+		strcpy(categoria.nome, "luof");
+		categoria.catFilhos = db.listaCategorias;
+	}
+	else {
+		//verifica se a categoria pai existe
+		char *rBuscaCat = fBuscaCat(&db, c, &categoria);
+		if (rBuscaCat != NULL) {
+			printf("Categoria \"%s\" não encontrada.\n", rBuscaCat);
+			return;
+		}
+	}
+
+	printf("Categoria:\n");
+	scanf(" %[^\n]", c.nome);
+	
+	//verifica se existe uma categoria com esse nome na categoria pai e se o arquivo pode ser aberto (da categoria pai)
+	int rBuscaFavorito = fBuscaFavorito(&db, &c, '1');
+	if (!rBuscaFavorito) {
+		printf("A categoria não existe para ser excluida.\n");
+		return;
+	}
+	
+	//remove da árvore de categorias
+	fRemoveCatLuof(&db, c, categoria);
+	
+	//remove do banco de dados
+	fRemoveFavorito(&db, c, categoria);
+	
+	//remove todos os favoritos do arquivo da categoria, com exceção daqueles pertencentes à outra categoria
+	fRemoveArqCat(&db, c);
+
+	//fecha os arquivos abertos
+	fFinalizaDB(&db);
+	
+	printf("Categoria removida com sucesso.\n");
 	
 }
