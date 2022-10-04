@@ -50,6 +50,13 @@ void fRemoveFavorito(sBanco *db, sSite s, sCat c);
 //no arquivo da categoria raiz, e caso não exista um arquivo com o mesmo nome cria ele
 void fAdicionaCatLuof(sBanco *db, sSite s, sCat c);
 
+//remove a categoria da árvore de categorias
+void fRemoveCatLuof(sBanco *db, sSite s, sCat c);
+
+//remove todos os favoritos da categoria presentes no arquivo da categoria.
+//se o arquivo ficar vazio ele é removido
+void fRemoveArqCat(sBanco *db, sSite s);
+
 /* ------------------ */
 
 /* ----- teste ------ */
@@ -58,7 +65,10 @@ void fAdicionaCatLuof(sBanco *db, sSite s, sCat c);
 void percursoCategorias(sLista l);
 
 //percorre a estrutura sLista l e printa site por site
-void printaSite(sLista l);
+void printaListaSite(sLista l);
+
+//printa todas as informações de sSite s
+void printaSite(sSite s);
 
 /* ------------------ */
 
@@ -72,5 +82,15 @@ void fAddCategory();
 
 //deleta um site
 void fDeleteSite();
+
+//deleta uma categoria
+void fDeleteCategory();
+
+/* ------------------ */
+
+/* --- add-delete --- */
+
+//lista todos os favoritos da categoria
+void fListCategory();
 
 /* ------------------ */

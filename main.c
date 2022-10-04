@@ -37,11 +37,14 @@ int main(int argc, char *argv[]) {
 	}
 	/*else if (strcmp(argv[1], "-la") == 0 || strcmp(argv[1], "--list-all") == 0) {
 		fListAll();
-	}
+	}*/
 	else if (strcmp(argv[1], "-lc") == 0 || strcmp(argv[1], "--list-category") == 0) {
-		fListCategory();
+		fListCategory(0);
 	}
-	else if (strcmp(argv[1], "-sa") == 0 || strcmp(argv[1], "--see-all") == 0) {
+	else if (strcmp(argv[1], "-lcs") == 0 || strcmp(argv[1], "--list-category-short") == 0) {
+		fListCategory(1);
+	}
+	/*else if (strcmp(argv[1], "-sa") == 0 || strcmp(argv[1], "--see-all") == 0) {
 		fSeeAll();
 	}
 	else if (strcmp(argv[1], "-sc") == 0 || strcmp(argv[1], "--see-category") == 0) {

@@ -71,9 +71,10 @@ void fAddCategory();
 void fDeleteSite();
 void fDeleteCategory();
 
+//list
+void fListCategory(int opcao);
 /*
 void fListAll();
-void fListCategory();
 void fSeeAll();
 void fSeeCategory();
 void fSeeSite();
