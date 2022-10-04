@@ -150,10 +150,11 @@ int fBuscaFavorito(sBanco *db, sSite *s, char favorito) {
 	do {
 		fav = retornaItera(&it);
 		//encontrou o favorito
-		if (strcmp(fav->nome, s->nome) == 0 && strcmp(fav->categoria, s->categoria) == 0 && s->ehCat == favorito) {
+		if ((strcmp(fav->nome, s->nome) == 0) && (strcmp(fav->categoria, s->categoria) == 0) && (fav->ehCat == favorito)) {
 			//seta os outros valores de s
 			strcpy(s->link, fav->link);
 			strcpy(s->texto, fav->texto);
+			s->ehCat = favorito;
 			//informa que o site foi encontrado
 			return 1;
 		}
@@ -301,4 +302,73 @@ void fAdicionaCatLuof(sBanco *db, sSite s, sCat c) {
 		fclose(nCat);
 	}
 	
+}
+
+void fRemoveFavorito(sBanco *db, sSite s, sCat c) {
+
+	char nomeArqCat[400];
+	sIterador it = criaIt(db->listaSites);
+	sSite *siteDoIterador;
+
+	/* Adiciona o site na lista
+	 * Ela estará em ordem alfabética, sendo os primeiros favoritos categorias*/
+	if (s.ehCat == '0') {
+		iteraFim(&it);
+		do {
+			siteDoIterador = retornaItera(&it);
+			if ((strcmp(siteDoIterador->nome, s.nome) == 0) && (strcmp(siteDoIterador->categoria, s.categoria) == 0) && (s.ehCat == siteDoIterador->ehCat)) {
+				printf("encontrou o favorito a ser excluido.\n");
+				removeIt(&it);
+			}
+			else
+				iteraAnterior(&it);
+		} while (!fimIt(&it));
+	}
+	else {
+		iteraInicio(&it);
+		do {
+			siteDoIterador = retornaItera(&it);
+			if ((strcmp(siteDoIterador->nome, s.nome) == 0) && (strcmp(siteDoIterador->categoria, s.categoria) == 0) && (s.ehCat == siteDoIterador->ehCat)) {
+				printf("encontrou o favorito a ser excluido.\n");
+				removeIt(&it);
+			}
+			else
+				iteraProximo(&it);
+		} while (!inicioIt(&it));
+	}
+
+	//se a categoria é a raiz
+	if (strcmp(s.categoria, "luof") == 0) {
+		//reabre o arquivo aLuof para sobreescreve-lo
+		fSetaCaminhoArquivo(nomeArqCat, "luof");
+		db->aLuof = freopen(nomeArqCat, "w", db->aLuof);
+
+		//escreve a árvore de categorias no arquivo aLuof
+		fEscreveLuof(db, db->listaCategorias, 0);
+		
+		//marca o fim da árvore de categorias
+		fprintf(db->aLuof, "##\n");
+		
+		//escreve os favoritos da raiz
+		it = criaIt(db->listaSites);
+		do {
+			siteDoIterador = retornaItera(&it);
+			fprintf(db->aLuof, "%s\n%s\n%s\n%s\n%c\n", siteDoIterador->nome, siteDoIterador->categoria, siteDoIterador->link, siteDoIterador->texto, siteDoIterador->ehCat);
+			iteraProximo(&it);
+		} while (!inicioIt(&it));
+	}
+	else {
+		//reabre o arquivo para sobreescreve-lo
+		fSetaCaminhoArquivo(nomeArqCat, c.nome);
+		db->aCat = freopen(nomeArqCat, "w", db->aCat);
+
+		//escreve a lista no arquivo da categoria
+		it = criaIt(db->listaSites);
+		do {
+			siteDoIterador = retornaItera(&it);
+			fprintf(db->aCat, "%s\n%s\n%s\n%s\n%c\n", siteDoIterador->nome, siteDoIterador->categoria, siteDoIterador->link, siteDoIterador->texto, siteDoIterador->ehCat);
+			iteraProximo(&it);
+		} while (!inicioIt(&it));
+	}
+
 }

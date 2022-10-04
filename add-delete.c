@@ -143,7 +143,7 @@ void fAddCategory() {
 
 }
 
-/*void fDeleteSite() {
+void fDeleteSite() {
 	
 	//variaveis
 	sSite s;
@@ -157,9 +157,6 @@ void fAddCategory() {
 
 	//preenche uma sLista com todas as categorias
 	fPreencheListaCat(&db);
-
-	//prenche o campo ehCat
-	s.ehCat = '0';
 
 	//Pede o nome e a categoria
 	printf("Nome:\n");
@@ -183,7 +180,19 @@ void fAddCategory() {
 		}
 	}
 	
-	//TODO
+	//verifica se já existe um favorito com esse nome na categoria e se o arquivo pode ser aberto
+	int rBuscaFavorito = fBuscaFavorito(&db, &s, '0');
+	if (!rBuscaFavorito) {
+		printf("O favorito não existe para ser excluido.\n");
+		return;
+	}
+	
+	//remove do banco de dados
+	fRemoveFavorito(&db, s, categoria);
+
+	//fecha os arquivos abertos
+	fFinalizaDB(&db);
+	
+	printf("Favorito removido com sucesso.\n");
 	
 }
-*/

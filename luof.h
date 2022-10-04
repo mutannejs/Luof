@@ -52,6 +52,7 @@ char* fBuscaCat(sBanco *db, sSite s, sCat *c);
 int fPreencheListaSite(sBanco *db, sCat *c);
 int fBuscaFavorito(sBanco *db, sSite *s, char favorito);
 void fAdicionaFavorito(sBanco *db, sSite s, sCat c);
+void fRemoveFavorito(sBanco *db, sSite s, sCat c);
 void fAdicionaCatLuof(sBanco *db, sSite s, sCat c);
 
 //teste
@@ -64,7 +65,7 @@ void printaSite(sLista l);
 //add-delete
 void fAddSite();
 void fAddCategory();
-//void fDeleteSite();
+void fDeleteSite();
 
 //void fCriaCategoria(char *categoria);
 
