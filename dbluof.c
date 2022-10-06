@@ -231,3 +231,62 @@ void fEscreveLuof(sBanco *db, sLista listaCategorias, int hierarquia) {
 		} while (!inicioIt(&it));
 	}
 }
+
+void fNomesCats(sBanco *db, sCat *cat, char h[], int hierarquia) {
+	
+	//int tamCat = strlen(categoria);
+	sIterador it;
+	sSite *siteDoIterador;
+	sCat *catF;
+	int contEspaco;
+
+	fPreencheListaSite(db, cat);
+	contEspaco = sizeList(db->listaSites);
+
+	//printa o nome da categoria
+	if (hierarquia != 0) {
+		for (int i = 0; i < hierarquia; i++) {
+			if (h[i] == '1' || i+1 == hierarquia)
+				printf("    |");
+			else
+				printf("     ");
+		}
+		printf("_ ");
+	}
+	printf("* %s\n", cat->nome);
+	
+	//pega as categorias filhas - continua a recursão
+	if (!emptyList(cat->catFilhos)) {
+		//FUNCAO QUE ORDENA LISTA - FAZER
+		it = criaIt(cat->catFilhos);
+		do {
+			catF = retornaItera(&it);
+			if (contEspaco <= 0)
+				h[hierarquia] = '0';
+			contEspaco--;
+			fNomesCats(db, catF, h, hierarquia + 1);
+			h[hierarquia] = '1';
+			iteraProximo(&it);
+		} while (!inicioIt(&it));
+	}
+	
+	//printa os sites da categoria
+	fPreencheListaSite(db, cat);
+	if (!emptyList(db->listaSites)) {
+		it = criaIt(db->listaSites);
+		do {
+			siteDoIterador = retornaItera(&it);
+			if (siteDoIterador->ehCat == '0') {
+				for (int i = 0; i < hierarquia + 1; i++) {
+					if (h[i] == '1')
+						printf("    |");
+					else
+						printf("     ");
+				}
+				printf("_ %s\n", siteDoIterador->nome);
+			}
+			iteraProximo(&it);
+		} while(!inicioIt(&it));
+	}
+
+}

@@ -46,6 +46,7 @@ void fLiberaCats(sLista listaCategorias);
 void fPreencheListaCat(sBanco *db);
 void fPreencheRaiz(sBanco *db);
 void fEscreveLuof(sBanco *db, sLista listaCategorias, int hierarquia);
+void fNomesCats(sBanco *db, sCat *cat, char h[], int hierarquia);
 
 //dbcat
 char* fBuscaCat(sBanco *db, sSite s, sCat *c);
@@ -72,9 +73,9 @@ void fDeleteSite();
 void fDeleteCategory();
 
 //list
+void fListTree();
 void fListCategory(int opcao);
 /*
-void fListAll();
 void fSeeAll();
 void fSeeCategory();
 void fSeeSite();

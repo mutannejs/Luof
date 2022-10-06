@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include "luof.h"
+#include "pilha.h"
 
 void fListCategory(int opcao) {
 
@@ -67,4 +68,47 @@ void fListCategory(int opcao) {
 	//fecha os arquivos abertos
 	fFinalizaDB(&db);
 	
+}
+
+void fListTree() {
+	
+	sBanco db;
+	sIterador it;
+	sSite *siteDoIterador;
+	char hierarquia[10] = "1111111111";
+
+	// inicializa o banco de dados (se existir guarda em aLuof o arquivo com as categorias, se não pergunta se quer cria-lo)
+	int rInicializaDB = fInicializaDB(&db);
+	if (rInicializaDB)
+		return;
+
+	//preenche uma sLista com todas as categorias
+	fPreencheListaCat(&db);
+	
+	//printa o nome (por extenso) de todas categorias
+	if (!emptyList(db.listaCategorias)) {
+		//FUNCAO QUE ORDENA LISTA - FAZER
+		it = criaIt(db.listaCategorias);
+		do {
+			sCat *cat = (struct sCat*) retornaItera(&it);
+			fNomesCats(&db, cat, hierarquia, 0);
+			iteraProximo(&it);
+		} while (!inicioIt(&it));
+	}
+	
+	//printa os sites da raiz
+	if (!emptyList(db.raiz)) {
+		it = criaIt(db.raiz);
+		do {
+			siteDoIterador = retornaItera(&it);
+			if (siteDoIterador->ehCat == '0')
+				printf("%s\n", siteDoIterador->nome);
+			iteraProximo(&it);
+		} while(!inicioIt(&it));
+	}
+	else
+		printf("Vazia.\n");
+
+	//fecha os arquivos abertos
+	fFinalizaDB(&db);
 }
