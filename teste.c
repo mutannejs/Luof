@@ -39,7 +39,6 @@ void printaListaSites(sLista l) {
 	}
 }
 
-
 void printaSite(sSite s) {
 	
 	printf("Nome: %s\n", s.nome);

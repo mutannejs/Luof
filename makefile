@@ -1,7 +1,7 @@
 all: run
 
-run: main.o add-delete.o list.o dbluof.o dbcat.o lista-iterador.o pilha.o teste.o
-	gcc -o run main.o add-delete.o list.o dbluof.o dbcat.o lista-iterador.o pilha.o teste.o
+run: main.o add-delete.o list.o modify.o dbluof.o dbcat.o lista-iterador.o pilha.o teste.o
+	gcc -o run main.o add-delete.o list.o modify.o dbluof.o dbcat.o lista-iterador.o pilha.o teste.o
 
 main.o: main.c luof.h
 	gcc -o main.o main.c -c -W -Wall -pedantic
@@ -11,6 +11,9 @@ add.o: add-delete.c luof.h
 
 list.o: list.c luof.h
 	gcc -o list.o list.c -c -W -Wall -pedantic
+
+modify.o: modify.c luof.h
+	gcc -o modify.o modify.c -c -W -Wall -pedantic
 
 dbluof.o: dbluof.c luof.h
 	gcc -o dbluof.o dbluof.c -c -W -Wall -pedantic

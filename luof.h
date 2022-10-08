@@ -49,7 +49,7 @@ void fEscreveLuof(sBanco *db, sLista listaCategorias, int hierarquia);
 void fNomesCats(sBanco *db, sCat *cat, char h[], int hierarquia);
 
 //dbcat
-char* fBuscaCat(sBanco *db, sSite s, sCat *c);
+int fBuscaCat(sBanco *db, sSite s, sCat *c);
 int fPreencheListaSite(sBanco *db, sCat *c);
 int fBuscaFavorito(sBanco *db, sSite *s, char favorito);
 void fAdicionaFavorito(sBanco *db, sSite s, sCat c);
@@ -75,15 +75,16 @@ void fDeleteCategory();
 //list
 void fListTree();
 void fListCategory(int opcao);
-/*
-void fSeeAll();
+
+/*void fSeeAll();
 void fSeeCategory();
-void fSeeSite();
+void fSeeSite();*/
 
+//modify
 void fModifySite();
-void fModifyCategory();
+//void fModifyCategory();
 
-void fVersion();
+/*void fVersion();
 void fBackup();
 void fExport();
 void fHtml();

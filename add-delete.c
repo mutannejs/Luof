@@ -11,22 +11,24 @@ void fAddSite() {
 	sBanco db;
 
 	// inicializa o banco de dados (se existir guarda em aLuof o arquivo com as categorias, se não pergunta se quer cria-lo)
-	int rInicializaDB = fInicializaDB(&db);
-	if (rInicializaDB)
+	if (fInicializaDB(&db))
 		return;
 
 	//preenche uma sLista com todas as categorias
 	fPreencheListaCat(&db);
+	
+	//preenche uma sLista com todos os favoritos da raiz
+	fPreencheRaiz(&db);
 
 	//prenche o campo ehCat
 	s.ehCat = '0';
 
 	//Pede o nome e a categoria
-	printf("Nome:\n");
-	scanf(" %[^\n]", s.nome);
-
 	printf("Categoria:\n");
 	scanf(" %[^\n]", s.categoria);
+
+	printf("Nome:\n");
+	scanf(" %[^\n]", s.nome);
 
 	//Se a categoria é a raiz guarda no arquivo raiz
 	if (strcmp(s.categoria, "/") == 0) {
@@ -35,12 +37,12 @@ void fAddSite() {
 		db.aCat = NULL;
 	}
 	else {
-		//verifica se a categoria existe
-		char *rBuscaCat = fBuscaCat(&db, s, &categoria);
-		if (rBuscaCat != NULL) {
-			printf("Categoria \"%s\" não encontrada.\n", rBuscaCat);
+		//verifica se a categoria existe e guarda em categoria sua posição na árvore
+		if (fBuscaCat(&db, s, &categoria))
 			return;
-		}
+		//cria uma lista de favoritos pertecentes à categoria
+		if (fPreencheListaSite(&db, &categoria))
+			return;
 	}
 	
 	//verifica se já existe um favorito com esse nome na categoria e se o arquivo pode ser aberto
@@ -63,24 +65,26 @@ void fAddSite() {
 	//fecha os arquivos abertos
 	fFinalizaDB(&db);
 	
-	printf("Favorito adicionado com sucesso.\n");
+	printf("\nFavorito adicionado com sucesso.\n");
 	
 }
 
 void fAddCategory() {
 
 	//variaveis
-	sSite c;//será usado para guardar a categoria (como será armazenada)
+	sSite c;
 	sCat categoria;
 	sBanco db;
 
 	// inicializa o banco de dados (se existir guarda em aLuof o arquivo com as categorias, se não pergunta se quer cria-lo)
-	int rInicializaDB = fInicializaDB(&db);
-	if (rInicializaDB)
+	if (fInicializaDB(&db))
 		return;
 
 	//preenche uma sLista com todas as categorias
 	fPreencheListaCat(&db);
+	
+	//preenche uma sLista com todos os favoritos da raiz
+	fPreencheRaiz(&db);
 
 	//Pede a categoria
 	printf("Categoria pai:\n");
@@ -96,12 +100,12 @@ void fAddCategory() {
 		categoria.catFilhos = db.listaCategorias;
 	}
 	else {
-		//verifica se a categoria pai existe
-		char *rBuscaCat = fBuscaCat(&db, c, &categoria);
-		if (rBuscaCat != NULL) {
-			printf("Categoria \"%s\" não encontrada.\n", rBuscaCat);
+		//verifica se a categoria existe e guarda em categoria sua posição na árvore
+		if (fBuscaCat(&db, c, &categoria))
 			return;
-		}
+		//cria uma lista de favoritos pertecentes à categoria
+		if (fPreencheListaSite(&db, &categoria))
+			return;
 	}
 
 	printf("Categoria:\n");
@@ -128,31 +132,33 @@ void fAddCategory() {
 	//fecha os arquivos abertos
 	fFinalizaDB(&db);
 	
-	printf("Categoria adicionada com sucesso.\n");
+	printf("\nCategoria adicionada com sucesso.\n");
 
 }
 
 void fDeleteSite() {
-	
+
 	//variaveis
 	sSite s;
 	sCat categoria;
 	sBanco db;
 
 	// inicializa o banco de dados (se existir guarda em aLuof o arquivo com as categorias, se não pergunta se quer cria-lo)
-	int rInicializaDB = fInicializaDB(&db);
-	if (rInicializaDB)
+	if (fInicializaDB(&db))
 		return;
 
 	//preenche uma sLista com todas as categorias
 	fPreencheListaCat(&db);
+	
+	//preenche uma sLista com todos os favoritos da raiz
+	fPreencheRaiz(&db);
 
 	//Pede o nome e a categoria
-	printf("Nome:\n");
-	scanf(" %[^\n]", s.nome);
-
 	printf("Categoria:\n");
 	scanf(" %[^\n]", s.categoria);
+	
+	printf("Nome:\n");
+	scanf(" %[^\n]", s.nome);
 
 	//Se a categoria é a raiz guarda no arquivo raiz
 	if (strcmp(s.categoria, "/") == 0) {
@@ -161,12 +167,12 @@ void fDeleteSite() {
 		db.aCat = NULL;
 	}
 	else {
-		//verifica se a categoria existe
-		char *rBuscaCat = fBuscaCat(&db, s, &categoria);
-		if (rBuscaCat != NULL) {
-			printf("Categoria \"%s\" não encontrada.\n", rBuscaCat);
+		//verifica se a categoria existe e guarda em categoria sua posição na árvore
+		if (fBuscaCat(&db, s, &categoria))
 			return;
-		}
+		//cria uma lista de favoritos pertecentes à categoria
+		if (fPreencheListaSite(&db, &categoria))
+			return;
 	}
 	
 	//verifica se já existe um favorito com esse nome na categoria e se o arquivo pode ser aberto
@@ -182,24 +188,26 @@ void fDeleteSite() {
 	//fecha os arquivos abertos
 	fFinalizaDB(&db);
 	
-	printf("Favorito removido com sucesso.\n");
+	printf("\nFavorito removido com sucesso.\n");
 	
 }
 
 void fDeleteCategory() {
-	
+
 	//variaveis
-	sSite c;//será usado para guardar a categoria (como será armazenada)
+	sSite c;
 	sCat categoria;
 	sBanco db;
 
 	// inicializa o banco de dados (se existir guarda em aLuof o arquivo com as categorias, se não pergunta se quer cria-lo)
-	int rInicializaDB = fInicializaDB(&db);
-	if (rInicializaDB)
+	if (fInicializaDB(&db))
 		return;
 
 	//preenche uma sLista com todas as categorias
 	fPreencheListaCat(&db);
+	
+	//preenche uma sLista com todos os favoritos da raiz
+	fPreencheRaiz(&db);
 
 	//Pede a categoria
 	printf("Categoria pai:\n");
@@ -215,12 +223,12 @@ void fDeleteCategory() {
 		categoria.catFilhos = db.listaCategorias;
 	}
 	else {
-		//verifica se a categoria pai existe
-		char *rBuscaCat = fBuscaCat(&db, c, &categoria);
-		if (rBuscaCat != NULL) {
-			printf("Categoria \"%s\" não encontrada.\n", rBuscaCat);
+		//verifica se a categoria existe e guarda em categoria sua posição na árvore
+		if (fBuscaCat(&db, c, &categoria))
 			return;
-		}
+		//cria uma lista de favoritos pertecentes à categoria
+		if (fPreencheListaSite(&db, &categoria))
+			return;
 	}
 
 	printf("Categoria:\n");
@@ -245,6 +253,6 @@ void fDeleteCategory() {
 	//fecha os arquivos abertos
 	fFinalizaDB(&db);
 	
-	printf("Categoria removida com sucesso.\n");
+	printf("\nCategoria removida com sucesso.\n");
 	
 }

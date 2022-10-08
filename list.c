@@ -12,12 +12,14 @@ void fListCategory(int opcao) {
 	sBanco db;
 
 	// inicializa o banco de dados (se existir guarda em aLuof o arquivo com as categorias, se não pergunta se quer cria-lo)
-	int rInicializaDB = fInicializaDB(&db);
-	if (rInicializaDB)
+	if (fInicializaDB(&db))
 		return;
 
 	//preenche uma sLista com todas as categorias
 	fPreencheListaCat(&db);
+	
+	//preenche uma sLista com todos os favoritos da raiz
+	fPreencheRaiz(&db);
 
 	//Pede o nome da categoria
 	printf("Categoria:\n");
@@ -30,12 +32,12 @@ void fListCategory(int opcao) {
 		db.aCat = NULL;
 	}
 	else {
-		//verifica se a categoria existe
-		char *rBuscaCat = fBuscaCat(&db, s, &categoria);
-		if (rBuscaCat != NULL) {
-			printf("Categoria \"%s\" não encontrada.\n", rBuscaCat);
+		//verifica se a categoria existe e guarda em categoria sua posição na árvore
+		if (fBuscaCat(&db, s, &categoria))
 			return;
-		}
+		//cria uma lista de favoritos pertecentes à categoria
+		if (fPreencheListaSite(&db, &categoria))
+			return;
 	}
 	
 	printf("\n");
@@ -78,12 +80,14 @@ void fListTree() {
 	char hierarquia[10] = "1111111111";
 
 	// inicializa o banco de dados (se existir guarda em aLuof o arquivo com as categorias, se não pergunta se quer cria-lo)
-	int rInicializaDB = fInicializaDB(&db);
-	if (rInicializaDB)
+	if (fInicializaDB(&db))
 		return;
 
 	//preenche uma sLista com todas as categorias
 	fPreencheListaCat(&db);
+	
+	//preenche uma sLista com todos os favoritos da raiz
+	fPreencheRaiz(&db);
 	
 	//printa o nome (por extenso) de todas categorias
 	if (!emptyList(db.listaCategorias)) {

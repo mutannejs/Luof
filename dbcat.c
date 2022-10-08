@@ -6,76 +6,68 @@
 #include <sys/stat.h>
 #include "luof.h"
 
-char* fBuscaCat(sBanco *db, sSite s, sCat *c) {
+int fBuscaCat(sBanco *db, sSite s, sCat *c) {
 
 	char categorias[10][100];//vetor com as categorias
 	int qtdCats = 0;//quantidade de categorias totais
 	int tamCat = strlen(s.categoria);
 	int ini = 0;//indica o começo do nome da categoria
 
-	//cria uma lista com as categorias e subcategorias
+	//cria um vetor com a hierarquia de categorias (em categorias[][])
 	for (int i = 0; i <= tamCat; i++) {
-	//chegou no fim de alguma categoria
+		//chegou no fim do nome de alguma categoria
 		if (s.categoria[i] == '/' || i == tamCat) {
-		//adiciona em categorias
-		strncpy(categorias[qtdCats], &s.categoria[ini], i-ini);
-		categorias[qtdCats][i-ini+1] = '\0';
+			//só pode haver 10 categorias no máximo, logo a categoria atual não pode ser adicionada
+			if (qtdCats == 10) {
+				printf("No máximo pode existir 9 subcategorias\n");
+				return 1;
+			}
+			
+			//adiciona em categorias a categoria atual
+			strncpy(categorias[qtdCats], &s.categoria[ini], i-ini);
+			categorias[qtdCats][i-ini+1] = '\0';
 
-		//ini passa a ser o próximo caracter depois de /
-		ini = i + 1;
-		//qtdCats incrementa
-		qtdCats++;
+			//ini passa a ser o indice do próximo caracter depois de / ou i ser igual a tamCat
+			ini = i + 1;
+			
+			qtdCats++;
 		}
 	}
 
 	//se ainda não tiver sido criado nenhuma categoria
 	if (emptyList(db->listaCategorias)) {
-		int tamNome = strlen(categorias[0]);
-		char *nomeCatNaoEncontrada = (char *) malloc(tamNome);
-		strncpy(nomeCatNaoEncontrada, categorias[0], tamNome);
-		return nomeCatNaoEncontrada;
+		printf("Categoria \"%s\" não encontrada\n", categorias[0]);
+		return 1;
 	}
 
 	//variaveis usadas para percorrer a lista de categorias
 	sIterador it = criaIt(db->listaCategorias);
-
-	//informa quantas categorias já foram encontradas, deve ser igual a i ou maior em 1
-	int encontrou = 0;
-
-	//busca a categoria na estrutura sCat c
-	for (int i = 0; i < qtdCats && encontrou == i; i++) {
+	sCat *cat;
+	
+	//busca a categoria na árvore de categorias e c passa a ser igual a ela
+	for (int i = 0; i < qtdCats; i++) {
+		int encontrou = 0;
 		do {
-			sCat *cat1 = (struct sCat*) retornaItera(&it);
-			//printf("%s :: %s\n", cat1->nome, categorias[i]);RETIRAR
-
+			cat = (struct sCat*) retornaItera(&it);
+			
 			//se o nome bater procura a subcategoria e guarda em c a categoria atual
-			if (strcmp(cat1->nome, categorias[i]) == 0) {
-				*c = *cat1;
-				it = criaIt(cat1->catFilhos);
-				encontrou++;
+			if (strcmp(cat->nome, categorias[i]) == 0) {
+				*c = *cat;
+				it = criaIt(cat->catFilhos);
+				encontrou = 1;
 			}
 			else {
 				iteraProximo(&it);
 			}
-
-		} while (encontrou == i && !inicioIt(&it));
-	}
-
-	//se não encontrou alguma categoria retorna o nome dela, caso contrário retorna NULL
-	if (encontrou < qtdCats) {
-		int tamNome = strlen(categorias[encontrou]);
-		char *nomeCatNaoEncontrada = (char *) malloc(tamNome);
-		strncpy(nomeCatNaoEncontrada, categorias[encontrou], tamNome);
-		return nomeCatNaoEncontrada;
-	}
-	else {
-		//cria uma lista de favoritos pertecentes à categoria
-		if (fPreencheListaSite(db, c) == 0) {
-			printf("Erro no arquivo: ");
-			return "";
+		} while (encontrou == 0 && !inicioIt(&it));
+		//se não encontrou a categoria[i] na árvore de categoria
+		if (!encontrou) {
+			printf("Categoria \"%s\" não encontrada\n", categorias[i]);
+			return 1;
 		}
-		return NULL;
 	}
+
+	return 0;
 
 }
 
@@ -92,11 +84,12 @@ int fPreencheListaSite(sBanco *db, sCat *c) {
 	//abre o arquivo da categoria
 	fSetaCaminhoArquivo(nomeArqCat, c->nome);
 	db->aCat = fopen(nomeArqCat, "r");
-	
 	//documento não encontrado
-	if (db->aCat == NULL)
-		return 0;
-
+	if (db->aCat == NULL) {
+		printf("O arquivo %s não pode ser aberto\n", nomeArqCat);
+		return 1;
+	}
+	
 	db->listaSites = criaLista(struct sSite);
 
 	//pega linha por linha do arquivo da categoria, faz a comparação usando a primeira linha de um site, e depois pega as outras três referentes ao mesmo site
@@ -131,7 +124,7 @@ int fPreencheListaSite(sBanco *db, sCat *c) {
 
 	}
 
-	return 1;
+	return 0;
 
 }
 
@@ -263,10 +256,8 @@ void fRemoveFavorito(sBanco *db, sSite s, sCat c) {
 		iteraFim(&it);
 		do {
 			siteDoIterador = retornaItera(&it);
-			if ((strcmp(siteDoIterador->nome, s.nome) == 0) && (strcmp(siteDoIterador->categoria, s.categoria) == 0) && (s.ehCat == siteDoIterador->ehCat)) {
-				printf("encontrou o favorito a ser excluido.\n");
+			if ((strcmp(siteDoIterador->nome, s.nome) == 0) && (strcmp(siteDoIterador->categoria, s.categoria) == 0) && (s.ehCat == siteDoIterador->ehCat))
 				removeIt(&it);
-			}
 			else
 				iteraAnterior(&it);
 		} while (!fimIt(&it));
@@ -275,10 +266,8 @@ void fRemoveFavorito(sBanco *db, sSite s, sCat c) {
 		iteraInicio(&it);
 		do {
 			siteDoIterador = retornaItera(&it);
-			if ((strcmp(siteDoIterador->nome, s.nome) == 0) && (strcmp(siteDoIterador->categoria, s.categoria) == 0) && (s.ehCat == siteDoIterador->ehCat)) {
-				printf("encontrou o favorito a ser excluido.\n");
+			if ((strcmp(siteDoIterador->nome, s.nome) == 0) && (strcmp(siteDoIterador->categoria, s.categoria) == 0) && (s.ehCat == siteDoIterador->ehCat))
 				removeIt(&it);
-			}
 			else
 				iteraProximo(&it);
 		} while (!inicioIt(&it));

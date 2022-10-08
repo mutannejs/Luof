@@ -169,8 +169,6 @@ void fPreencheListaCat(sBanco *db) {
 	freeStack(&p);
 	
 	db->listaCategorias = l;
-	
-	fPreencheRaiz(db);
 
 }
 

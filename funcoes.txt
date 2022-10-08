@@ -1,0 +1,96 @@
+/* ----- dbluof ----- */
+
+//cria o banco de dados caso não exista (é feito uma pergunta para saber se o usuário deseja fazer isso).
+//se já existir o banco de dados abre o arquivo db->aLuof
+//retorna 1 para erro (mensagens de erro na própria função), e 0 para sucesso
+int fInicializaDB(sBanco *db);
+
+//fecha o arquivo aLuof, aCat e libera as estruturas criadas(db->raiz, db->listaCategorias, db->listaSites)
+void fFinalizaDB(sBanco *db);
+
+//guarda em arq o caminho do arquivo *nome, referente ao diretório home do usuário
+void fSetaCaminhoArquivo(char *arq, char *nome);
+
+//libera a árvore de categorias, porém db->listaCategorias deve ser liberado logo após. É usado em fFinalizaDB
+void fLiberaCats(sLista listaCategorias);
+
+//preenche a estrutura db->listaCategorias. Funciona praticamente como uma árvore de sCat, que mostra a hierarquia das categorias
+void fPreencheListaCat(sBanco *db);
+
+//preenche a estrutura db->raiz. É uma lista de sSite (os sites estão no arquivo aLuof)
+void fPreencheRaiz(sBanco *db);
+
+//Escreve no arquivo aLuof a árvore de categorias
+void fEscreveLuof(sBanco *db, sLista listaCategorias, int hierarquia);
+
+/* ------------------ */
+
+/* ----- dbcat ------ */
+
+//busca na estrutura listaCategorias a categoria do site passado como argumento (seguindo a hierarquia correta)
+//se não encontrou a categoria retorna o nome dela, caso contrário retorna NULL
+char* fBuscaCat(sBanco *db, sSite s, sCat *c);
+
+//preenche a estrutura listaSites referente a categoria do site que será adicionado. É uma lista de sSite
+//retorna 0 para erro no arquivo, e 1 para sucesso
+int fPreencheListaSite(sBanco *db, sLista listaSites, sCat *c);
+
+//busca na estrutura listaSites o site passado como argumento
+//se encontrar completa os campos link, texto, ehCat com o que já está no arquivo
+//retorna 1 se encontrar e 0 se não encontrar
+int fBuscaFavorito(sBanco *db, sSite *s, char favorito);
+
+//adiciona o favorito (um site ou uma categoria) na estrutura db->listaSites e escreve o arquivo atualizado com o favorito
+void fAdicionaFavorito(sBanco *db, sSite s, sCat c);
+
+//remove o favorito (um site ou uma categoria) na estrutura db->listaSites e escreve o arquivo atualizado sem o favorito
+void fRemoveFavorito(sBanco *db, sSite s, sCat c);
+
+//atualiza a árvore de categorias em aLuof, se a categoria pai não for a raiz adiciona a categoria
+//no arquivo da categoria raiz, e caso não exista um arquivo com o mesmo nome cria ele
+void fAdicionaCatLuof(sBanco *db, sSite s, sCat c);
+
+//remove a categoria da árvore de categorias
+void fRemoveCatLuof(sBanco *db, sSite s, sCat c);
+
+//remove todos os favoritos da categoria presentes no arquivo da categoria.
+//se o arquivo ficar vazio ele é removido
+void fRemoveArqCat(sBanco *db, sSite s);
+
+/* ------------------ */
+
+/* ----- teste ------ */
+
+//percorre a estrutura sLista l e printa categoria por categoria, mostrando onde a "recursão" começa e termina
+void percursoCategorias(sLista l);
+
+//percorre a estrutura sLista l e printa site por site
+void printaListaSite(sLista l);
+
+//printa todas as informações de sSite s
+void printaSite(sSite s);
+
+/* ------------------ */
+
+/* --- add-delete --- */
+
+//adiciona um site
+void fAddSite();
+
+//adiciona uma categoria
+void fAddCategory();
+
+//deleta um site
+void fDeleteSite();
+
+//deleta uma categoria
+void fDeleteCategory();
+
+/* ------------------ */
+
+/* ------ list ------ */
+
+//lista todos os favoritos da categoria
+void fListCategory();
+
+/* ------------------ */
