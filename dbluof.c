@@ -1,16 +1,8 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <unistd.h>
-#include <sys/types.h>
-#include <sys/stat.h>
 #include "luof.h"
 
-/* Lembrando que antes do programa estar em total funcionamento, tudo que será criado estará na pasta atual do programa, portanto, no final será necessário modificar todos os caminhos para o programa usar a home do usuario.
- * */
 int fInicializaDB(sBanco *db) {
 
-	char dir[300];
+	char dir[TAMLINKARQ];
 	char vBooleana;
 	struct stat st;
 	
@@ -52,11 +44,19 @@ int fInicializaDB(sBanco *db) {
 	else {//se existe o DB
 		fSetaCaminhoArquivo(dir, "luof");
 		db->aLuof = fopen(dir, "r");
+		
 		if (db->aLuof == NULL) {
 			printf("Erro: Não foi possível acessar o banco de dados\n");
 			return 1;
 		}
 	}
+
+	//preenche uma sLista com todas as categorias
+	fPreencheListaCat(db);
+	//preenche uma sLista com todos os favoritos da raiz
+	fPreencheRaiz(db);
+	db->aCat = NULL;
+	db->listaSites = NULL;
 
 	return 0;
 }
@@ -74,16 +74,11 @@ void fFinalizaDB(sBanco *db) {
 		fLiberaCats(db->listaCategorias);
 		freeList(db->listaCategorias);
 	}
-	if (db->listaSites != db->raiz)
+	if (db->listaSites && db->listaSites != db->raiz)
 		freeList(db->listaSites);
 	if (db->raiz)
 		freeList(db->raiz);
 
-}
-
-void fSetaCaminhoArquivo(char *arq, char *nome) {
-	strcpy(arq, caminhoDB);
-	strcpy(&arq[tamCaminhoDB], nome);
 }
 
 void fLiberaCats(sLista listaCategorias) {
@@ -101,74 +96,99 @@ void fLiberaCats(sLista listaCategorias) {
 	}
 }
 
+char* fPreencheListaCat_private(sBanco *db, sCat *cPai, char linhaCat[]) {
+
+	//variaveis usadas
+	sCat c, *cIt;
+	char *rPreencheListaCat_private;
+	int hierarquia = linhaCat[0] - 48;
+
+	//seta os dados da categoria que será adicionada
+	strcpy(c.nome, &linhaCat[1]);
+	c.catPai = cPai;
+	c.catFilhos = criaLista(struct sCat);
+	
+	//insere ela na lista de catFilhos
+	pushBackList(cPai->catFilhos, &c);
+	
+	fgets(linhaCat, 100, db->aLuof);
+	while (strcmp(linhaCat, "##\n") != 0) {
+				
+		//muda o \n no fim da linha para \0
+		linhaCat[strlen(linhaCat)-1] = '\0';
+		
+		if (linhaCat[0] - 48 == hierarquia) {//adiciona a categoria em cPai->catFilhos
+			//seta os dados da categoria que será adicionada
+			strcpy(c.nome, &linhaCat[1]);
+			c.catPai = cPai;
+			c.catFilhos = criaLista(struct sCat);
+			
+			//insere ela na lista de catFilhos
+			pushBackList(cPai->catFilhos, &c);
+		}
+		else if (linhaCat[0] - 48 < hierarquia) {
+			return linhaCat;
+		}
+		else {//adiciona a categoria em catFilhos da última categoria adicionada
+			cIt = (struct sCat*) backList(cPai->catFilhos);
+			rPreencheListaCat_private = fPreencheListaCat_private(db, cIt, linhaCat);
+
+			if (strcmp(rPreencheListaCat_private, "##\n") == 0) {//se a última linhaCat lida for o fim (##\n)
+				return rPreencheListaCat_private;
+			}
+			else if (rPreencheListaCat_private[0] - 48 < hierarquia+1)//se a última linha lida for de uma hierarquia inferior a cPai
+				return rPreencheListaCat_private;
+		}
+		
+		//pega a próxima linha
+		fgets(linhaCat, 100, db->aLuof);
+		
+	}
+	
+	//a árvore de categorias está completa
+	return linhaCat;
+
+}
+
 void fPreencheListaCat(sBanco *db) {
 
-	//informa se hove uma mudança entre categoriaPai para categoriaFilho (mudança na hierarquia) - Hie de hierarquia, N de novo, A de antigo
-	int nivelHieN = 0, nivelHieA = 0;
+	sCat c, *cIt;
 	char linhaCat[100], *rFgets;
-
-	//será usado para inserir os elementos na lista
-	sCat c, *swapFilho;
-
-	//cria uma pilha para guardar a lista da categoriaPai, e verificar seus filhos
-	sPilha p = criaPilha(struct sLista *);//FOI MUDADO PARA GUARDAR PONTEIRO DA LISTA
+	char *rPreencheListaCat_private;
 
 	//cria a lista para inserir as categorias
-	sLista l = criaLista(struct sCat);
-
-	sLista temp = l;//usado para quando a lista usada mudar
+	db->listaCategorias = criaLista(struct sCat);
 
 	//pega linha por linha do arquivo .luof/luof
-	//while (fgets(linhaCat, 100, db->aLuof) != NULL) {	
 	rFgets = fgets(linhaCat, 100, db->aLuof);
 	while (rFgets != NULL && strcmp(linhaCat, "##\n") != 0) {
 
 		//muda o \n no fim da linha para \0
-		int tamLinha = strlen(linhaCat);
-		linhaCat[tamLinha-1] = '\0';
+		linhaCat[strlen(linhaCat)-1] = '\0';
 		
-		//pega o nivel da categoria da linha atual. Como pega apenas o primeiro caracter, implica que exista apenas 10 niveis de categorias
-		nivelHieN = linhaCat[0] - 48;//transformando char em int
-
-		if (nivelHieN == nivelHieA) {//continuou no mesmo nivel
+		if (linhaCat[0] == '0') {//adiciona a categoria em db->listaCategorias
 			strcpy(c.nome, &linhaCat[1]);
+			c.catPai = NULL;
 			c.catFilhos = criaLista(struct sCat);
-
-			pushBackList(temp, &c);
+			pushBackList(db->listaCategorias, &c);
 		}
-		else if (nivelHieN > nivelHieA) {//subiu um nivel (agora é categoriaFilho)
-			pushStack(&p, &temp);//guarda o endereço da lista atual,
-			swapFilho = (struct sCat *) backList(temp);
-			temp = swapFilho->catFilhos;//temp aponta para a lista da categoria atual
-
-			strcpy(c.nome, &linhaCat[1]);
-			c.catFilhos = criaLista(struct sCat);
-
-			pushBackList(temp, &c);
+		else {//adiciona a categoria em catFilhos da última categoria adicionada
+			cIt = (struct sCat*) backList(db->listaCategorias);
+			rPreencheListaCat_private = fPreencheListaCat_private(db, cIt, linhaCat);
+			if (strcmp(rPreencheListaCat_private, "##\n") == 0) {
+				return;
+			}
+			else {
+				strcpy(c.nome, &rPreencheListaCat_private[1]);
+				c.catPai = NULL;
+				c.catFilhos = criaLista(struct sCat);
+				pushBackList(db->listaCategorias, &c);
+			}
 		}
-		else {//desceu um nivel
-			//for usado para retirar da pilha as listas vazias (categorias sem subcategorias)
-			for (int i = 1; i < nivelHieA - nivelHieN; i++)
-				popStack(&p);
-				
-			temp = *((struct sLista**) topStack(&p));
-
-			strcpy(c.nome, &linhaCat[1]);
-			c.catFilhos = criaLista(struct sCat);
-
-			pushBackList(temp, &c);
-			popStack(&p);
-		}
-
-		nivelHieA = nivelHieN;
 		
 		fgets(linhaCat, 100, db->aLuof);
 	
 	}
-
-	freeStack(&p);
-	
-	db->listaCategorias = l;
 
 }
 
@@ -176,13 +196,13 @@ void fPreencheRaiz(sBanco *db) {
 	
 	//usado para armazenar temporariamente os sites
 	sSite siteTemp;
-	char nomeTemp[100], ehCategoria[3];
+	char nomeTemp[TAMNOMEFAV], ehCategoria[3];
 	int tamanho;
 
 	db->raiz = criaLista(struct sSite);
 
 	//pega linha por linha do arquivo aLuof(logo após "##\n"), faz a comparação usando a primeira linha de um site, e depois pega as outras três referentes ao mesmo site
-    while (fgets(nomeTemp, 100, db->aLuof) != NULL) {
+    while (fgets(nomeTemp, TAMNOMEFAV, db->aLuof) != NULL) {
 
         //guarda em siteTemp o nome
         tamanho = strlen(nomeTemp);
@@ -190,17 +210,17 @@ void fPreencheRaiz(sBanco *db) {
 		strcpy(siteTemp.nome, nomeTemp);
 
 		//guarda em siteTemp a categoria
-		fgets(siteTemp.categoria, 1000, db->aLuof);
+		fgets(siteTemp.categoria, TAMCAMINHO, db->aLuof);
 		tamanho = strlen(siteTemp.categoria);
 		siteTemp.categoria[tamanho-1] = '\0';
 
 		//guarda em siteTemp o link
-		fgets(siteTemp.link, 500, db->aLuof);
+		fgets(siteTemp.link, TAMLINKARQ, db->aLuof);
 		tamanho = strlen(siteTemp.link);
 		siteTemp.link[tamanho-1] = '\0';
 
 		//guarda em siteTemp o texto
-		fgets(siteTemp.texto, 5000, db->aLuof);
+		fgets(siteTemp.texto, TAMTEXTO, db->aLuof);
 		tamanho = strlen(siteTemp.texto);
 		siteTemp.texto[tamanho-1] = '\0';
 
@@ -213,78 +233,4 @@ void fPreencheRaiz(sBanco *db) {
 
 	}
 	
-}
-
-void fEscreveLuof(sBanco *db, sLista listaCategorias, int hierarquia) {
-	
-	if (!emptyList(listaCategorias)) {
-		sIterador it = criaIt(listaCategorias);
-		do {
-			sCat *cat = (struct sCat*) retornaItera(&it);
-			//escreve no arquivo
-			fprintf(db->aLuof, "%d%s\n", hierarquia, cat->nome);
-			//------------------
-			fEscreveLuof(db, cat->catFilhos, hierarquia+1);
-			iteraProximo(&it);
-		} while (!inicioIt(&it));
-	}
-}
-
-void fNomesCats(sBanco *db, sCat *cat, char h[], int hierarquia) {
-	
-	//int tamCat = strlen(categoria);
-	sIterador it;
-	sSite *siteDoIterador;
-	sCat *catF;
-	int contEspaco;
-
-	fPreencheListaSite(db, cat);
-	contEspaco = sizeList(db->listaSites);
-
-	//printa o nome da categoria
-	if (hierarquia != 0) {
-		for (int i = 0; i < hierarquia; i++) {
-			if (h[i] == '1' || i+1 == hierarquia)
-				printf("    |");
-			else
-				printf("     ");
-		}
-		printf("_ ");
-	}
-	printf("* %s\n", cat->nome);
-	
-	//pega as categorias filhas - continua a recursão
-	if (!emptyList(cat->catFilhos)) {
-		//FUNCAO QUE ORDENA LISTA - FAZER
-		it = criaIt(cat->catFilhos);
-		do {
-			catF = retornaItera(&it);
-			if (contEspaco <= 0)
-				h[hierarquia] = '0';
-			contEspaco--;
-			fNomesCats(db, catF, h, hierarquia + 1);
-			h[hierarquia] = '1';
-			iteraProximo(&it);
-		} while (!inicioIt(&it));
-	}
-	
-	//printa os sites da categoria
-	fPreencheListaSite(db, cat);
-	if (!emptyList(db->listaSites)) {
-		it = criaIt(db->listaSites);
-		do {
-			siteDoIterador = retornaItera(&it);
-			if (siteDoIterador->ehCat == '0') {
-				for (int i = 0; i < hierarquia + 1; i++) {
-					if (h[i] == '1')
-						printf("    |");
-					else
-						printf("     ");
-				}
-				printf("_ %s\n", siteDoIterador->nome);
-			}
-			iteraProximo(&it);
-		} while(!inicioIt(&it));
-	}
-
 }
