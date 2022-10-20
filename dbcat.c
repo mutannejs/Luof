@@ -139,8 +139,8 @@ int fBuscaFavorito(sBanco *db, sSite *s) {
 	sIterador it = criaIt(db->listaSites);
 	sSite *fav;
 
-	//informa se encontrou o site
-	int encontrou = 0;
+	/*//informa se encontrou o site
+	int encontrou = 0;*/
 
 	do {
 		fav = retornaItera(&it);
@@ -153,7 +153,7 @@ int fBuscaFavorito(sBanco *db, sSite *s) {
 			return 1;
 		}
 		iteraProximo(&it);
-	} while (encontrou == 0 && !inicioIt(&it));
+	} while (!inicioIt(&it));
 
 	//não encontrou o site
 	return 0;

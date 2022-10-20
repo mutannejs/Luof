@@ -36,16 +36,18 @@ void fListCategory(int opcao) {
 	//printa favorito por favorito
 	do {
 		siteDoIterador = retornaItera(&it);
-		if (siteDoIterador->ehCat == '1') {
-			printf("* %s\n", siteDoIterador->nome);
-		}
-		else if (opcao == 0) {
-			printf("%s\n", siteDoIterador->nome);
-			printf("\t%s\n", siteDoIterador->link);
-			printf("\t%s\n", siteDoIterador->texto);
-		}
-		else {
-			printf("%s\n", siteDoIterador->nome);
+		if (strcmp(siteDoIterador->categoria, s.categoria) == 0) {
+			if (siteDoIterador->ehCat == '1') {
+				printf("* %s\n", siteDoIterador->nome);
+			}
+			else if (opcao == 0) {
+				printf("%s\n", siteDoIterador->nome);
+				printf("\tLink: %s\n", siteDoIterador->link);
+				printf("\tTexto: %s\n", siteDoIterador->texto);
+			}
+			else {
+				printf("%s\n", siteDoIterador->nome);
+			}
 		}
 		iteraProximo(&it);
 	} while(!inicioIt(&it));

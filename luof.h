@@ -105,7 +105,7 @@ void fSeeSite();*/
 
 //modify
 void fModifySite();
-//void fModifyCategory();
+void fModifyCategory();
 
 /*void fVersion();
 void fBackup();
