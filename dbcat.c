@@ -32,13 +32,13 @@ int fBuscaCat(sBanco *db, sSite s, sCat **c) {
 	}
 
 	//se ainda não tiver sido criado nenhuma categoria
-	if (emptyList(db->listaCategorias)) {
+	if (emptyList(db->listaCategorias->catFilhos)) {
 		printf("\nCategoria \"%s\" não encontrada\n", categorias[0]);
 		return 1;
 	}
 
 	//variaveis usadas para percorrer a lista de categorias
-	sIterador it = criaIt(db->listaCategorias);
+	sIterador it = criaIt(db->listaCategorias->catFilhos);
 	sCat *cat;
 	
 	//busca a categoria na árvore de categorias e c passa a ser igual a ela
@@ -160,7 +160,7 @@ int fBuscaFavorito(sBanco *db, sSite *s) {
 
 }
 
-void fAdicionaFavorito(sBanco *db, sSite s, sCat c) {
+void fAdicionaFavorito(sBanco *db, sSite s, sCat *c) {
 
 	int encontrouPos;
 	sIterador it = criaIt(db->listaSites);
@@ -212,11 +212,11 @@ void fAdicionaFavorito(sBanco *db, sSite s, sCat c) {
 	if (strcmp(s.categoria, "luof") == 0)
 		fEscreveLuof(db);
 	else
-		fEscreveArquivoCat(db, c.nome);
+		fEscreveArquivoCat(db, c->nome);
 
 }
 
-void fRemoveFavorito(sBanco *db, sSite s, sCat c) {
+void fRemoveFavorito(sBanco *db, sSite s, sCat *c) {
 
 	sIterador it = criaIt(db->listaSites);
 	sSite *siteDoIterador;
@@ -248,11 +248,11 @@ void fRemoveFavorito(sBanco *db, sSite s, sCat c) {
 	if (strcmp(s.categoria, "luof") == 0)
 		fEscreveLuof(db);
 	else
-		fEscreveArquivoCat(db, c.nome);
+		fEscreveArquivoCat(db, c->nome);
 
 }
 
-void fAdicionaCatLuof(sBanco *db, sSite s, sCat c) {
+void fAdicionaCatLuof(sBanco *db, sSite s, sCat *c) {
 	
 	char nomeArqCat[TAMLINKARQ];
 	sCat cNova;//para a categoria ser inserida na árvore de categorias
@@ -263,7 +263,7 @@ void fAdicionaCatLuof(sBanco *db, sSite s, sCat c) {
 	cNova.catFilhos = criaLista(struct sCat);
 	
 	//adiciona a categoria nova na árvore de categorias
-	pushBackList(c.catFilhos, &cNova);
+	pushBackList(c->catFilhos, &cNova);
 	
 	//se a categoria pai não for a raiz atualiza o arquivo aLuof (se for, o arquivo será atualizado ao usar fAdicionaFavorito())
 	if (strcmp(s.categoria, "luof") != 0)
@@ -271,7 +271,7 @@ void fAdicionaCatLuof(sBanco *db, sSite s, sCat c) {
 	
 	//cria o arquivo referente a categoria caso ainda não exista nenhum arquivo com esse nome
 	//se não entrar no if significa que a categoria pai possui o mesmo nome da nova categoria
-	if (strcmp(c.nome, cNova.nome) != 0) {
+	if (strcmp(c->nome, cNova.nome) != 0) {
 
 		fSetaCaminhoArquivo(nomeArqCat, s.nome);
 		nCat = fopen(nomeArqCat, "r");
@@ -285,11 +285,11 @@ void fAdicionaCatLuof(sBanco *db, sSite s, sCat c) {
 	
 }
 
-void fRemoveCatLuof(sBanco *db, sSite s, sCat c) {
+void fRemoveCatLuof(sBanco *db, sSite s, sCat *c) {
 	
 	int encontrou = 0;//diz se encontrou a categoria
 	sSite *siteDoIterador;
-	sIterador it = criaIt(c.catFilhos);//para atualizar o arquivo aLuof
+	sIterador it = criaIt(c->catFilhos);//para atualizar o arquivo aLuof
 	
 	//remove a categoria da árvore de categorias
 	do {
@@ -303,9 +303,7 @@ void fRemoveCatLuof(sBanco *db, sSite s, sCat c) {
 		}
 	} while(encontrou == 0 && !inicioIt(&it));
 	
-	//se a categoria pai não for a raiz atualiza o arquivo aLuof (se for, o arquivo será atualizado ao usar fRemoveFavorito())
-	if (strcmp(s.categoria, "luof") != 0)
-		fEscreveLuof(db);
+	fEscreveLuof(db);
 	
 }
 

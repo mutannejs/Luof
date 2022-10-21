@@ -72,7 +72,6 @@ void fFinalizaDB(sBanco *db) {
 	//libera estruturas do banco
 	if (db->listaCategorias) {
 		fLiberaCats(db->listaCategorias);
-		freeList(db->listaCategorias);
 	}
 	if (db->listaSites && db->listaSites != db->raiz)
 		freeList(db->listaSites);
@@ -81,19 +80,20 @@ void fFinalizaDB(sBanco *db) {
 
 }
 
-void fLiberaCats(sLista listaCategorias) {
+void fLiberaCats(sCat *listaCategorias) {
 	
-	if (!emptyList(listaCategorias)) {
-		sIterador it = criaIt(listaCategorias);
+	if (!emptyList(listaCategorias->catFilhos)) {
+		sIterador it = criaIt(listaCategorias->catFilhos);
 		do {
 			sCat *cat = (struct sCat*) retornaItera(&it);
-			fLiberaCats(cat->catFilhos);
+			fLiberaCats(cat);
 			//libera a lista na volta da recursão
 			freeList(cat->catFilhos);
 			//--------------
 			iteraProximo(&it);
 		} while (!inicioIt(&it));
 	}
+
 }
 
 char* fPreencheListaCat_private(sBanco *db, sCat *cPai, char linhaCat[]) {
@@ -157,7 +157,9 @@ void fPreencheListaCat(sBanco *db) {
 	char *rPreencheListaCat_private;
 
 	//cria a lista para inserir as categorias
-	db->listaCategorias = criaLista(struct sCat);
+	db->listaCategorias = malloc(sizeof(struct sCat));
+	strcpy(db->listaCategorias->nome, "luof");
+	db->listaCategorias->catFilhos = criaLista(struct sCat);
 
 	//pega linha por linha do arquivo .luof/luof
 	rFgets = fgets(linhaCat, 100, db->aLuof);
@@ -170,10 +172,10 @@ void fPreencheListaCat(sBanco *db) {
 			strcpy(c.nome, &linhaCat[1]);
 			c.catPai = NULL;
 			c.catFilhos = criaLista(struct sCat);
-			pushBackList(db->listaCategorias, &c);
+			pushBackList(db->listaCategorias->catFilhos, &c);
 		}
 		else {//adiciona a categoria em catFilhos da última categoria adicionada
-			cIt = (struct sCat*) backList(db->listaCategorias);
+			cIt = (struct sCat*) backList(db->listaCategorias->catFilhos);
 			rPreencheListaCat_private = fPreencheListaCat_private(db, cIt, linhaCat);
 			if (strcmp(rPreencheListaCat_private, "##\n") == 0) {
 				return;
@@ -182,7 +184,7 @@ void fPreencheListaCat(sBanco *db) {
 				strcpy(c.nome, &rPreencheListaCat_private[1]);
 				c.catPai = NULL;
 				c.catFilhos = criaLista(struct sCat);
-				pushBackList(db->listaCategorias, &c);
+				pushBackList(db->listaCategorias->catFilhos, &c);
 			}
 		}
 		

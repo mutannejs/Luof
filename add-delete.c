@@ -4,7 +4,7 @@ void fAddSite() {
 
 	//variaveis
 	sSite s;
-	sCat *categoria = malloc(sizeof(sCat));
+	sCat *categoria;
 	sBanco db;
 
 	// inicializa o banco de dados (se existir guarda em aLuof o arquivo com as categorias, se não pergunta se quer cria-lo)
@@ -24,6 +24,7 @@ void fAddSite() {
 		db.listaSites = db.raiz;
 	}
 	else {
+		categoria = malloc(sizeof(sCat));
 		//verifica se a categoria existe e guarda em categoria sua posição na árvore
 		if (fBuscaCat(&db, s, &categoria))
 			return;
@@ -49,7 +50,7 @@ void fAddSite() {
 	scanf(" %[^\n]", s.texto);
 
 	//adiciona no banco de dados
-	fAdicionaFavorito(&db, s, *categoria);
+	fAdicionaFavorito(&db, s, categoria);
 
 	//fecha os arquivos abertos
 	fFinalizaDB(&db);
@@ -61,7 +62,7 @@ void fAddSite() {
 void fAddCategory() {
 
 	sSite c;
-	sCat *categoria = malloc(sizeof(sCat));
+	sCat *categoria;
 	sBanco db;
 
 	if (fInicializaDB(&db))
@@ -75,10 +76,10 @@ void fAddCategory() {
 		db.listaSites = db.raiz;
 		
 		//seta os dados da categoria pai
-		strcpy(categoria->nome, "luof");
-		categoria->catFilhos = db.listaCategorias;
+		categoria = db.listaCategorias;
 	}
 	else {
+		categoria = malloc(sizeof(sCat));
 		if (fBuscaCat(&db, c, &categoria))
 			return;
 		if (fPreencheListaSite(&db, categoria))
@@ -99,9 +100,9 @@ void fAddCategory() {
 	}
 
 	//adiciona na árvore de categorias
-	fAdicionaCatLuof(&db, c, *categoria);
+	fAdicionaCatLuof(&db, c, categoria);
 	
-	fAdicionaFavorito(&db, c, *categoria);
+	fAdicionaFavorito(&db, c, categoria);
 	fFinalizaDB(&db);
 	
 	printf("\nCategoria adicionada com sucesso.\n");
@@ -111,7 +112,7 @@ void fAddCategory() {
 void fDeleteSite() {
 
 	sSite s;
-	sCat *categoria = malloc(sizeof(sCat));
+	sCat *categoria;
 	sBanco db;
 
 	if (fInicializaDB(&db))
@@ -131,6 +132,7 @@ void fDeleteSite() {
 		db.listaSites = db.raiz;
 	}
 	else {
+		categoria = malloc(sizeof(sCat));
 		if (fBuscaCat(&db, s, &categoria))
 			return;
 		if (fPreencheListaSite(&db, categoria))
@@ -147,7 +149,7 @@ void fDeleteSite() {
 	}
 	
 	//remove do banco de dados
-	fRemoveFavorito(&db, s, *categoria);
+	fRemoveFavorito(&db, s, categoria);
 
 	fFinalizaDB(&db);
 	
@@ -158,7 +160,7 @@ void fDeleteSite() {
 void fDeleteCategory() {
 
 	sSite c;
-	sCat *categoria = malloc(sizeof(sCat));
+	sCat *categoria;
 	sBanco db;
 
 	if (fInicializaDB(&db))
@@ -174,10 +176,10 @@ void fDeleteCategory() {
 		}
 		strcpy(c.categoria, "luof");
 		db.listaSites = db.raiz;
-		strcpy(categoria->nome, "luof");
-		categoria->catFilhos = db.listaCategorias;
+		categoria = db.listaCategorias;
 	}
 	else {
+		categoria = malloc(sizeof(sCat));
 		if (fBuscaCat(&db, c, &categoria))
 			return;
 		if (fPreencheListaSite(&db, categoria))
@@ -193,13 +195,13 @@ void fDeleteCategory() {
 		return;
 	}
 	
-	fRemoveFavorito(&db, c, *categoria);
+	fRemoveFavorito(&db, c, categoria);
 	
 	//remove todos os favoritos do arquivo da categoria, com exceção daqueles pertencentes à outra categoria
 	fRemoveArqCat(&db, c);
 	
 	//remove da árvore de categorias
-	fRemoveCatLuof(&db, c, *categoria);
+	fRemoveCatLuof(&db, c, categoria);
 
 	fFinalizaDB(&db);
 	

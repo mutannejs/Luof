@@ -41,7 +41,7 @@ typedef struct sBanco {
 	FILE *aLuof;
 	FILE *aCat;
 	sLista raiz;
-	sLista listaCategorias;
+	sCat *listaCategorias;
 	sLista listaSites;
 } sBanco;
 
@@ -53,7 +53,6 @@ int tamCaminhoDB;
 //modulos
 void fEscreveLuof_private(sBanco *db, sLista listaCategorias, int hierarquia);
 void fEscreveLuof(sBanco *db);
-void fMudaNomeCategoriaArvore(sBanco *db, char *caminho, char *nome);
 void fMudaCaminhoCategoriaArvore_private(sBanco *db, sCat *cat, char *caminhoA, char *caminhoN);
 void fMudaCaminhoCategoriaArvore(sBanco *db, char *caminho1, char *caminho2);
 void fEscreveArquivoCat(sBanco *db, char *nomeArq);
@@ -63,7 +62,7 @@ void fIncrementaCamCat(char *caminho, char *nome);
 //dbluof
 int fInicializaDB(sBanco *db);
 void fFinalizaDB(sBanco *db);
-void fLiberaCats(sLista listaCategorias);
+void fLiberaCats(sCat *listaCategorias);
 char* fPreencheListaCat_private(sBanco *db, sCat *cPai, char linhaCat[]);
 void fPreencheListaCat(sBanco *db);
 void fPreencheRaiz(sBanco *db);
@@ -72,10 +71,10 @@ void fPreencheRaiz(sBanco *db);
 int fBuscaCat(sBanco *db, sSite s, sCat **c);
 int fPreencheListaSite(sBanco *db, sCat *c);
 int fBuscaFavorito(sBanco *db, sSite *s);
-void fAdicionaFavorito(sBanco *db, sSite s, sCat c);
-void fRemoveFavorito(sBanco *db, sSite s, sCat c);
-void fAdicionaCatLuof(sBanco *db, sSite s, sCat c);
-void fRemoveCatLuof(sBanco *db, sSite s, sCat c);
+void fAdicionaFavorito(sBanco *db, sSite s, sCat *c);
+void fRemoveFavorito(sBanco *db, sSite s, sCat *c);
+void fAdicionaCatLuof(sBanco *db, sSite s, sCat *c);
+void fRemoveCatLuof(sBanco *db, sSite s, sCat *c);
 void fRemoveArqCat(sBanco *db, sSite s);
 
 //teste

@@ -51,7 +51,7 @@ void fModifySite() {
 	printf("Texto: %s\n", s.texto);
 	
 	//pergunta qual atributo será modificado
-	printf("\nVocê deseja modificar? [1]categoria [2]nome [3]link [4]texto [5]tudo [6]nada\n");
+	printf("\nVocê deseja modificar? [1]categoria [2]nome [3]link [4]texto [5]tudo [6]nada : ");
 	scanf(" %d", &opcao);
 	
 	//se os usuário não desejar modificar nada
@@ -59,12 +59,12 @@ void fModifySite() {
 		printf("Saindo...\n");
 		return;
 	}
-	
-	//seta alguns valores antes de receber novos
+
+	//listaTemp1 passa a ser a listaSites da categoriaPai inicial
 	listaTemp1 = db.listaSites;
-	if (db.listaSites != db.raiz)
-		db.raiz = NULL;
+	//db.listaSites passa a ser igual a null para a listaTemp1 não ser liberada também
 	db.listaSites = NULL;
+	//guarda em sNew os dados antigos, para caso algum não seja alterado
 	strcpy(sNew.categoria, s.categoria);
 	strcpy(sNew.nome, s.nome);
 	strcpy(sNew.link, s.link);
@@ -75,12 +75,15 @@ void fModifySite() {
 	fFinalizaDB(&db);
 	if (fInicializaDB(&db))
 		return;
-		
+
+	//db.listaSites passa a ser igual a listaTemp1 para o caso da categoria não ser alterada(não ocorre a função fPreencheListaSites)
 	db.listaSites = listaTemp1;
-	if (strcmp(s.categoria, "luof") != 0) {
+	//faz a busca da categoria novamente pois a árvore de categorias foi refeita
+	if (strcmp(s.categoria, "luof") != 0)
 		fBuscaCat(&db, s, &categoria);
-		fBuscaCat(&db, s, &categoria2);
-	}
+	else
+		categoria = db.listaCategorias;
+	categoria2 = categoria;
 	
 	//Pede os novos dados do site
 	printf("\nNovos dados:\n");
@@ -97,12 +100,13 @@ void fModifySite() {
 			if (fPreencheListaSite(&db, categoria2))
 				return;
 		}
-	}	
+	}
 	if (opcao == 2 || opcao == 5) {
 		printf("Nome: ");
 		scanf(" %[^\n]", sNew.nome);
 	}
 	
+	//se o nome ou a categoria for modificados é necessário ver se já não existe um favorito igual
 	if (strcmp(s.categoria, sNew.categoria) || strcmp(s.nome, sNew.nome)) {
 		if (fBuscaFavorito(&db, &sNew)) {
 			printf("\nJá existe outro favorito com esse nome e categoria, logo a modificação não pode ser concluída.\n");
@@ -122,17 +126,16 @@ void fModifySite() {
 	//muda apenas o nome no arquivo (se as categorias forem iguais)
 	if (strcmp(s.categoria, sNew.categoria) == 0) {
 
+		//se a categoria é luof db.listaSites passa a apontar para a raiz, pois essa lista será escrita no aLuof
 		if (strcmp(sNew.categoria, "luof") == 0)
 			db.listaSites = db.raiz;
 
 		encontrou = 0;
 		it = criaIt(db.listaSites);
-
 		do {
 			fav = retornaItera(&it);
-			//encontrou o favorito
 			if ((strcmp(fav->nome, s.nome) == 0) && (strcmp(fav->categoria, s.categoria) == 0) && (fav->ehCat == s.ehCat)) {
-				//atualiza todos os valores
+				//atualiza todos os valores do favorito na lista
 				strcpy(fav->nome, sNew.nome);
 				strcpy(fav->link, sNew.link);
 				strcpy(fav->texto, sNew.texto);
@@ -140,7 +143,7 @@ void fModifySite() {
 			}
 			iteraProximo(&it);
 		} while (encontrou == 0 && !inicioIt(&it));
-		
+		//escreve no arquivo
 		if (strcmp(sNew.categoria, "luof") == 0)
 			fEscreveLuof(&db);
 		else
@@ -149,57 +152,22 @@ void fModifySite() {
 	}
 	else {//as categorias são diferentes
 
-		//remove o favorito da categoria antiga
 		listaTemp2 = db.listaSites;
 		if (strcmp(s.categoria, "luof") == 0)
 			db.listaSites = db.raiz;
 		else
 			db.listaSites = listaTemp1;
 
-		encontrou = 0;
-		it = criaIt(db.listaSites);
-		do {
-			fav = retornaItera(&it);
-			if ((strcmp(fav->nome, s.nome) == 0) && (strcmp(fav->categoria, s.categoria) == 0) && (fav->ehCat == s.ehCat)) {
-				removeIt(&it);
-				encontrou = 1;
-			}
-			iteraProximo(&it);
-		} while (encontrou == 0 && !inicioIt(&it));
-		
-		//escreve no arquivo
+		//remove o favorito da categoria antiga
+		fRemoveFavorito(&db, s, categoria);
+
 		if (strcmp(s.categoria, "luof") == 0)
-			fEscreveLuof(&db);
+			db.listaSites = db.raiz;
 		else
-			fEscreveArquivoCat(&db, categoria->nome);
+			db.listaSites = listaTemp2;
 
 		//adiciona o favorito na categoria nova
-		db.listaSites = listaTemp2;
-		encontrou = 0;
-		it = criaIt(db.listaSites);
-		iteraFim(&it);
-		if (emptyList(db.listaSites)) {
-			pushBackList(db.listaSites, &sNew);
-		}
-		else {
-			do {
-				fav = retornaItera(&it);
-				if (strcmp(fav->nome, sNew.nome) < 0 || fav->ehCat == '1')
-					encontrou = 1;
-				else
-					iteraAnterior(&it);
-			} while (encontrou == 0 && !fimIt(&it));
-			fav = frontList(db.listaSites);
-			if (fav->ehCat == '0' && encontrou == 0)
-				pushFrontList(db.listaSites, &sNew);
-			else
-				insereProxIt(&it, &sNew);
-		}
-		//escreve no arquivo
-		if (strcmp(sNew.categoria, "luof") == 0)
-			fEscreveLuof(&db);
-		else
-			fEscreveArquivoCat(&db, categoria2->nome);
+		fAdicionaFavorito(&db, sNew, categoria2);
 	}
 
 	//freeList(listaTemp1);
@@ -211,9 +179,14 @@ void fModifySite() {
 
 void fModifyCategory() {
 
-	sSite c;
+	sSite c, cNew, *fav;
 	sCat *categoria = malloc(sizeof(sCat));
+	sCat *categoria2 = malloc(sizeof(sCat));
 	sBanco db;
+	sLista listaTemp1, listaTemp2;
+	sIterador it;
+	char vBooleana;
+	int opcao, encontrou, rBuscaFavorito = 0;
 
 	if (fInicializaDB(&db))
 		return;
@@ -253,25 +226,99 @@ void fModifyCategory() {
 	else
 		printf("Categoria pai: %s\n", c.categoria);
 	printf("Categoria: %s\n", c.nome);
-
-	printf("\nNovos dados:\n");
-	printf("Categoria pai: ");
-	scanf(" %[^\n]", c.categoria);
-	if (strcmp(c.categoria, "/") == 0) {
-		strcpy(c.categoria, "luof");
-		db.listaSites = db.raiz;
-	}
-	else {
-		if (fBuscaCat(&db, c, &categoria))
-			return;
-		if (fPreencheListaSite(&db, categoria))
-			return;
-	}
-	printf("Categoria: ");
-	scanf(" %[^\n]", c.nome);
-	if (fBuscaFavorito(&db, &c)) {
-		printf("\nO favorito já existe.\n");
+	
+	printf("\nVocê deseja modificar? [1]categoria pai [2]categoria [3]tudo [4]nada : ");
+	scanf(" %d", &opcao);
+	
+	if (opcao < 1 || opcao > 3) {
+		printf("Saindo...\n");
 		return;
 	}
+	
+	listaTemp1 = db.listaSites;//listaTemp1 é a listaSites da categoria pai inicial
+	if (db.listaSites != db.raiz)
+		db.raiz = NULL;
+	db.listaSites = NULL;
+	strcpy(cNew.categoria, c.categoria);
+	strcpy(cNew.nome, c.nome);
+	strcpy(cNew.link, c.link);
+	strcpy(cNew.texto, c.texto);
+	cNew.ehCat = c.ehCat;
+
+	fFinalizaDB(&db);
+	if (fInicializaDB(&db))
+		return;
+		
+	db.listaSites = listaTemp1;
+	if (strcmp(c.categoria, "luof") != 0) {
+		fBuscaCat(&db, c, &categoria);
+		fBuscaCat(&db, c, &categoria2);
+	}
+
+	printf("\nNovos dados:\n");
+	if (opcao == 1 || opcao == 3) {
+		printf("Categoria pai: ");
+		scanf(" %[^\n]", cNew.categoria);
+		if (strcmp(cNew.categoria, "/") == 0) {
+			strcpy(cNew.categoria, "luof");
+			db.listaSites = db.raiz;
+		}
+		else {
+			if (fBuscaCat(&db, cNew, &categoria2))
+				return;
+			if (fPreencheListaSite(&db, categoria2))
+				return;
+		}
+	}	
+	if (opcao == 2 || opcao == 3) {
+		printf("Categoria: ");
+		scanf(" %[^\n]", cNew.nome);
+	}
+	
+	if (strcmp(c.categoria, cNew.categoria) || strcmp(c.nome, cNew.nome)) {
+		rBuscaFavorito = fBuscaFavorito(&db, &cNew);
+		if (rBuscaFavorito) {
+			printf("\nJá existe outro favorito com esse nome e categoria, você deseja junta-los em um só? [s/n]: \n");
+			scanf(" %c", &vBooleana);
+			if (vBooleana != 's') {
+				printf("Saindo...\n");
+				return;
+			}
+		}
+	}
+
+	if (strcmp(c.categoria, cNew.categoria) == 0) {//se só o nome será modificado
+
+		if (strcmp(cNew.categoria, "luof") == 0)
+			db.listaSites = db.raiz;
+
+		//muda nome na árvore
+		strcpy(categoria->nome, cNew.nome);
+		//muda nome da listaSites da categoria pai
+		encontrou = 0;
+		it = criaIt(db.listaSites);
+		do {
+			fav = retornaItera(&it);
+			if ((strcmp(fav->nome, c.nome) == 0) && (strcmp(fav->categoria, c.categoria) == 0) && (fav->ehCat == c.ehCat)) {
+				strcpy(fav->nome, cNew.nome);
+				encontrou = 1;
+			}
+			iteraProximo(&it);
+		} while (encontrou == 0 && !inicioIt(&it));
+		if (strcmp(cNew.categoria, "luof") == 0)
+			fEscreveLuof(&db);
+		else
+			fEscreveArquivoCat(&db, categoria2->nome);
+		//muda categoria em todos os favoritos filhos
+		fMudaCaminhoCategoriaArvore_private(&db, categoria, c.categoria, cNew.categoria);
+
+	}
+	else {//se só a categoria pai será modificada
+	}
+
+	//freeList(listaTemp1);
+	fFinalizaDB(&db);
+	
+	printf("\nFavorito modificado com sucesso.\n");
 
 }

@@ -30,7 +30,7 @@ void fEscreveLuof(sBanco *db) {
 		db->aLuof = fopen(nomeArqCat, "w");
 
 	//escreve a árvore de categorias no arquivo aLuof
-	fEscreveLuof_private(db, db->listaCategorias, 0);
+	fEscreveLuof_private(db, db->listaCategorias->catFilhos, 0);
 	
 	//marca o fim da árvore de categorias
 	fprintf(db->aLuof, "##\n");
@@ -43,15 +43,6 @@ void fEscreveLuof(sBanco *db) {
 		iteraProximo(&it);
 	} while (!inicioIt(&it));
 	
-}
-
-void fMudaNomeCategoriaArvore(sBanco *db, char *caminho, char *nome) {
-	sCat *categoria;
-	sSite s;
-	strcpy(s.categoria, caminho);
-	s.ehCat = '1';
-	fBuscaCat(db, s, &categoria);
-	strcpy(categoria->nome, nome);
 }
 
 void fMudaCaminhoCategoriaArvore_private(sBanco *db, sCat *cat, char *caminhoA, char *caminhoN) {
@@ -113,7 +104,7 @@ void fMudaCaminhoCategoriaArvore(sBanco *db, char *caminho1, char *caminho2) {
 	
 	if (strcmp(caminho2, "luof")) {
 		//adiciona a categoria no lugar correto
-		pushBackList(db->listaCategorias, categoria);
+		pushBackList(db->listaCategorias->catFilhos, categoria);
 		
 		strcpy(caminhoCatAtual, categoria->nome);
 	}
@@ -133,7 +124,7 @@ void fMudaCaminhoCategoriaArvore(sBanco *db, char *caminho1, char *caminho2) {
 	if (categoria->catPai)
 		it = criaIt(categoria->catPai->catFilhos);
 	else
-		it = criaIt(db->listaCategorias);
+		it = criaIt(db->listaCategorias->catFilhos);
 
 	do {
 		catTemp = (struct sCat*) retornaItera(&it);
