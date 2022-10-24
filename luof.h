@@ -53,6 +53,7 @@ int tamCaminhoDB;
 //modulos
 void fEscreveLuof_private(sBanco *db, sLista listaCategorias, int hierarquia);
 void fEscreveLuof(sBanco *db);
+int fSeparaArquivoCategoria(sBanco *db, char categoria[], sCat *cat, char nomeA[]);
 void fMudaCaminhoCategoriaArvore_private(sBanco *db, sCat *cat, char *caminhoA, char *caminhoN);
 void fMudaCaminhoCategoriaArvore(sBanco *db, char *caminho1, char *caminho2);
 void fEscreveArquivoCat(sBanco *db, char *nomeArq);

@@ -5,6 +5,7 @@ void fListCategory(int opcao) {
 	sSite s;
 	sCat *categoria = malloc(sizeof(sCat));
 	sBanco db;
+	int cont = 0;
 
 	if (fInicializaDB(&db))
 		return;
@@ -37,6 +38,7 @@ void fListCategory(int opcao) {
 	do {
 		siteDoIterador = retornaItera(&it);
 		if (strcmp(siteDoIterador->categoria, s.categoria) == 0) {
+			cont++;
 			if (siteDoIterador->ehCat == '1') {
 				printf("* %s\n", siteDoIterador->nome);
 			}
@@ -51,6 +53,11 @@ void fListCategory(int opcao) {
 		}
 		iteraProximo(&it);
 	} while(!inicioIt(&it));
+
+	//se db.listaSites não está vazio, mas não possui favoritos dessa categoria
+	if (cont == 0) {
+		printf("Lista vazia.\n");
+	}
 
 	fFinalizaDB(&db);
 	

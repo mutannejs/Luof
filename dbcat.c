@@ -84,7 +84,10 @@ int fPreencheListaSite(sBanco *db, sCat *c) {
 
 	//abre o arquivo da categoria
 	fSetaCaminhoArquivo(nomeArqCat, c->nome);
-	db->aCat = fopen(nomeArqCat, "r");
+	if (db->aCat)
+		db->aCat = freopen(nomeArqCat, "r", db->aCat);
+	else
+		db->aCat = fopen(nomeArqCat, "r");
 	
 	//documento não encontrado
 	if (db->aCat == NULL) {

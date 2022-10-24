@@ -56,7 +56,7 @@ int main(int argc, char *argv[]) {
 		fModifySite();
 	}
 	else if (strcmp(argv[1], "-mc") == 0 || strcmp(argv[1], "--modify-category") == 0) {
-		//fModifyCategory();
+		fModifyCategory();
 	}
 	else if (strcmp(argv[1], "--version") == 0) {
 		//fVersion();

@@ -180,12 +180,13 @@ void fModifySite() {
 void fModifyCategory() {
 
 	sSite c, cNew, *fav;
-	sCat *categoria = malloc(sizeof(sCat));
-	sCat *categoria2 = malloc(sizeof(sCat));
+	sCat *categoria;
+	sCat *categoria2;
+	sCat *categoria3;
 	sBanco db;
 	sLista listaTemp1, listaTemp2;
 	sIterador it;
-	char vBooleana;
+	char vBooleana, catTemp[TAMLINKARQ];
 	int opcao, encontrou, rBuscaFavorito = 0;
 
 	if (fInicializaDB(&db))
@@ -201,10 +202,10 @@ void fModifyCategory() {
 		}
 		strcpy(c.categoria, "luof");
 		db.listaSites = db.raiz;
-		strcpy(categoria->nome, "luof");
-		categoria->catFilhos = db.listaCategorias;
+		categoria = db.listaCategorias;
 	}
 	else {
+		categoria = malloc(sizeof(sCat));
 		if (fBuscaCat(&db, c, &categoria))
 			return;
 		if (fPreencheListaSite(&db, categoria))
@@ -234,10 +235,8 @@ void fModifyCategory() {
 		printf("Saindo...\n");
 		return;
 	}
-	
-	listaTemp1 = db.listaSites;//listaTemp1 é a listaSites da categoria pai inicial
-	if (db.listaSites != db.raiz)
-		db.raiz = NULL;
+
+	listaTemp1 = db.listaSites;
 	db.listaSites = NULL;
 	strcpy(cNew.categoria, c.categoria);
 	strcpy(cNew.nome, c.nome);
@@ -248,12 +247,13 @@ void fModifyCategory() {
 	fFinalizaDB(&db);
 	if (fInicializaDB(&db))
 		return;
-		
+
 	db.listaSites = listaTemp1;
-	if (strcmp(c.categoria, "luof") != 0) {
+	if (strcmp(c.categoria, "luof") != 0)
 		fBuscaCat(&db, c, &categoria);
-		fBuscaCat(&db, c, &categoria2);
-	}
+	else
+		categoria = db.listaCategorias;
+	categoria2 = categoria;
 
 	printf("\nNovos dados:\n");
 	if (opcao == 1 || opcao == 3) {
@@ -264,6 +264,7 @@ void fModifyCategory() {
 			db.listaSites = db.raiz;
 		}
 		else {
+			categoria2 = malloc(sizeof(sCat));
 			if (fBuscaCat(&db, cNew, &categoria2))
 				return;
 			if (fPreencheListaSite(&db, categoria2))
@@ -278,23 +279,40 @@ void fModifyCategory() {
 	if (strcmp(c.categoria, cNew.categoria) || strcmp(c.nome, cNew.nome)) {
 		rBuscaFavorito = fBuscaFavorito(&db, &cNew);
 		if (rBuscaFavorito) {
-			printf("\nJá existe outro favorito com esse nome e categoria, você deseja junta-los em um só? [s/n]: \n");
-			scanf(" %c", &vBooleana);
-			if (vBooleana != 's') {
-				printf("Saindo...\n");
+			//printf("\nJá existe outro favorito com esse nome e categoria, você deseja junta-los em um só? [s/n]: \n");
+			//scanf(" %c", &vBooleana);
+			//if (vBooleana != 's') {
+			//	printf("Saindo...\n");
 				return;
-			}
+			//}
 		}
 	}
 
 	if (strcmp(c.categoria, cNew.categoria) == 0) {//se só o nome será modificado
 
+		//seta categoria3 como a posição na árvore da categoria que está sendo modificada (não sua categoria pai)
+		strcpy(catTemp, c.categoria);
 		if (strcmp(cNew.categoria, "luof") == 0)
-			db.listaSites = db.raiz;
+			strcpy(c.categoria, c.nome);
+		else
+			fIncrementaCamCat(c.categoria, c.nome);
+		fBuscaCat(&db, c, &categoria3);
+		strcpy(c.categoria, catTemp);
+		
+		//catTemp passa a ser o caminho do arquivo da categoria3
+		strcpy(catTemp, c.categoria);
+		if (strcmp(cNew.categoria, "luof") == 0)
+			strcpy(catTemp, c.nome);
+		else
+			fIncrementaCamCat(catTemp, c.nome);
 
 		//muda nome na árvore
-		strcpy(categoria->nome, cNew.nome);
-		//muda nome da listaSites da categoria pai
+		strcpy(categoria3->nome, cNew.nome);
+		fEscreveLuof(&db);
+
+		//muda nome na listaSites da categoria pai
+		if (strcmp(cNew.categoria, "luof") == 0)
+			db.listaSites = db.raiz;
 		encontrou = 0;
 		it = criaIt(db.listaSites);
 		do {
@@ -309,11 +327,20 @@ void fModifyCategory() {
 			fEscreveLuof(&db);
 		else
 			fEscreveArquivoCat(&db, categoria2->nome);
-		//muda categoria em todos os favoritos filhos
-		fMudaCaminhoCategoriaArvore_private(&db, categoria, c.categoria, cNew.categoria);
 
-	}
-	else {//se só a categoria pai será modificada
+		//cria um novo arquivo com o nome correto
+		if (fSeparaArquivoCategoria(&db, catTemp, categoria3, c.nome))
+			return;
+
+		//muda categoria em todos os favoritos filhos
+		char caminhoN[TAMCAMINHO];
+		strcpy(caminhoN, cNew.categoria);
+		if (strcmp(cNew.categoria, "luof") == 0)
+			strcpy(caminhoN, cNew.nome);
+		else
+			fIncrementaCamCat(caminhoN, cNew.nome);
+		fMudaCaminhoCategoriaArvore_private(&db, categoria3, catTemp, caminhoN);
+
 	}
 
 	//freeList(listaTemp1);
