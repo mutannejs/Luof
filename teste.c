@@ -1,19 +1,16 @@
 #include "luof.h"
 
-void percursoCategorias(sLista l) {
-	if (!emptyList(l)) {
-		printf("inicio lista\n");
-		sIterador it = criaIt(l);
+void percursoCategorias(sCat *cat, int hie) {
+	for (int i = 0; i < hie; i++)
+		printf("\t");
+	printf("%s\n", cat->nome);
+	if (!emptyList(cat->catFilhos)) {
+		sIterador it = criaIt(cat->catFilhos);
 		do {
-			sCat *cat = (struct sCat*) retornaItera(&it);
-			printf("\t%s\n", cat->nome);
-			percursoCategorias(cat->catFilhos);
+			sCat *catF = (struct sCat*) retornaItera(&it);
+			percursoCategorias(catF, hie+1);
 			iteraProximo(&it);
 		} while (!inicioIt(&it));
-		printf("fim lista\n");
-	}
-	else {
-		printf("lista vazia\n");
 	}
 }
 

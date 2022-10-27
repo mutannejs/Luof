@@ -177,16 +177,243 @@ void fModifySite() {
 
 }
 
+void fReposicionaCatArvore(sBanco *db, sCat *categoria, sCat *categoria2, sCat **categoria3) {
+
+	sCat *catIt;
+	sIterador it;
+	int encontrou;
+	
+	encontrou = 0;
+	it = criaIt(categoria->catFilhos);
+	do {
+		catIt = retornaItera(&it);
+		if (catIt == *categoria3) {
+			pushBackList(categoria2->catFilhos, catIt);
+			removeIt(&it);
+			encontrou = 1;
+		}
+		iteraProximo(&it);
+	} while (encontrou == 0 && !inicioIt(&it));
+	*categoria3 = backList(categoria2->catFilhos);
+	fEscreveLuof(db);
+
+}
+
+void fRemoveCatListaSitesPai(sBanco *db, sCat *categoria, sLista listaTemp1, sSite c) {
+
+	sSite *fav;
+	sLista listaTemp2;
+	sIterador it;
+	int encontrou;
+
+	listaTemp2 = db->listaSites;
+	if (strcmp(c.categoria, "luof") == 0)
+		db->listaSites = db->raiz;
+	else
+		db->listaSites = listaTemp1;	
+	encontrou = 0;
+	it = criaIt(db->listaSites);
+	do {
+		fav = retornaItera(&it);
+		if ((strcmp(fav->nome, c.nome) == 0) && (strcmp(fav->categoria, c.categoria) == 0) && (fav->ehCat == c.ehCat)) {
+			removeIt(&it);
+			encontrou = 1;
+		}
+		iteraProximo(&it);
+	} while (encontrou == 0 && !inicioIt(&it));
+	if (strcmp(c.categoria, "luof") == 0)
+		fEscreveLuof(db);
+	else
+		fEscreveArquivoCat(db, categoria->nome);
+
+	db->listaSites = listaTemp2;
+
+}
+
+void fAdicionaCatListaSitesPai(sBanco *db, sCat *categoria2, sSite cNew) {
+
+	sSite *fav;
+	sIterador it;
+	int encontrou;
+
+	if (strcmp(cNew.categoria, "luof") == 0)
+		db->listaSites = db->raiz;
+	if (emptyList(db->listaSites)) {
+		pushBackList(db->listaSites, &cNew);
+	}
+	else {
+		encontrou = 0;
+		it = criaIt(db->listaSites);
+		do {
+			fav = retornaItera(&it);
+			if (strcmp(fav->nome, cNew.nome) > 0 || fav->ehCat == '0')
+				encontrou = 1;
+			else
+				iteraProximo(&it);
+		} while (encontrou == 0 && !inicioIt(&it));
+		fav = backList(db->listaSites);
+		if (fav->ehCat == '1' && encontrou == 0)
+			pushBackList(db->listaSites, &cNew);
+		else
+			insereAntIt(&it, &cNew);
+	}
+	if (strcmp(cNew.categoria, "luof") == 0)
+		fEscreveLuof(db);
+	else
+		fEscreveArquivoCat(db, categoria2->nome);
+}
+
+void fAtualizaNomeCatListaSitesPai(sBanco *db, sCat *categoria2, sSite c, sSite cNew) {
+
+	sSite *fav;
+	sIterador it;
+	int encontrou;
+
+	if (strcmp(cNew.categoria, "luof") == 0)
+		db->listaSites = db->raiz;
+	encontrou = 0;
+	it = criaIt(db->listaSites);
+	do {
+		fav = retornaItera(&it);
+		if ((strcmp(fav->nome, c.nome) == 0) && (strcmp(fav->categoria, c.categoria) == 0) && (fav->ehCat == c.ehCat)) {
+			strcpy(fav->nome, cNew.nome);
+			encontrou = 1;
+		}
+		iteraProximo(&it);
+	} while (encontrou == 0 && !inicioIt(&it));
+	if (strcmp(cNew.categoria, "luof") == 0)
+		fEscreveLuof(db);
+	else
+		fEscreveArquivoCat(db, categoria2->nome);
+
+}
+
+/*void fModificaCatCatPai(sBanco *db, sCat *categoria, sCat *categoria2, sCat *categoria3, char caminhoA[], char caminhoN[], sLista listaTemp1, sSite c, sSite cNew) {
+
+	sSite *fav;
+	sCat *catIt;
+	sLista listaTemp2;
+	sIterador it;
+	int encontrou;
+
+	//coloca a categoria na posição correta na árvore
+	encontrou = 0;
+	it = criaIt(categoria->catFilhos);
+	do {
+		catIt = retornaItera(&it);
+		if (catIt == categoria3) {
+			pushBackList(categoria2->catFilhos, catIt);
+			removeIt(&it);
+			encontrou = 1;
+		}
+		iteraProximo(&it);
+	} while (encontrou == 0 && !inicioIt(&it));
+	categoria3 = backList(categoria2->catFilhos);
+	fEscreveLuof(db);
+
+	//remove da listaSites da categoria pai antiga
+	listaTemp2 = db->listaSites;
+	if (strcmp(c.categoria, "luof") == 0)
+		db->listaSites = db->raiz;
+	else
+		db->listaSites = listaTemp1;	
+	encontrou = 0;
+	it = criaIt(db->listaSites);
+	do {
+		fav = retornaItera(&it);
+		if ((strcmp(fav->nome, c.nome) == 0) && (strcmp(fav->categoria, c.categoria) == 0) && (fav->ehCat == c.ehCat)) {
+			removeIt(&it);
+			encontrou = 1;
+		}
+		iteraProximo(&it);
+	} while (encontrou == 0 && !inicioIt(&it));
+	if (strcmp(c.categoria, "luof") == 0)
+		fEscreveLuof(db);
+	else
+		fEscreveArquivoCat(db, categoria->nome);
+
+	//adiciona na listaSites da categoria pai nova
+	if (strcmp(cNew.categoria, "luof") == 0)
+		db->listaSites = db->raiz;
+	else
+		db->listaSites = listaTemp2;
+	if (emptyList(db->listaSites)) {
+		pushBackList(db->listaSites, &cNew);
+	}
+	else {
+		encontrou = 0;
+		it = criaIt(db->listaSites);
+		do {
+			fav = retornaItera(&it);
+			if (strcmp(fav->nome, cNew.nome) > 0 || fav->ehCat == '0')
+				encontrou = 1;
+			else
+				iteraProximo(&it);
+		} while (encontrou == 0 && !inicioIt(&it));
+		fav = backList(db->listaSites);
+		if (fav->ehCat == '1' && encontrou == 0)
+			pushBackList(db->listaSites, &cNew);
+		else
+			insereAntIt(&it, &cNew);
+	}
+	if (strcmp(cNew.categoria, "luof") == 0)
+		fEscreveLuof(db);
+	else
+		fEscreveArquivoCat(db, categoria2->nome);
+
+	//muda categoria em todos os favoritos filhos
+	fMudaCaminhoCategoriaArvore_private(db, categoria3, caminhoA, caminhoN);
+}
+
+void fModificaCatNome(sBanco *db, sCat *categoria2, sCat *categoria3, char caminhoA[], char caminhoN[], sSite c, sSite cNew) {
+
+	sSite *fav;
+	sCat *catIt;
+	sIterador it;
+	int encontrou;
+
+	//muda nome na árvore
+	strcpy(categoria3->nome, cNew.nome);
+	fEscreveLuof(db);
+
+	//muda nome na listaSites da categoria pai
+	if (strcmp(cNew.categoria, "luof") == 0)
+		db->listaSites = db->raiz;
+	encontrou = 0;
+	it = criaIt(db->listaSites);
+	do {
+		fav = retornaItera(&it);
+		if ((strcmp(fav->nome, c.nome) == 0) && (strcmp(fav->categoria, c.categoria) == 0) && (fav->ehCat == c.ehCat)) {
+			strcpy(fav->nome, cNew.nome);
+			encontrou = 1;
+		}
+		iteraProximo(&it);
+	} while (encontrou == 0 && !inicioIt(&it));
+	if (strcmp(cNew.categoria, "luof") == 0)
+		fEscreveLuof(db);
+	else
+		fEscreveArquivoCat(db, categoria2->nome);
+
+	//cria um novo arquivo com o nome correto
+	if (fSeparaArquivoCategoria(db, caminhoA, categoria3, c.nome))
+		return;
+
+	//muda categoria em todos os favoritos filhos
+	fMudaCaminhoCategoriaArvore_private(db, categoria3, caminhoA, caminhoN);
+
+}*/
+
 void fModifyCategory() {
 
 	sSite c, cNew, *fav;
-	sCat *categoria;
-	sCat *categoria2;
-	sCat *categoria3;
+	sCat *catIt;
+	sCat *categoria;//a categoria pai antiga
+	sCat *categoria2;//a categoria pai nova
+	sCat *categoria3;//a própria categoria que será modificada
 	sBanco db;
-	sLista listaTemp1, listaTemp2;
+	sLista listaTemp1;//a listaSites da categoria pai antiga
 	sIterador it;
-	char vBooleana, catTemp[TAMLINKARQ];
+	char vBooleana, catTemp[TAMCAMINHO], caminhoA[TAMCAMINHO], caminhoN[TAMCAMINHO];
 	int opcao, encontrou, rBuscaFavorito = 0;
 
 	if (fInicializaDB(&db))
@@ -262,6 +489,7 @@ void fModifyCategory() {
 		if (strcmp(cNew.categoria, "/") == 0) {
 			strcpy(cNew.categoria, "luof");
 			db.listaSites = db.raiz;
+			categoria2 = db.listaCategorias;
 		}
 		else {
 			categoria2 = malloc(sizeof(sCat));
@@ -288,59 +516,130 @@ void fModifyCategory() {
 		}
 	}
 
-	if (strcmp(c.categoria, cNew.categoria) == 0) {//se só o nome será modificado
+	//caminhoA é o caminho antigo dos favoritos pertencentes a categoria
+	strcpy(caminhoA, c.categoria);
+	if (strcmp(c.categoria, "luof") == 0)
+		strcpy(caminhoA, c.nome);
+	else
+		fIncrementaCamCat(caminhoA, c.nome);
 
-		//seta categoria3 como a posição na árvore da categoria que está sendo modificada (não sua categoria pai)
-		strcpy(catTemp, c.categoria);
-		if (strcmp(cNew.categoria, "luof") == 0)
-			strcpy(c.categoria, c.nome);
-		else
-			fIncrementaCamCat(c.categoria, c.nome);
-		fBuscaCat(&db, c, &categoria3);
-		strcpy(c.categoria, catTemp);
-		
-		//catTemp passa a ser o caminho do arquivo da categoria3
-		strcpy(catTemp, c.categoria);
-		if (strcmp(cNew.categoria, "luof") == 0)
-			strcpy(catTemp, c.nome);
-		else
-			fIncrementaCamCat(catTemp, c.nome);
+	//caminhoN é o caminho novo dos favoritos pertencentes a categoria
+	strcpy(caminhoN, cNew.categoria);
+	if (strcmp(cNew.categoria, "luof") == 0)
+		strcpy(caminhoN, cNew.nome);
+	else
+		fIncrementaCamCat(caminhoN, cNew.nome);
+
+	//seta categoria3 como a posição na árvore da categoria que está sendo modificada
+	strcpy(catTemp, c.categoria);
+	if (strcmp(c.categoria, "luof") == 0)
+		strcpy(c.categoria, c.nome);
+	else
+		fIncrementaCamCat(c.categoria, c.nome);
+	fBuscaCat(&db, c, &categoria3);
+	strcpy(c.categoria, catTemp);
+
+	if (opcao == 1) {//se só a categoria será modificada
+		//fModificaCatCatPai(&db, categoria, categoria2, categoria3, caminhoA, caminhoN, listaTemp1, c, cNew);
+
+		//coloca a categoria na posição correta na árvore
+		fReposicionaCatArvore(&db, categoria, categoria2, &categoria3);
+		//remove da listaSites da categoria pai antiga
+		fRemoveCatListaSitesPai(&db, categoria, listaTemp1, c);
+		//adiciona na listaSites da categoria pai nova
+		fAdicionaCatListaSitesPai(&db, categoria2, cNew);
+		//muda categoria em todos os favoritos filhos
+		fMudaCaminhoCategoriaArvore_private(&db, categoria3, caminhoA, caminhoN);
+	}
+	else if (opcao == 2) {//se só o nome será modificado
+		//fModificaCatNome(&db, categoria2, categoria3, caminhoA, caminhoN, c, cNew);
 
 		//muda nome na árvore
 		strcpy(categoria3->nome, cNew.nome);
 		fEscreveLuof(&db);
-
 		//muda nome na listaSites da categoria pai
-		if (strcmp(cNew.categoria, "luof") == 0)
+		fAtualizaNomeCatListaSitesPai(&db, categoria2, c, cNew);
+		//cria um novo arquivo com o nome correto
+		if (fSeparaArquivoCategoria(&db, caminhoA, categoria3, c.nome))
+			return;
+		//muda categoria em todos os favoritos filhos
+		fMudaCaminhoCategoriaArvore_private(&db, categoria3, caminhoA, caminhoN);
+	}
+	else {//se tudo é modificado
+		
+		//coloca a categoria na posição correta na árvore e atualiza seu nome
+		encontrou = 0;
+		it = criaIt(categoria->catFilhos);
+		do {
+			catIt = retornaItera(&it);
+			if (catIt == categoria3) {
+				pushBackList(categoria2->catFilhos, catIt);
+				removeIt(&it);
+				encontrou = 1;
+			}
+			iteraProximo(&it);
+		} while (encontrou == 0 && !inicioIt(&it));
+		categoria3 = backList(categoria2->catFilhos);
+		strcpy(categoria3->nome, cNew.nome);
+		fEscreveLuof(&db);
+
+		/*//remove da listaSites da categoria pai antiga
+		listaTemp2 = db.listaSites;
+		if (strcmp(c.categoria, "luof") == 0)
 			db.listaSites = db.raiz;
+		else
+			db.listaSites = listaTemp1;	
 		encontrou = 0;
 		it = criaIt(db.listaSites);
 		do {
 			fav = retornaItera(&it);
 			if ((strcmp(fav->nome, c.nome) == 0) && (strcmp(fav->categoria, c.categoria) == 0) && (fav->ehCat == c.ehCat)) {
-				strcpy(fav->nome, cNew.nome);
+				removeIt(&it);
 				encontrou = 1;
 			}
 			iteraProximo(&it);
 		} while (encontrou == 0 && !inicioIt(&it));
+		if (strcmp(c.categoria, "luof") == 0)
+			fEscreveLuof(&db);
+		else
+			fEscreveArquivoCat(&db, categoria->nome);*/
+		//remove da listaSites da categoria pai antiga
+		fRemoveCatListaSitesPai(&db, categoria, listaTemp1, c);
+
+		//adiciona na listaSites da categoria pai nova e atualiza seu nome
+		if (strcmp(cNew.categoria, "luof") == 0)
+			db.listaSites = db.raiz;
+		if (emptyList(db.listaSites)) {
+			pushBackList(db.listaSites, &cNew);
+		}
+		else {
+			encontrou = 0;
+			it = criaIt(db.listaSites);
+			do {
+				fav = retornaItera(&it);
+				if (strcmp(fav->nome, cNew.nome) > 0 || fav->ehCat == '0')
+					encontrou = 1;
+				else
+					iteraProximo(&it);
+			} while (encontrou == 0 && !inicioIt(&it));
+			fav = backList(db.listaSites);
+			if (fav->ehCat == '1' && encontrou == 0)
+				pushBackList(db.listaSites, &cNew);
+			else
+				insereAntIt(&it, &cNew);
+		}
 		if (strcmp(cNew.categoria, "luof") == 0)
 			fEscreveLuof(&db);
 		else
 			fEscreveArquivoCat(&db, categoria2->nome);
 
 		//cria um novo arquivo com o nome correto
-		if (fSeparaArquivoCategoria(&db, catTemp, categoria3, c.nome))
+		if (fSeparaArquivoCategoria(&db, caminhoA, categoria3, c.nome))
 			return;
 
 		//muda categoria em todos os favoritos filhos
-		char caminhoN[TAMCAMINHO];
-		strcpy(caminhoN, cNew.categoria);
-		if (strcmp(cNew.categoria, "luof") == 0)
-			strcpy(caminhoN, cNew.nome);
-		else
-			fIncrementaCamCat(caminhoN, cNew.nome);
-		fMudaCaminhoCategoriaArvore_private(&db, categoria3, catTemp, caminhoN);
-
+		fMudaCaminhoCategoriaArvore_private(&db, categoria3, caminhoA, caminhoN);
+		
 	}
 
 	//freeList(listaTemp1);

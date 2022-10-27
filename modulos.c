@@ -1,5 +1,15 @@
 #include "luof.h"
 
+void fSetaCaminhoArquivo(char *arq, char *nome) {
+	strcpy(arq, caminhoDB);
+	strcpy(&arq[tamCaminhoDB], nome);
+}
+
+void fIncrementaCamCat(char *caminho, char *nome) {
+	strcat(caminho, "/");
+	strcat(caminho, nome);	
+}
+
 void fEscreveLuof_private(sBanco *db, sLista listaCategorias, int hierarquia) {
 	
 	if (!emptyList(listaCategorias)) {
@@ -43,6 +53,31 @@ void fEscreveLuof(sBanco *db) {
 		iteraProximo(&it);
 	} while (!inicioIt(&it));
 
+}
+
+void fEscreveArquivoCat(sBanco *db, char *nomeArq) {
+	
+	char nomeArqCat[TAMLINKARQ];
+	sSite *siteDoIterador;
+	sIterador it;
+
+	//reabre o arquivo para sobreescreve-lo
+	fSetaCaminhoArquivo(nomeArqCat, nomeArq);
+	if (db->aCat)
+		db->aCat = freopen(nomeArqCat, "w", db->aCat);
+	else
+		db->aCat = fopen(nomeArqCat, "w");
+
+	if (!emptyList(db->listaSites)) {
+		//escreve a lista no arquivo da categoria
+		it = criaIt(db->listaSites);
+		do {
+			siteDoIterador = retornaItera(&it);
+			fprintf(db->aCat, "%s\n%s\n%s\n%s\n%c\n", siteDoIterador->nome, siteDoIterador->categoria, siteDoIterador->link, siteDoIterador->texto, siteDoIterador->ehCat);
+			iteraProximo(&it);
+		} while (!inicioIt(&it));
+	}
+	
 }
 
 int fSeparaArquivoCategoria(sBanco *db, char categoria[], sCat *cat, char nomeA[]) {
@@ -282,39 +317,4 @@ void fMudaCaminhoCategoriaArvore(sBanco *db, char *caminho1, char *caminho2) {
 	//corrige os favoritos da categoria modificada
 	fMudaCaminhoCategoriaArvore_private(db, categoria, caminho1, caminhoCatAtual);
 	
-}
-
-void fEscreveArquivoCat(sBanco *db, char *nomeArq) {
-	
-	char nomeArqCat[TAMLINKARQ];
-	sSite *siteDoIterador;
-	sIterador it;
-
-	//reabre o arquivo para sobreescreve-lo
-	fSetaCaminhoArquivo(nomeArqCat, nomeArq);
-	if (db->aCat)
-		db->aCat = freopen(nomeArqCat, "w", db->aCat);
-	else
-		db->aCat = fopen(nomeArqCat, "w");
-
-	if (!emptyList(db->listaSites)) {
-		//escreve a lista no arquivo da categoria
-		it = criaIt(db->listaSites);
-		do {
-			siteDoIterador = retornaItera(&it);
-			fprintf(db->aCat, "%s\n%s\n%s\n%s\n%c\n", siteDoIterador->nome, siteDoIterador->categoria, siteDoIterador->link, siteDoIterador->texto, siteDoIterador->ehCat);
-			iteraProximo(&it);
-		} while (!inicioIt(&it));
-	}
-	
-}
-
-void fSetaCaminhoArquivo(char *arq, char *nome) {
-	strcpy(arq, caminhoDB);
-	strcpy(&arq[tamCaminhoDB], nome);
-}
-
-void fIncrementaCamCat(char *caminho, char *nome) {
-	strcat(caminho, "/");
-	strcat(caminho, nome);	
 }

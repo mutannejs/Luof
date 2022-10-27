@@ -96,7 +96,57 @@ void fLiberaCats(sCat *listaCategorias) {
 
 }
 
-char* fPreencheListaCat_private(sBanco *db, sCat *cPai, char linhaCat[]) {
+void fPreencheListaCat(sBanco *db) {
+
+	sCat c;//a categoria lida terá seus dados guardados aqui
+	sCat *cPaiAtual;//aponta para a categoria que possui a lista onde a categoria lida será inserida
+	char linhaCat[TAMNOMEFAV];//usado para ler as linhas do arquivo
+
+	//seta os dados de db->listaCategorias
+	db->listaCategorias = malloc(sizeof(struct sCat));
+	strcpy(db->listaCategorias->nome, "luof");
+	db->listaCategorias->hie = -1;
+	db->listaCategorias->catPai = NULL;
+	db->listaCategorias->catFilhos = criaLista(struct sCat);
+
+	//cPai passa a apontar para db->listaCategorias
+	cPaiAtual = db->listaCategorias;
+
+	//lê linha por linha e constroi a árvore de categorias
+	if (fgets(linhaCat, 100, db->aLuof)) {
+		while (strcmp(linhaCat, "##\n") != 0) {
+
+			//seta os dados da caategoria lida
+			strcpy(c.nome, &linhaCat[1]);
+			c.nome[strlen(c.nome) - 1] = '\0';
+			c.hie = linhaCat[0] - 48;
+			c.catFilhos = criaLista(struct sCat);
+
+			if (c.hie == cPaiAtual->hie + 1) {//se a cat é da mesma hierarquia da última cat lida
+				c.catPai = cPaiAtual;
+				pushBackList(cPaiAtual->catFilhos, &c);
+			}
+			else if (c.hie == cPaiAtual->hie + 2) {//se a cat é na verdade filha da última cat lida
+				cPaiAtual = backList(cPaiAtual->catFilhos);
+				c.catPai = cPaiAtual;
+				pushBackList(cPaiAtual->catFilhos, &c);
+			}
+			else {//se a cat é de uma hierarquia menor da última cat lida
+				for (int i = cPaiAtual->hie; i > c.hie; i--)
+					cPaiAtual = cPaiAtual->catPai;
+				cPaiAtual = cPaiAtual->catPai;
+				c.catPai = cPaiAtual;
+				pushBackList(cPaiAtual->catFilhos, &c);
+			}
+
+			//lê a próxima linha
+			fgets(linhaCat, 100, db->aLuof);
+		}
+	}
+
+}
+
+/*char* fPreencheListaCat_private(sBanco *db, sCat *cPai, char linhaCat[]) {
 
 	//variaveis usadas
 	sCat c, *cIt;
@@ -192,7 +242,7 @@ void fPreencheListaCat(sBanco *db) {
 	
 	}
 
-}
+}*/
 
 void fPreencheRaiz(sBanco *db) {
 	

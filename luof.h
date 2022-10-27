@@ -33,6 +33,7 @@ typedef struct sSite {
 
 typedef struct sCat {
 	char nome[TAMNOMEFAV];
+	int hie;
 	struct sCat *catPai;
 	sLista catFilhos;
 } sCat;
@@ -51,20 +52,20 @@ int tamCaminhoDB;
 
 // --- Protótipo das funções ---
 //modulos
+void fSetaCaminhoArquivo(char *arq, char *nome);
+void fIncrementaCamCat(char *caminho, char *nome);
 void fEscreveLuof_private(sBanco *db, sLista listaCategorias, int hierarquia);
 void fEscreveLuof(sBanco *db);
+void fEscreveArquivoCat(sBanco *db, char *nomeArq);
 int fSeparaArquivoCategoria(sBanco *db, char categoria[], sCat *cat, char nomeA[]);
 void fMudaCaminhoCategoriaArvore_private(sBanco *db, sCat *cat, char *caminhoA, char *caminhoN);
 void fMudaCaminhoCategoriaArvore(sBanco *db, char *caminho1, char *caminho2);
-void fEscreveArquivoCat(sBanco *db, char *nomeArq);
-void fSetaCaminhoArquivo(char *arq, char *nome);
-void fIncrementaCamCat(char *caminho, char *nome);
 
 //dbluof
 int fInicializaDB(sBanco *db);
 void fFinalizaDB(sBanco *db);
 void fLiberaCats(sCat *listaCategorias);
-char* fPreencheListaCat_private(sBanco *db, sCat *cPai, char linhaCat[]);
+//char* fPreencheListaCat_private(sBanco *db, sCat *cPai, char linhaCat[]);
 void fPreencheListaCat(sBanco *db);
 void fPreencheRaiz(sBanco *db);
 
@@ -79,7 +80,7 @@ void fRemoveCatLuof(sBanco *db, sSite s, sCat *c);
 void fRemoveArqCat(sBanco *db, sSite s);
 
 //teste
-void percursoCategorias(sLista l);
+void percursoCategorias(sCat *cat, int hie);
 void printaListaSites(sLista l);
 void printaSite(sSite s);
 
@@ -105,6 +106,12 @@ void fSeeSite();*/
 
 //modify
 void fModifySite();
+void fModificaCatCatPai(sBanco *db, sCat *categoria, sCat *categoria2, sCat *categoria3, char caminhoA[], char caminhoN[], sLista listaTemp1, sSite c, sSite cNew);
+void fModificaCatNome(sBanco *db, sCat *categoria2, sCat *categoria3, char caminhoA[], char caminhoN[], sSite c, sSite cNew);
+void fReposicionaCatArvore(sBanco *db, sCat *categoria, sCat *categoria2, sCat **categoria3);
+void fRemoveCatListaSitesPai(sBanco *db, sCat *categoria, sLista listaTemp1, sSite c);
+void fAdicionaCatListaSitesPai(sBanco *db, sCat *categoria2, sSite cNew);
+void fAtualizaNomeCatListaSitesPai(sBanco *db, sCat *categoria2, sSite c, sSite cNew);
 void fModifyCategory();
 
 /*void fVersion();
