@@ -221,7 +221,7 @@ int fSeparaArquivoCategoria(sBanco *db, char categoria[], sCat *cat, char nomeA[
 
 }
 
-void fMudaCaminhoCategoriaArvore_private(sBanco *db, sCat *cat, char *caminhoA, char *caminhoN) {
+void fMudaCaminhoCategoriaArvore(sBanco *db, sCat *cat, char *caminhoA, char *caminhoN) {
 	
 	sIterador it;
 	sSite *siteDoIterador;
@@ -259,62 +259,9 @@ void fMudaCaminhoCategoriaArvore_private(sBanco *db, sCat *cat, char *caminhoA, 
 		fIncrementaCamCat(caminhoAntigo, catTemp->nome);
 		strcpy(caminhoNovo, caminhoN);
 		fIncrementaCamCat(caminhoNovo, catTemp->nome);
-		fMudaCaminhoCategoriaArvore_private(db, catTemp, caminhoAntigo, caminhoNovo);
+		fMudaCaminhoCategoriaArvore(db, catTemp, caminhoAntigo, caminhoNovo);
 		
 		iteraProximo(&it);
 	} while (!inicioIt(&it));
-	
-}
-
-void fMudaCaminhoCategoriaArvore(sBanco *db, char *caminho1, char *caminho2) {
-	
-	int encontrou = 0;
-	char caminhoCatAtual[TAMCAMINHO];
-	sIterador it;
-	sCat *categoria, *catTemp, *categoriaPai;
-
-	sSite s;
-	strcpy(s.categoria, caminho1);
-	s.ehCat = '1';
-	
-	fBuscaCat(db, s, &categoria);
-	
-	if (strcmp(caminho2, "luof")) {
-		//adiciona a categoria no lugar correto
-		pushBackList(db->listaCategorias->catFilhos, categoria);
-		
-		strcpy(caminhoCatAtual, categoria->nome);
-	}
-	else {
-		
-		strcpy(s.categoria, caminho2);
-		
-		fBuscaCat(db, s, &categoriaPai);
-		//adiciona a categoria no lugar correto
-		pushBackList(categoriaPai->catFilhos, categoria);
-		
-		strcpy(caminhoCatAtual, caminho2);
-		fIncrementaCamCat(caminhoCatAtual, categoria->nome);
-	}
-	
-	//remove a categoria do lugar antigo
-	if (categoria->catPai)
-		it = criaIt(categoria->catPai->catFilhos);
-	else
-		it = criaIt(db->listaCategorias->catFilhos);
-
-	do {
-		catTemp = (struct sCat*) retornaItera(&it);
-		if (strcmp(catTemp->nome, categoria->nome) == 0) {
-			encontrou = 1;
-			removeIt(&it);
-		}
-		else {
-			iteraProximo(&it);
-		}
-	} while (encontrou == 0 && !inicioIt(&it));
-	
-	//corrige os favoritos da categoria modificada
-	fMudaCaminhoCategoriaArvore_private(db, categoria, caminho1, caminhoCatAtual);
 	
 }

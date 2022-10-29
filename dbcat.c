@@ -223,28 +223,86 @@ void fRemoveFavorito(sBanco *db, sSite s, sCat *c) {
 
 	sIterador it = criaIt(db->listaSites);
 	sSite *siteDoIterador;
+	int encontrou = 0;
 
-	/* Adiciona o site na lista
+	/* Remove o site da lista
 	 * Ela estará em ordem alfabética, sendo os primeiros favoritos categorias*/
 	if (s.ehCat == '0') {
 		iteraFim(&it);
 		do {
 			siteDoIterador = retornaItera(&it);
-			if ((strcmp(siteDoIterador->nome, s.nome) == 0) && (strcmp(siteDoIterador->categoria, s.categoria) == 0) && (s.ehCat == siteDoIterador->ehCat))
+			if ((strcmp(siteDoIterador->nome, s.nome) == 0) && (strcmp(siteDoIterador->categoria, s.categoria) == 0) && (s.ehCat == siteDoIterador->ehCat)) {
 				removeIt(&it);
-			else
+				encontrou = 1;
+			}
+			else {
 				iteraAnterior(&it);
-		} while (!fimIt(&it));
+			}
+		} while (encontrou == 0 && !fimIt(&it));
 	}
 	else {
 		iteraInicio(&it);
 		do {
 			siteDoIterador = retornaItera(&it);
-			if ((strcmp(siteDoIterador->nome, s.nome) == 0) && (strcmp(siteDoIterador->categoria, s.categoria) == 0) && (s.ehCat == siteDoIterador->ehCat))
+			if ((strcmp(siteDoIterador->nome, s.nome) == 0) && (strcmp(siteDoIterador->categoria, s.categoria) == 0) && (s.ehCat == siteDoIterador->ehCat)) {
 				removeIt(&it);
-			else
+				encontrou = 1;
+			}
+			else {
 				iteraProximo(&it);
-		} while (!inicioIt(&it));
+			}
+		} while (encontrou == 0 && !inicioIt(&it));
+	}
+
+	//se a categoria é a raiz
+	if (strcmp(s.categoria, "luof") == 0)
+		fEscreveLuof(db);
+	else
+		fEscreveArquivoCat(db, c->nome);
+
+}
+
+void fModificaFavorito(sBanco *db, sSite s, sSite sNew, sCat *c) {
+
+	sIterador it = criaIt(db->listaSites);
+	sSite *siteDoIterador;
+	int encontrou = 0;
+
+	/* Modifica o site na lista
+	 * Ela estará em ordem alfabética, sendo os primeiros favoritos categorias*/
+	if (s.ehCat == '0') {
+		iteraFim(&it);
+		do {
+			siteDoIterador = retornaItera(&it);
+			if ((strcmp(siteDoIterador->nome, s.nome) == 0) && (strcmp(siteDoIterador->categoria, s.categoria) == 0) && (s.ehCat == siteDoIterador->ehCat)) {
+				strcpy(siteDoIterador->nome, sNew.nome);
+				strcpy(siteDoIterador->categoria, sNew.categoria);
+				strcpy(siteDoIterador->link, sNew.link);
+				strcpy(siteDoIterador->texto, sNew.texto);
+				siteDoIterador->ehCat = sNew.ehCat;
+				encontrou = 1;
+			}
+			else {
+				iteraAnterior(&it);
+			}
+		} while (encontrou == 0 && !fimIt(&it));
+	}
+	else {
+		iteraInicio(&it);
+		do {
+			siteDoIterador = retornaItera(&it);
+			if ((strcmp(siteDoIterador->nome, s.nome) == 0) && (strcmp(siteDoIterador->categoria, s.categoria) == 0) && (s.ehCat == siteDoIterador->ehCat)) {
+				strcpy(siteDoIterador->nome, sNew.nome);
+				strcpy(siteDoIterador->categoria, sNew.categoria);
+				strcpy(siteDoIterador->link, sNew.link);
+				strcpy(siteDoIterador->texto, sNew.texto);
+				siteDoIterador->ehCat = sNew.ehCat;
+				encontrou = 1;
+			}
+			else {
+				iteraProximo(&it);
+			}
+		} while (encontrou == 0 && !inicioIt(&it));
 	}
 
 	//se a categoria é a raiz

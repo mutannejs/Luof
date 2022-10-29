@@ -3,7 +3,7 @@
 void fListCategory(int opcao) {
 
 	sSite s;
-	sCat *categoria = malloc(sizeof(sCat));
+	sCat *categoria;
 	sBanco db;
 	int cont = 0;
 

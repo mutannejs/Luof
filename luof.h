@@ -47,7 +47,7 @@ typedef struct sBanco {
 } sBanco;
 
 //variaveis globais
-char caminhoDB[TAMLINKARQ];
+char caminhoDB[TAMCAMINHO];
 int tamCaminhoDB;
 
 // --- Protótipo das funções ---
@@ -58,14 +58,12 @@ void fEscreveLuof_private(sBanco *db, sLista listaCategorias, int hierarquia);
 void fEscreveLuof(sBanco *db);
 void fEscreveArquivoCat(sBanco *db, char *nomeArq);
 int fSeparaArquivoCategoria(sBanco *db, char categoria[], sCat *cat, char nomeA[]);
-void fMudaCaminhoCategoriaArvore_private(sBanco *db, sCat *cat, char *caminhoA, char *caminhoN);
-void fMudaCaminhoCategoriaArvore(sBanco *db, char *caminho1, char *caminho2);
+void fMudaCaminhoCategoriaArvore(sBanco *db, sCat *cat, char *caminhoA, char *caminhoN);
 
 //dbluof
 int fInicializaDB(sBanco *db);
 void fFinalizaDB(sBanco *db);
 void fLiberaCats(sCat *listaCategorias);
-//char* fPreencheListaCat_private(sBanco *db, sCat *cPai, char linhaCat[]);
 void fPreencheListaCat(sBanco *db);
 void fPreencheRaiz(sBanco *db);
 
@@ -75,6 +73,7 @@ int fPreencheListaSite(sBanco *db, sCat *c);
 int fBuscaFavorito(sBanco *db, sSite *s);
 void fAdicionaFavorito(sBanco *db, sSite s, sCat *c);
 void fRemoveFavorito(sBanco *db, sSite s, sCat *c);
+void fModificaFavorito(sBanco *db, sSite s, sSite sNew, sCat *c);
 void fAdicionaCatLuof(sBanco *db, sSite s, sCat *c);
 void fRemoveCatLuof(sBanco *db, sSite s, sCat *c);
 void fRemoveArqCat(sBanco *db, sSite s);
@@ -100,23 +99,16 @@ sLista fListTree_preencheSites(sSite s);
 void fListTree_private(sBanco *db, char linhas[], sSite s, int hierarquia);
 void fListTree();
 
-/*void fSeeAll();
-void fSeeCategory();
-void fSeeSite();*/
-
 //modify
 void fModifySite();
-void fModificaCatCatPai(sBanco *db, sCat *categoria, sCat *categoria2, sCat *categoria3, char caminhoA[], char caminhoN[], sLista listaTemp1, sSite c, sSite cNew);
-void fModificaCatNome(sBanco *db, sCat *categoria2, sCat *categoria3, char caminhoA[], char caminhoN[], sSite c, sSite cNew);
-void fReposicionaCatArvore(sBanco *db, sCat *categoria, sCat *categoria2, sCat **categoria3);
-void fRemoveCatListaSitesPai(sBanco *db, sCat *categoria, sLista listaTemp1, sSite c);
-void fAdicionaCatListaSitesPai(sBanco *db, sCat *categoria2, sSite cNew);
-void fAtualizaNomeCatListaSitesPai(sBanco *db, sCat *categoria2, sSite c, sSite cNew);
+void fReposicionaCatArvore(sBanco *db, sCat *categoria, sCat *categoria2, sCat **categoria3, char *nome);
 void fModifyCategory();
+//fJoinCategorys();
 
-/*void fVersion();
+/*
 void fBackup();
 void fExport();
+void fImport();
 void fHtml();
 */
 

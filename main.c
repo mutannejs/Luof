@@ -40,26 +40,14 @@ int main(int argc, char *argv[]) {
 	else if (strcmp(argv[1], "-lcs") == 0 || strcmp(argv[1], "--list-category-short") == 0) {
 		fListCategory(1);
 	}
-	else if (strcmp(argv[1], "-sa") == 0 || strcmp(argv[1], "--see-all") == 0) {
-		//fSeeAll();
-		printf("Função ainda não implementada\n");
-	}
-	else if (strcmp(argv[1], "-sc") == 0 || strcmp(argv[1], "--see-category") == 0) {
-		//fSeeCategory();
-		printf("Função ainda não implementada\n");
-	}
-	else if (strcmp(argv[1], "-ss") == 0 || strcmp(argv[1], "--see-site") == 0) {
-		//fSeeSite();
-		printf("Função ainda não implementada\n");
-	}
 	else if (strcmp(argv[1], "-ms") == 0 || strcmp(argv[1], "--modify-site") == 0) {
 		fModifySite();
 	}
 	else if (strcmp(argv[1], "-mc") == 0 || strcmp(argv[1], "--modify-category") == 0) {
 		fModifyCategory();
 	}
-	else if (strcmp(argv[1], "--version") == 0) {
-		//fVersion();
+	else if (strcmp(argv[1], "-jc") == 0 || strcmp(argv[1], "--join-categorys") == 0) {
+		//fJoinCategorys();
 		printf("Função ainda não implementada\n");
 	}
 	else if (strcmp(argv[1], "--backup") == 0) {

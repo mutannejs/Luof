@@ -24,7 +24,6 @@ void fAddSite() {
 		db.listaSites = db.raiz;
 	}
 	else {
-		categoria = malloc(sizeof(sCat));
 		//verifica se a categoria existe e guarda em categoria sua posição na árvore
 		if (fBuscaCat(&db, s, &categoria))
 			return;
@@ -79,7 +78,6 @@ void fAddCategory() {
 		categoria = db.listaCategorias;
 	}
 	else {
-		categoria = malloc(sizeof(sCat));
 		if (fBuscaCat(&db, c, &categoria))
 			return;
 		if (fPreencheListaSite(&db, categoria))
@@ -132,7 +130,6 @@ void fDeleteSite() {
 		db.listaSites = db.raiz;
 	}
 	else {
-		categoria = malloc(sizeof(sCat));
 		if (fBuscaCat(&db, s, &categoria))
 			return;
 		if (fPreencheListaSite(&db, categoria))
@@ -179,7 +176,6 @@ void fDeleteCategory() {
 		categoria = db.listaCategorias;
 	}
 	else {
-		categoria = malloc(sizeof(sCat));
 		if (fBuscaCat(&db, c, &categoria))
 			return;
 		if (fPreencheListaSite(&db, categoria))
