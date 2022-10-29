@@ -47,7 +47,7 @@ typedef struct sBanco {
 } sBanco;
 
 //variaveis globais
-char caminhoDB[TAMCAMINHO];
+char caminhoDB[TAMLINKARQ];
 int tamCaminhoDB;
 
 // --- Protótipo das funções ---

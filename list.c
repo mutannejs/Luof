@@ -2,65 +2,70 @@
 
 void fListCategory(int opcao) {
 
-	sSite s;
+	sSite s, *siteDoIterador;
 	sCat *categoria;
 	sBanco db;
+	sIterador it;
 	int cont = 0;
 
 	if (fInicializaDB(&db))
 		return;
 
-	printf("Categoria:\n");
+	printf("Categoria : ");
 	scanf(" %[^\n]", s.categoria);
 
 	if (strcmp(s.categoria, "/") == 0) {
 		strcpy(s.categoria, "luof");
 		db.listaSites = db.raiz;
+		categoria = db.listaCategorias;
 	}
 	else {
-		if (fBuscaCat(&db, s, &categoria))
+		if (fBuscaCat(&db, s, &categoria)) {
+			fFinalizaDB(&db);
 			return;
-		if (fPreencheListaSite(&db, categoria))
+		}
+		if (fPreencheListaSite(&db, categoria)) {
+			fFinalizaDB(&db);
 			return;
+		}
 	}
-	
-	printf("\n");
-	
+
 	if (emptyList(db.listaSites)) {
-		printf("Lista vazia.\n");
+		printf("\nLista vazia.\n");
+		fFinalizaDB(&db);
 		return;
 	}
-	
-	sSite *siteDoIterador;
-	sIterador it = criaIt(db.listaSites);
-	
+
 	//printa favorito por favorito
+	it = criaIt(db.listaSites);
 	do {
-		siteDoIterador = retornaItera(&it);
+		siteDoIterador = (struct sSite*) retornaItera(&it);
 		if (strcmp(siteDoIterador->categoria, s.categoria) == 0) {
-			cont++;
+			if (siteDoIterador->ehCat == '0' || (cont == 0 && siteDoIterador->ehCat == '1'))
+				printf("\n");
 			if (siteDoIterador->ehCat == '1') {
 				printf("* %s\n", siteDoIterador->nome);
 			}
 			else if (opcao == 0) {
-				printf("%s\n", siteDoIterador->nome);
-				printf("\tLink: %s\n", siteDoIterador->link);
-				printf("\tTexto: %s\n", siteDoIterador->texto);
+				printf("Nome  : %s\n", siteDoIterador->nome);
+				printf("Link  : %s\n", siteDoIterador->link);
+				printf("Texto : %s\n", siteDoIterador->texto);
 			}
 			else {
 				printf("%s\n", siteDoIterador->nome);
 			}
+			cont++;
 		}
 		iteraProximo(&it);
-	} while(!inicioIt(&it));
+	} while (!inicioIt(&it));
 
 	//se db.listaSites não está vazio, mas não possui favoritos dessa categoria
 	if (cont == 0) {
-		printf("Lista vazia.\n");
+		printf("\nLista vazia.\n");
 	}
 
 	fFinalizaDB(&db);
-	
+
 }
 
 void fListTree_printaFavorito(sSite s, char linhas[], int hierarquia) {
@@ -83,13 +88,13 @@ void fListTree_printaFavorito(sSite s, char linhas[], int hierarquia) {
 }
 
 sLista fListTree_preencheSites(sSite s) {
-	
+
 	sSite siteTemp;
 	sLista listaFavoritos;
 	FILE *arqCat;
-	char categoria[TAMLINKARQ], nomeArqCat[TAMLINKARQ], nomeTemp[TAMNOMEFAV], ehCategoria[3];
+	char categoria[TAMCAMINHO], nomeArqCat[TAMLINKARQ], nomeTemp[TAMNOMEFAV], ehCategoria[3];
 	int tamanho;
-	
+
 	if (strcmp(s.categoria, "luof") == 0) {
 		strcpy(categoria, s.nome);
 	}
@@ -97,15 +102,15 @@ sLista fListTree_preencheSites(sSite s) {
 		strcpy(categoria, s.categoria);
 		fIncrementaCamCat(categoria, s.nome);
 	}
-	
+
 	fSetaCaminhoArquivo(nomeArqCat, s.nome);
 	arqCat = fopen(nomeArqCat, "r");
 	listaFavoritos = criaLista(struct sSite);
 
 	while (fgets(nomeTemp, 100, arqCat) != NULL) {
-		
-        tamanho = strlen(nomeTemp);
-        nomeTemp[tamanho-1] = '\0';
+
+		tamanho = strlen(nomeTemp);
+		nomeTemp[tamanho-1] = '\0';
 		strcpy(siteTemp.nome, nomeTemp);
 
 		fgets(siteTemp.categoria, TAMCAMINHO, arqCat);
@@ -127,7 +132,7 @@ sLista fListTree_preencheSites(sSite s) {
 		if (strcmp(siteTemp.categoria, categoria) == 0)
 			pushBackList(listaFavoritos, &siteTemp);
 	}
-	
+
 	fclose(arqCat);
 	
 	return listaFavoritos;
@@ -139,7 +144,7 @@ void fListTree_private(sBanco *db, char linhas[], sSite s, int hierarquia) {
 	sSite *siteDoIterador;
 	sLista listaFavoritos = NULL;
 	sIterador it;
-	
+
 	hierarquia = hierarquia + 1;
 	linhas[hierarquia] = '1';
 
@@ -155,19 +160,19 @@ void fListTree_private(sBanco *db, char linhas[], sSite s, int hierarquia) {
 	//printa os favoritos da categoria
 	it = criaIt(listaFavoritos);
 	do {
-		siteDoIterador = retornaItera(&it);
-		
+		siteDoIterador = (struct sSite*) retornaItera(&it);
+
 		//printa a categoria, obedecendo a hierarquia
 		fListTree_printaFavorito(*siteDoIterador, linhas, hierarquia);
-		
+
 		if (fimIt(&it))
 			linhas[hierarquia] = '0';
 		if (siteDoIterador->ehCat == '1')
 			fListTree_private(db, linhas, *siteDoIterador, hierarquia);
-			
+
 		iteraProximo(&it);
 	} while (!inicioIt(&it));
-	
+
 	linhas[hierarquia] = '0';
 	freeList(listaFavoritos);
 
@@ -175,8 +180,8 @@ void fListTree_private(sBanco *db, char linhas[], sSite s, int hierarquia) {
 
 void fListTree() {
 
-	sBanco db;
 	sSite *siteDoIterador;
+	sBanco db;
 	sIterador it;
 	char linhas[] = "10000000000";
 
@@ -185,12 +190,13 @@ void fListTree() {
 
 	//caso o banco esteja vazio
 	if (emptyList(db.raiz)) {
-		printf("Nada ainda foi inserido\n");
+		printf("Nada ainda foi inserido.\n");
+		fFinalizaDB(&db);
 		return;
 	}
 
 	it = criaIt(db.raiz);
-	siteDoIterador = retornaItera(&it);
+	siteDoIterador = (struct sSite*) retornaItera(&it);
 
 	//printa as categorias da raiz
 	if (siteDoIterador->ehCat == '1') {
@@ -200,10 +206,10 @@ void fListTree() {
 				strcpy(linhas, "00000000000");
 			fListTree_private(&db, linhas, *siteDoIterador, 0);
 			iteraProximo(&it);
-			siteDoIterador = retornaItera(&it);
+			siteDoIterador = (struct sSite*) retornaItera(&it);
 		} while (!inicioIt(&it) && siteDoIterador->ehCat == '1');
 	}
-	
+
 	strcpy(linhas, "10000000000");
 
 	//printa os sites da raiz
@@ -211,7 +217,7 @@ void fListTree() {
 		do {
 			fListTree_printaFavorito(*siteDoIterador, linhas, 0);
 			iteraProximo(&it);
-			siteDoIterador = retornaItera(&it);
+			siteDoIterador = (struct sSite*) retornaItera(&it);
 		} while (!inicioIt(&it) && siteDoIterador->ehCat == '0');
 	}
 

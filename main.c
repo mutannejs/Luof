@@ -1,9 +1,9 @@
 /* ----------------------- Links Uteis ou Favoritos (luof) ---------------------
  *
- * Sobre:
- * 	Luof é um gerenciador de links, foi feito para armazenar informações
+ *	Sobre:
+ *	Luof é um gerenciador de links, foi feito para armazenar informações
  *	de uma página como no "Favoritos" de um browser, tudo pelo terminal,
- *	sendo facíl de gerencia-las e modificalas.
+ *	sendo facíl de gerencia-las e modifica-las.
  *
  */
 
@@ -67,4 +67,5 @@ int main(int argc, char *argv[]) {
 	}
 
 	return 0;
+
 }

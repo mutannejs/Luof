@@ -7,15 +7,18 @@ void fSetaCaminhoArquivo(char *arq, char *nome) {
 
 void fIncrementaCamCat(char *caminho, char *nome) {
 	strcat(caminho, "/");
-	strcat(caminho, nome);	
+	strcat(caminho, nome);
 }
 
 void fEscreveLuof_private(sBanco *db, sLista listaCategorias, int hierarquia) {
-	
+
+	sCat *cat;
+	sIterador it;
+
 	if (!emptyList(listaCategorias)) {
-		sIterador it = criaIt(listaCategorias);
+		it = criaIt(listaCategorias);
 		do {
-			sCat *cat = (struct sCat*) retornaItera(&it);
+			cat = (struct sCat*) retornaItera(&it);
 			//escreve no arquivo
 			fprintf(db->aLuof, "%d%s\n", hierarquia, cat->nome);
 			//------------------
@@ -23,15 +26,15 @@ void fEscreveLuof_private(sBanco *db, sLista listaCategorias, int hierarquia) {
 			iteraProximo(&it);
 		} while (!inicioIt(&it));
 	}
-	
+
 }
 
 void fEscreveLuof(sBanco *db) {
-	
-	char nomeArqCat[TAMLINKARQ];
+
 	sSite *siteDoIterador;
 	sIterador it;
-	
+	char nomeArqCat[TAMLINKARQ];
+
 	//reabre o arquivo aLuof para sobreescreve-lo
 	fSetaCaminhoArquivo(nomeArqCat, "luof");
 	if (db->aLuof)
@@ -41,14 +44,14 @@ void fEscreveLuof(sBanco *db) {
 
 	//escreve a árvore de categorias no arquivo aLuof
 	fEscreveLuof_private(db, db->listaCategorias->catFilhos, 0);
-	
+
 	//marca o fim da árvore de categorias
 	fprintf(db->aLuof, "##\n");
-	
+
 	//escreve os favoritos da raiz
 	it = criaIt(db->raiz);
 	do {
-		siteDoIterador = retornaItera(&it);
+		siteDoIterador = (struct sSite*) retornaItera(&it);
 		fprintf(db->aLuof, "%s\n%s\n%s\n%s\n%c\n", siteDoIterador->nome, siteDoIterador->categoria, siteDoIterador->link, siteDoIterador->texto, siteDoIterador->ehCat);
 		iteraProximo(&it);
 	} while (!inicioIt(&it));
@@ -56,10 +59,10 @@ void fEscreveLuof(sBanco *db) {
 }
 
 void fEscreveArquivoCat(sBanco *db, char *nomeArq) {
-	
-	char nomeArqCat[TAMLINKARQ];
+
 	sSite *siteDoIterador;
 	sIterador it;
+	char nomeArqCat[TAMLINKARQ];
 
 	//reabre o arquivo para sobreescreve-lo
 	fSetaCaminhoArquivo(nomeArqCat, nomeArq);
@@ -72,12 +75,12 @@ void fEscreveArquivoCat(sBanco *db, char *nomeArq) {
 		//escreve a lista no arquivo da categoria
 		it = criaIt(db->listaSites);
 		do {
-			siteDoIterador = retornaItera(&it);
+			siteDoIterador = (struct sSite*) retornaItera(&it);
 			fprintf(db->aCat, "%s\n%s\n%s\n%s\n%c\n", siteDoIterador->nome, siteDoIterador->categoria, siteDoIterador->link, siteDoIterador->texto, siteDoIterador->ehCat);
 			iteraProximo(&it);
 		} while (!inicioIt(&it));
 	}
-	
+
 }
 
 int fSeparaArquivoCategoria(sBanco *db, char categoria[], sCat *cat, char nomeA[]) {
@@ -121,14 +124,14 @@ int fSeparaArquivoCategoria(sBanco *db, char categoria[], sCat *cat, char nomeA[
 		}
 		fclose(arq);
 	}
-	
+
 	//remove os sites da categoria da db->listaSites (arquivo com nome antigo) e insere no listaSitesN (arquivo com nome novo)
 	it = criaIt(db->listaSites);
 	it2 = criaIt(listaSitesN);
 	if (!emptyList(db->listaSites)) {
 		do {
 			qtdLista = sizeList(db->listaSites);
-			siteDoIterador = retornaItera(&it);
+			siteDoIterador = (struct sSite*) retornaItera(&it);
 			if (strcmp(siteDoIterador->categoria, categoria) == 0) {
 				//----------------------------
 				if (emptyList(listaSitesN)) {
@@ -138,13 +141,13 @@ int fSeparaArquivoCategoria(sBanco *db, char categoria[], sCat *cat, char nomeA[
 					encontrouPos = 0;
 					iteraFim(&it2);
 					do {
-						siteDoIterador2 = retornaItera(&it2);
+						siteDoIterador2 = (struct sSite*) retornaItera(&it2);
 						if (strcmp(siteDoIterador2->nome, siteDoIterador->nome) < 0 || siteDoIterador2->ehCat == '1')
 							encontrouPos = 1;
 						else
 							iteraAnterior(&it2);
 					} while (encontrouPos == 0 && !fimIt(&it2));
-					siteDoIterador2 = frontList(listaSitesN);
+					siteDoIterador2 = (struct sSite*) frontList(listaSitesN);
 					if (siteDoIterador2->ehCat == '0' && encontrouPos == 0)
 						pushFrontList(listaSitesN, siteDoIterador);
 					else
@@ -154,13 +157,13 @@ int fSeparaArquivoCategoria(sBanco *db, char categoria[], sCat *cat, char nomeA[
 					encontrouPos = 0;
 					iteraInicio(&it2);
 					do {
-						siteDoIterador2 = retornaItera(&it2);
+						siteDoIterador2 = (struct sSite*) retornaItera(&it2);
 						if (strcmp(siteDoIterador2->nome, siteDoIterador->nome) > 0 || siteDoIterador2->ehCat == '0')
 							encontrouPos = 1;
 						else
 							iteraProximo(&it2);
 					} while (encontrouPos == 0 && !inicioIt(&it2));
-					siteDoIterador2 = backList(listaSitesN);
+					siteDoIterador2 = (struct sSite*) backList(listaSitesN);
 					if (siteDoIterador2->ehCat == '1' && encontrouPos == 0)
 						pushBackList(listaSitesN, siteDoIterador);
 					else
@@ -174,7 +177,7 @@ int fSeparaArquivoCategoria(sBanco *db, char categoria[], sCat *cat, char nomeA[
 			}
 		} while (!emptyList(db->listaSites) && (!inicioIt(&it) || qtdLista != sizeList(db->listaSites)));
 	}
-	
+
 	//se a lista da categoria (nome antigo) ficou vazia remove o arquivo antigo, caso contrário só atualiza o arquivo
 	if (emptyList(db->listaSites)) {
 		fSetaCaminhoArquivo(nomeArqCat, nomeA);
@@ -189,13 +192,13 @@ int fSeparaArquivoCategoria(sBanco *db, char categoria[], sCat *cat, char nomeA[
 		}
 		it = criaIt(db->listaSites);
 		do {
-			siteDoIterador = retornaItera(&it);
+			siteDoIterador = (struct sSite*) retornaItera(&it);
 			fprintf(arq, "%s\n%s\n%s\n%s\n%c\n", siteDoIterador->nome, siteDoIterador->categoria, siteDoIterador->link, siteDoIterador->texto, siteDoIterador->ehCat);
 			iteraProximo(&it);
 		} while (!inicioIt(&it));
 		fclose(arq);
 	}
-	
+
 	//escreve o arquivo novo da categoria
 	if (!emptyList(listaSitesN)) {
 		fSetaCaminhoArquivo(nomeArqCat, cat->nome);
@@ -207,13 +210,13 @@ int fSeparaArquivoCategoria(sBanco *db, char categoria[], sCat *cat, char nomeA[
 		arq = fopen(nomeArqCat, "w");
 		it = criaIt(listaSitesN);
 		do {
-			siteDoIterador = retornaItera(&it);
+			siteDoIterador = (struct sSite*) retornaItera(&it);
 			fprintf(arq, "%s\n%s\n%s\n%s\n%c\n", siteDoIterador->nome, siteDoIterador->categoria, siteDoIterador->link, siteDoIterador->texto, siteDoIterador->ehCat);
 			iteraProximo(&it);
 		} while (!inicioIt(&it));
 		fclose(arq);
 	}
-	
+
 	freeList(db->listaSites);
 	db->listaSites = listaSitesA;
 
@@ -222,15 +225,15 @@ int fSeparaArquivoCategoria(sBanco *db, char categoria[], sCat *cat, char nomeA[
 }
 
 void fMudaCaminhoCategoriaArvore(sBanco *db, sCat *cat, char *caminhoA, char *caminhoN) {
-	
-	sIterador it;
+
 	sSite *siteDoIterador;
 	sCat *catTemp;
+	sIterador it;
 	char caminhoAntigo[TAMCAMINHO], caminhoNovo[TAMCAMINHO];//serão usados dentro de um loop, por isso não altera caminhoA e caminhoN
-	
+
 	//preenche a lista dos favoritos da categoria
 	fPreencheListaSite(db, cat);
-	
+
 	if (emptyList(db->listaSites))
 		return;
 
@@ -238,15 +241,14 @@ void fMudaCaminhoCategoriaArvore(sBanco *db, sCat *cat, char *caminhoA, char *ca
 	it = criaIt(db->listaSites);
 	do {
 		siteDoIterador = (struct sSite*) retornaItera(&it);
-		if (strcmp(siteDoIterador->categoria, caminhoA) == 0) {
+		if (strcmp(siteDoIterador->categoria, caminhoA) == 0)
 			strcpy(siteDoIterador->categoria, caminhoN);
-		}
 		iteraProximo(&it);
 	} while (!inicioIt(&it));
-	
+
 	//reescreve seu arquivo
 	fEscreveArquivoCat(db, cat->nome);
-	
+
 	if (emptyList(cat->catFilhos))
 		return;
 
@@ -254,14 +256,14 @@ void fMudaCaminhoCategoriaArvore(sBanco *db, sCat *cat, char *caminhoA, char *ca
 	it = criaIt(cat->catFilhos);
 	do {
 		catTemp = (struct sCat*) retornaItera(&it);
-		
+
 		strcpy(caminhoAntigo, caminhoA);
 		fIncrementaCamCat(caminhoAntigo, catTemp->nome);
 		strcpy(caminhoNovo, caminhoN);
 		fIncrementaCamCat(caminhoNovo, catTemp->nome);
 		fMudaCaminhoCategoriaArvore(db, catTemp, caminhoAntigo, caminhoNovo);
-		
+
 		iteraProximo(&it);
 	} while (!inicioIt(&it));
-	
+
 }

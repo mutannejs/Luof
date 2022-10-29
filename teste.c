@@ -31,11 +31,9 @@ void printaListaSites(sLista l) {
 }
 
 void printaSite(sSite s) {
-	
 	printf("Nome: %s\n", s.nome);
 	printf("Categoria: %s\n", s.categoria);
 	printf("Link: %s\n", s.link);
 	printf("Texto: %s\n", s.texto);
 	printf("ehCat: %c\n\n", s.ehCat);
-
 }
