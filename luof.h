@@ -4,6 +4,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <ctype.h>
 #include <unistd.h>
 #include <sys/types.h>
 #include <sys/stat.h>
@@ -11,9 +12,9 @@
 #include "pilha.h"
 
 #define TAMNOMEFAV 100//tamanho de nome de favoritos
-#define TAMLINKARQ 500//tamanho de links e de arquivos
 #define TAMCAMINHO 1000//tamanho caminho da categoria
-#define TAMTEXTO 5000//tamanho texto
+#define TAMLINKARQ 2100//tamanho de links e de arquivos
+#define TAMTEXTO 3000//tamanho texto
 
 /* fNome é usado para funções
  * rNome é usado para retorno de função
@@ -52,8 +53,15 @@ int tamCaminhoDB;
 
 // --- Protótipo das funções ---
 //modulos
+int fSetaSiteCategoria(sSite *s);
+int fSetaSiteNome(sSite *s);
+int fSetaSiteLink(sSite *s);
+int fSetaSiteTexto(sSite *s);
+int fSetaCatCategoria(sSite *s);
+int fSetaCatNome(sSite *s);
 void fSetaCaminhoArquivo(char *arq, char *nome);
 void fIncrementaCamCat(char *caminho, char *nome);
+void fSetaCaminhoCategoria(char caminho[], sSite s);
 void fEscreveLuof_private(sBanco *db, sLista listaCategorias, int hierarquia);
 void fEscreveLuof(sBanco *db);
 void fEscreveArquivoCat(sBanco *db, char *nomeArq);
@@ -103,7 +111,9 @@ void fListTree();
 void fModifySite();
 void fReposicionaCatArvore(sBanco *db, sCat *categoria, sCat *categoria2, sCat **categoria3, char *nome);
 void fModifyCategory();
-//fJoinCategorys();
+//void fJoinCategorys_juntaLista(sBanco *db, sCat *cate, sCat *cate2, sSite c1, sSite c2);
+//void fJoinCategorys_private(sBanco *db, sSite c1, sSite c2);
+//void fJoinCategorys();
 
 /*
 void fBackup();

@@ -1,5 +1,176 @@
 #include "luof.h"
 
+int fSetaSiteCategoria(sSite *s) {
+
+	int cont = 0;
+	char c;
+
+	printf("Categoria : ");
+
+	do {
+		c = getchar();
+	} while (isspace(c));
+
+	do {
+		if (cont == 1 && s->categoria[0] == '/') {
+			cont--;
+		}
+		else if (cont == TAMCAMINHO - 1) {
+			printf("\nCategorias devem ter no máximo %d caracteres.\n", TAMCAMINHO - 1);
+			return 1;
+		}
+		s->categoria[cont] = c;
+		cont++;
+		c = getchar();
+	} while (c != '\n');
+	s->categoria[cont] = '\0';
+
+	return 0;
+
+}
+
+int fSetaSiteNome(sSite *s) {
+
+	int cont = 0;
+	char c;
+
+	printf("Nome      : ");
+
+	do {
+		c = getchar();
+	} while (isspace(c));
+
+	do {
+		if (cont == TAMNOMEFAV - 1) {
+			printf("\nNomes de favoritos devem ter no máximo %d caracteres.\n", TAMNOMEFAV - 1);
+			return 1;
+		}
+		s->nome[cont] = c;
+		cont++;
+		c = getchar();
+	} while (c != '\n');
+	s->nome[cont] = '\0';
+
+	return 0;
+
+}
+
+int fSetaSiteLink(sSite *s) {
+
+	int cont = 0;
+	char c;
+
+	printf("Link      : ");
+
+	do {
+		c = getchar();
+	} while (isspace(c));
+
+	do {
+		if (cont == TAMLINKARQ - 1) {
+			printf("\nLinks devem ter no máximo %d caracteres.\n", TAMLINKARQ - 1);
+			return 1;
+		}
+		s->link[cont] = c;
+		cont++;
+		c = getchar();
+	} while (c != '\n');
+	s->link[cont] = '\0';
+
+	return 0;
+
+}
+
+int fSetaSiteTexto(sSite *s) {
+
+	int cont = 0;
+	char c;
+
+	printf("Texto     : ");
+
+	do {
+		c = getchar();
+	} while (isspace(c));
+
+	do {
+		if (cont == TAMTEXTO - 1) {
+			printf("\nTextos devem ter no máximo %d caracteres.\n", TAMTEXTO - 1);
+			return 1;
+		}
+		s->texto[cont] = c;
+		cont++;
+		c = getchar();
+	} while (c != '\n');
+	s->texto[cont] = '\0';
+
+	return 0;
+
+}
+
+int fSetaCatCategoria(sSite *s) {
+
+	int cont = 0;
+	char c;
+
+	printf("Categoria pai     : ");
+
+	do {
+		c = getchar();
+	} while (isspace(c));
+
+	do {
+		if (cont == 1 && s->categoria[0] == '/') {
+			cont--;
+		}
+		else if (cont == TAMCAMINHO - 1) {
+			printf("\nCategorias devem ter no máximo %d caracteres.\n", TAMCAMINHO - 1);
+			return 1;
+		}
+		s->categoria[cont] = c;
+		cont++;
+		c = getchar();
+	} while (c != '\n');
+	s->categoria[cont] = '\0';
+
+	return 0;
+
+}
+
+int fSetaCatNome(sSite *s) {
+
+	int cont = 0;
+	char c;
+
+	printf("Nome da categoria : ");
+
+	do {
+		c = getchar();
+	} while (isspace(c));
+
+	do {
+		if (c == '/') {
+			printf("\nCategorias não podem ter '/' no nome.\n");
+			return 1;
+		}
+		else if (cont == TAMNOMEFAV - 1) {
+			printf("\nNomes de categorias devem ter no máximo %d caracteres.\n", TAMNOMEFAV - 1);
+			return 1;
+		}
+		s->nome[cont] = c;
+		cont++;
+		c = getchar();
+	} while (c != '\n');
+	s->nome[cont] = '\0';
+
+	if (strcmp(s->nome, "luof") == 0) {
+		printf("\nluof é um nome reservado do sistema e não pode ser usado para nomes de categorias.\n");
+		return 1;
+	}
+
+	return 0;
+
+}
+
 void fSetaCaminhoArquivo(char *arq, char *nome) {
 	strcpy(arq, caminhoDB);
 	strcpy(&arq[tamCaminhoDB], nome);
@@ -8,6 +179,14 @@ void fSetaCaminhoArquivo(char *arq, char *nome) {
 void fIncrementaCamCat(char *caminho, char *nome) {
 	strcat(caminho, "/");
 	strcat(caminho, nome);
+}
+
+void fSetaCaminhoCategoria(char caminho[], sSite s) {
+	strcpy(caminho, s.categoria);
+	if (strcmp(s.categoria, "luof") == 0)
+		strcpy(caminho, s.nome);
+	else
+		fIncrementaCamCat(caminho, s.nome);
 }
 
 void fEscreveLuof_private(sBanco *db, sLista listaCategorias, int hierarquia) {
@@ -184,37 +363,13 @@ int fSeparaArquivoCategoria(sBanco *db, char categoria[], sCat *cat, char nomeA[
 		remove(nomeArqCat);
 	}
 	else {
-		fSetaCaminhoArquivo(nomeArqCat, nomeA);
-		arq = fopen(nomeArqCat, "w");
-		if (!arq) {
-			printf("\nO arquivo %s não pode ser aberto\n", nomeArqCat);
-			return 1;
-		}
-		it = criaIt(db->listaSites);
-		do {
-			siteDoIterador = (struct sSite*) retornaItera(&it);
-			fprintf(arq, "%s\n%s\n%s\n%s\n%c\n", siteDoIterador->nome, siteDoIterador->categoria, siteDoIterador->link, siteDoIterador->texto, siteDoIterador->ehCat);
-			iteraProximo(&it);
-		} while (!inicioIt(&it));
-		fclose(arq);
+		 fEscreveArquivoCat(db, nomeA);
 	}
 
 	//escreve o arquivo novo da categoria
 	if (!emptyList(listaSitesN)) {
-		fSetaCaminhoArquivo(nomeArqCat, cat->nome);
-		arq = fopen(nomeArqCat, "w");
-		if (!arq) {
-			printf("\nO arquivo %s não pode ser aberto\n", nomeArqCat);
-			return 1;
-		}
-		arq = fopen(nomeArqCat, "w");
-		it = criaIt(listaSitesN);
-		do {
-			siteDoIterador = (struct sSite*) retornaItera(&it);
-			fprintf(arq, "%s\n%s\n%s\n%s\n%c\n", siteDoIterador->nome, siteDoIterador->categoria, siteDoIterador->link, siteDoIterador->texto, siteDoIterador->ehCat);
-			iteraProximo(&it);
-		} while (!inicioIt(&it));
-		fclose(arq);
+		 db->listaSites = listaSitesN;
+		 fEscreveArquivoCat(db, cat->nome);
 	}
 
 	freeList(db->listaSites);

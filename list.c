@@ -11,8 +11,15 @@ void fListCategory(int opcao) {
 	if (fInicializaDB(&db))
 		return;
 
-	printf("Categoria : ");
-	scanf(" %[^\n]", s.categoria);
+	//caso o banco esteja vazio
+	if (emptyList(db.raiz)) {
+		printf("Nada ainda foi inserido.\n");
+		fFinalizaDB(&db);
+		return;
+	}
+
+	if (fSetaSiteCategoria(&s))
+		return;
 
 	if (strcmp(s.categoria, "/") == 0) {
 		strcpy(s.categoria, "luof");
@@ -188,7 +195,6 @@ void fListTree() {
 	if (fInicializaDB(&db))
 		return;
 
-	//caso o banco esteja vazio
 	if (emptyList(db.raiz)) {
 		printf("Nada ainda foi inserido.\n");
 		fFinalizaDB(&db);

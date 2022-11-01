@@ -14,9 +14,9 @@ void fAddSite() {
 	//prenche o campo ehCat
 	s.ehCat = '0';
 
-	//Pede o nome e a categoria
-	printf("Categoria : ");
-	scanf(" %[^\n]", s.categoria);
+	//Pede a categoria
+	if (fSetaSiteCategoria(&s))
+		return;
 
 	//Se a categoria é a raiz guarda no arquivo raiz
 	if (strcmp(s.categoria, "/") == 0) {
@@ -39,8 +39,9 @@ void fAddSite() {
 		}
 	}
 
-	printf("Nome      : ");
-	scanf(" %[^\n]", s.nome);
+	//pede nome
+	if (fSetaSiteNome(&s))
+		return;
 
 	//verifica se já existe um favorito com esse nome na categoria e se o arquivo pode ser aberto
 	if (fBuscaFavorito(&db, &s)) {
@@ -49,12 +50,13 @@ void fAddSite() {
 		return;
 	}
 
-	//Pede o link e comentario
-	printf("Link      : ");
-	scanf(" %[^\n]", s.link);
+	//Pede o link
+	if (fSetaSiteLink(&s))
+		return;
 
-	printf("Texto     : ");
-	scanf(" %[^\n]", s.texto);
+	//Pede o texto
+	if (fSetaSiteTexto(&s))
+		return;
 
 	//adiciona no banco de dados
 	fAdicionaFavorito(&db, s, categoria);
@@ -75,8 +77,9 @@ void fAddCategory() {
 	if (fInicializaDB(&db))
 		return;
 
-	printf("Categoria pai     : ");
-	scanf(" %[^\n]", c.categoria);
+	//pede a categoria pai
+	if (fSetaCatCategoria(&c))
+		return;
 
 	if (strcmp(c.categoria, "/") == 0) {
 		strcpy(c.categoria, "luof");
@@ -94,8 +97,9 @@ void fAddCategory() {
 		}
 	}
 
-	printf("Nome da categoria : ");
-	scanf(" %[^\n]", c.nome);
+	//pede o nome (da categoria)
+	if (fSetaCatNome(&c))
+		return;
 
 	//preenche os outros campos
 	strcpy(c.link, "@categoria@");
@@ -127,8 +131,8 @@ void fDeleteSite() {
 	if (fInicializaDB(&db))
 		return;
 
-	printf("Categoria : ");
-	scanf(" %[^\n]", s.categoria);
+	if (fSetaSiteCategoria(&s))
+		return;
 	
 	if (strcmp(s.categoria, "/") == 0) {
 		//se a lista está vazia não continua a função
@@ -160,8 +164,8 @@ void fDeleteSite() {
 		}
 	}
 
-	printf("Nome      : ");
-	scanf(" %[^\n]", s.nome);
+	if (fSetaSiteNome(&s))
+		return;
 	s.ehCat = '0';
 
 	if (!fBuscaFavorito(&db, &s)) {
@@ -188,8 +192,8 @@ void fDeleteCategory() {
 	if (fInicializaDB(&db))
 		return;
 
-	printf("Categoria pai     : ");
-	scanf(" %[^\n]", c.categoria);
+	if (fSetaCatCategoria(&c))
+		return;
 
 	if (strcmp(c.categoria, "/") == 0) {
 		if (emptyList(db.raiz)) {
@@ -217,8 +221,8 @@ void fDeleteCategory() {
 		}
 	}
 
-	printf("Nome da categoria : ");
-	scanf(" %[^\n]", c.nome);
+	if (fSetaCatNome(&c))
+		return;
 	c.ehCat = '1';
 	
 	if (!fBuscaFavorito(&db, &c)) {
