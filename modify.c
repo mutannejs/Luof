@@ -321,6 +321,28 @@ void fModifyCategory() {
 			return;
 	}
 
+	//caminhoA é o caminho antigo dos favoritos pertencentes a categoria
+	fSetaCaminhoCategoria(caminhoA, c);
+
+	//caminhoN é o caminho novo dos favoritos pertencentes a categoria
+	fSetaCaminhoCategoria(caminhoN, cNew);
+
+	//seta categoria3 como a posição na árvore da categoria que está sendo modificada
+	strcpy(catTemp, c.categoria);
+	if (strcmp(c.categoria, "luof") == 0)
+		strcpy(c.categoria, c.nome);
+	else
+		fIncrementaCamCat(c.categoria, c.nome);
+	fBuscaCat(&db, c, &categoria3);
+	strcpy(c.categoria, catTemp);
+
+	//verifica se a nova categoria pai não é ou pertence a uma subcategoria da categoria que será modificada
+	if (strlen(caminhoA) <= strlen(cNew.categoria) && strncmp(cNew.categoria, caminhoA, strlen(caminhoA)) == 0) {
+		printf("\nA nova categoria pai não pode ser ou pertencer a uma subcategoria da categoria que será modificada.\n");
+		fFinalizaDB(&db);
+		return;
+	}
+
 	/* --- Quando a função fJoinCategory() estiver pronta ---
 	if (strcmp(c.categoria, cNew.categoria) || strcmp(c.nome, cNew.nome)) {
 		rBuscaFavorito = fBuscaFavorito(&db, &cNew);
@@ -358,21 +380,6 @@ void fModifyCategory() {
 		fFinalizaDB(&db);
 		return;
 	}
-
-	//caminhoA é o caminho antigo dos favoritos pertencentes a categoria
-	fSetaCaminhoCategoria(caminhoA, c);
-
-	//caminhoN é o caminho novo dos favoritos pertencentes a categoria
-	fSetaCaminhoCategoria(caminhoN, cNew);
-
-	//seta categoria3 como a posição na árvore da categoria que está sendo modificada
-	strcpy(catTemp, c.categoria);
-	if (strcmp(c.categoria, "luof") == 0)
-		strcpy(c.categoria, c.nome);
-	else
-		fIncrementaCamCat(c.categoria, c.nome);
-	fBuscaCat(&db, c, &categoria3);
-	strcpy(c.categoria, catTemp);
 
 	if (strcmp(c.categoria, cNew.categoria) && !strcmp(c.nome, cNew.nome)) {//se só a categoria será modificada
 
