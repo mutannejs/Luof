@@ -1,12 +1,3 @@
-/* ----------------------- Links Uteis ou Favoritos (luof) ---------------------
- *
- *	Sobre:
- *	Luof é um gerenciador de links, foi feito para armazenar informações
- *	de uma página como no "Favoritos" de um browser, tudo pelo terminal,
- *	sendo facíl de gerencia-las e modifica-las.
- *
- */
-
 #include "luof.h"
 
 int main(int argc, char *argv[]) {
@@ -19,13 +10,13 @@ int main(int argc, char *argv[]) {
 		//fHelp();
 		printf("Função ainda não implementada\n");
 	}
-	else if (strcmp(argv[1], "-as") == 0 || strcmp(argv[1], "--add-site") == 0) {
+	else if (strcmp(argv[1], "-ab") == 0 || strcmp(argv[1], "--add-bookmark") == 0) {
 		fAddSite();
 	}
 	else if (strcmp(argv[1], "-ac") == 0 || strcmp(argv[1], "--add-category") == 0) {
 		fAddCategory();
 	}
-	else if (strcmp(argv[1], "-ds") == 0 || strcmp(argv[1], "--delete-site") == 0) {
+	else if (strcmp(argv[1], "-db") == 0 || strcmp(argv[1], "--delete-bookmark") == 0) {
 		fDeleteSite();
 	}
 	else if (strcmp(argv[1], "-dc") == 0 || strcmp(argv[1], "--delete-category") == 0) {
@@ -40,7 +31,7 @@ int main(int argc, char *argv[]) {
 	else if (strcmp(argv[1], "-lcs") == 0 || strcmp(argv[1], "--list-category-short") == 0) {
 		fListCategory(1);
 	}
-	else if (strcmp(argv[1], "-ms") == 0 || strcmp(argv[1], "--modify-site") == 0) {
+	else if (strcmp(argv[1], "-mb") == 0 || strcmp(argv[1], "--modify-bookmark") == 0) {
 		fModifySite();
 	}
 	else if (strcmp(argv[1], "-mc") == 0 || strcmp(argv[1], "--modify-category") == 0) {
