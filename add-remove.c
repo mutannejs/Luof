@@ -1,6 +1,6 @@
 #include "luof.h"
 
-void fAddSite() {
+void fAddBookmark() {
 
 	//variaveis
 	sSite s;
@@ -122,7 +122,7 @@ void fAddCategory() {
 
 }
 
-void fDeleteSite() {
+void fRemoveBookmark() {
 
 	sSite s;
 	sCat *categoria;
@@ -183,7 +183,7 @@ void fDeleteSite() {
 
 }
 
-void fDeleteCategory() {
+void fRemoveCategory() {
 
 	sSite c;
 	sCat *categoria;

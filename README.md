@@ -17,16 +17,15 @@ Em geral foi utilizado a Linguagem C para desenvolver este projeto, possuindo ta
 
 ## Passo a passo
 
-1. Definição de quais seriam as estruturas usadas no código (Ex: sSite, sCat), e os
- padrões de nomenclaturas.
+1. Definição de quais seriam as estruturas usadas no código, e os padrões de nomenclaturas.
 2. Definido como o banco de dados seria organizado, e criado a função responsável por
  iniciá-lo. Foi definido então que o banco de dados seria implementado usando arquivos e
  as funções da biblioteca padrão C para manipulá-los.
-3. Implementado funções para adicionar favoritos, e depois para adicionar categorias.
-4. Implementado funções para remover favoritos, e depois para remover categorias.
-5. Implementado funções para listar favoritos de uma categoria, e depois para listar
-categorias e favoritos em uma árvore.
-6. Implementado funções para modificar favoritos, e depois para modificar categorias.
+3. Implementado funções para adicionar favoritos e categorias, e depois para remover
+ favoritos e categorias.
+4. Implementado funções para listar favoritos de uma categoria, e depois para listar todas
+categorias e favoritos em árvore.
+5. Implementado funções para modificar favoritos e categorias.
 
 ## Instalação
 

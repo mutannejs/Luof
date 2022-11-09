@@ -7,20 +7,23 @@ int main(int argc, char *argv[]) {
 		printf("Função ainda não implementada\n");
 	}
 	else if (strcmp(argv[1], "-h") == 0 || strcmp(argv[1], "--help") == 0) {
-		//fHelp();
-		printf("Função ainda não implementada\n");
+		if (argc > 2)
+			fHelp(argv[2]);
+		else
+			fHelp(NULL);
+		//printf("Função ainda não implementada\n");
 	}
 	else if (strcmp(argv[1], "-ab") == 0 || strcmp(argv[1], "--add-bookmark") == 0) {
-		fAddSite();
+		fAddBookmark();
 	}
 	else if (strcmp(argv[1], "-ac") == 0 || strcmp(argv[1], "--add-category") == 0) {
 		fAddCategory();
 	}
-	else if (strcmp(argv[1], "-db") == 0 || strcmp(argv[1], "--delete-bookmark") == 0) {
-		fDeleteSite();
+	else if (strcmp(argv[1], "-rb") == 0 || strcmp(argv[1], "--remove-bookmark") == 0) {
+		fRemoveBookmark();
 	}
-	else if (strcmp(argv[1], "-dc") == 0 || strcmp(argv[1], "--delete-category") == 0) {
-		fDeleteCategory();
+	else if (strcmp(argv[1], "-rc") == 0 || strcmp(argv[1], "--remove-category") == 0) {
+		fRemoveCategory();
 	}
 	else if (strcmp(argv[1], "-lt") == 0 || strcmp(argv[1], "--list-tree") == 0) {
 		fListTree();
@@ -32,7 +35,7 @@ int main(int argc, char *argv[]) {
 		fListCategory(1);
 	}
 	else if (strcmp(argv[1], "-mb") == 0 || strcmp(argv[1], "--modify-bookmark") == 0) {
-		fModifySite();
+		fModifyBookmark();
 	}
 	else if (strcmp(argv[1], "-mc") == 0 || strcmp(argv[1], "--modify-category") == 0) {
 		fModifyCategory();
@@ -48,7 +51,7 @@ int main(int argc, char *argv[]) {
 	else if (strcmp(argv[1], "--export") == 0) {
 		//fExport();
 		printf("Função ainda não implementada\n");
-	}	
+	}
 	else if (strcmp(argv[1], "--html") == 0) {
 		//fHtml();
 		printf("Função ainda não implementada\n");

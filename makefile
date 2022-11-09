@@ -1,13 +1,13 @@
 all: luof
 
-luof: main.o add-delete.o list.o modify.o dbluof.o dbcat.o modulos.o lista-iterador.o pilha.o teste.o
-	gcc -o luof main.o add-delete.o list.o modify.o dbluof.o dbcat.o modulos.o lista-iterador.o pilha.o teste.o
+luof: main.o add-remove.o list.o modify.o dbluof.o dbcat.o modulos.o help.o lista-iterador.o pilha.o teste.o
+	gcc -o luof main.o add-remove.o list.o modify.o dbluof.o dbcat.o modulos.o help.o lista-iterador.o pilha.o teste.o
 
 main.o: main.c luof.h
 	gcc -o main.o main.c -c -W -Wall -pedantic
 
-add.o: add-delete.c luof.h
-	gcc -o add-delete.o add-delete.c -c -W -Wall -pedantic
+add-remove.o: add-remove.c luof.h
+	gcc -o add-remove.o add-remove.c -c -W -Wall -pedantic
 
 list.o: list.c luof.h
 	gcc -o list.o list.c -c -W -Wall -pedantic
@@ -23,6 +23,9 @@ dbcat.o: dbcat.c luof.h
 	
 modulos.o: modulos.c luof.h
 	gcc -o modulos.o modulos.c -c -W -Wall -pedantic
+
+help.o: help.c luof.h
+	gcc -o help.o help.c -c -W -Wall -pedantic
 
 lista-iterador.o: lista-iterador.c lista-iterador.h
 	gcc -o lista-iterador.o lista-iterador.c -c -W -Wall -pedantic

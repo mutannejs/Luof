@@ -91,14 +91,35 @@ void percursoCategorias(sCat *cat, int hie);
 void printaListaSites(sLista l);
 void printaSite(sSite s);
 
+//menu
 //void fMenu();
-//void fHelp();
 
-//add-delete
-void fAddSite();
+//help
+void fHelp_private();
+void fHelp_h();
+void fHelp_ab();
+void fHelp_ac();
+void fHelp_rb();
+void fHelp_rc();
+void fHelp_lt();
+void fHelp_lc(int opcao);
+void fHelp_mb();
+void fHelp_mc();
+void fHelp(char *argv);
+
+//add-remove
+void fAddBookmark();
 void fAddCategory();
-void fDeleteSite();
-void fDeleteCategory();
+void fRemoveBookmark();
+void fRemoveCategory();
+
+//modify
+void fModifyBookmark();
+void fReposicionaCatArvore(sBanco *db, sCat *categoria, sCat *categoria2, sCat **categoria3, char *nome);
+void fModifyCategory();
+//void fJoinCategorys_juntaLista(sBanco *db, sCat *cate, sCat *cate2, sSite c1, sSite c2);
+//void fJoinCategorys_private(sBanco *db, sSite c1, sSite c2);
+//void fJoinCategorys();
 
 //list
 void fListCategory(int opcao);
@@ -106,14 +127,6 @@ void fListTree_printaFavorito(sSite s, char linhas[], int hierarquia);
 sLista fListTree_preencheSites(sSite s);
 void fListTree_private(sBanco *db, char linhas[], sSite s, int hierarquia);
 void fListTree();
-
-//modify
-void fModifySite();
-void fReposicionaCatArvore(sBanco *db, sCat *categoria, sCat *categoria2, sCat **categoria3, char *nome);
-void fModifyCategory();
-//void fJoinCategorys_juntaLista(sBanco *db, sCat *cate, sCat *cate2, sSite c1, sSite c2);
-//void fJoinCategorys_private(sBanco *db, sSite c1, sSite c2);
-//void fJoinCategorys();
 
 /*
 void fBackup();

@@ -48,7 +48,7 @@ void fListCategory(int opcao) {
 	do {
 		siteDoIterador = (struct sSite*) retornaItera(&it);
 		if (strcmp(siteDoIterador->categoria, s.categoria) == 0) {
-			if (siteDoIterador->ehCat == '0' || (cont == 0 && siteDoIterador->ehCat == '1'))
+			if ((siteDoIterador->ehCat == '0' && opcao == 0) || (cont == 0 && siteDoIterador->ehCat == '1'))
 				printf("\n");
 			if (siteDoIterador->ehCat == '1') {
 				printf("* %s\n", siteDoIterador->nome);

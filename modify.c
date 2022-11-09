@@ -1,6 +1,6 @@
 #include "luof.h"
 
-void fModifySite() {
+void fModifyBookmark() {
 
 	sSite s, sNew;
 	sCat *categoria;
