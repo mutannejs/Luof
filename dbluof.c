@@ -10,14 +10,14 @@ int fInicializaDB(sBanco *db) {
 	/* --- quando caminhoDB estiver com o caminho da home do usuário ---
 	char *login;
 	login = getlogin();
-	sprintf(caminhoDB, "/home/%s/.luof/", login);
+	sprintf(db->caminhoDB, "/home/%s/.luof/", login);
 	------------------------------------------------------------------*/
-	strcpy(caminhoDB, ".luof/");
-	tamCaminhoDB = strlen(caminhoDB);
+	strcpy(db->caminhoDB, ".luof/");
+	db->tamCaminhoDB = strlen(db->caminhoDB);
 
-	strcpy(dir, caminhoDB);
+	strcpy(dir, db->caminhoDB);
 
-	if (stat(caminhoDB, &st) == -1) {//se ainda não existe o DB
+	if (stat(db->caminhoDB, &st) == -1) {//se ainda não existe o DB
 		printf("Criar novo Banco de dados? [s/n]: ");
 		scanf(" %c", &vBooleana);
 		if (vBooleana != 's') {
@@ -26,13 +26,13 @@ int fInicializaDB(sBanco *db) {
 		}
 
 		//cria diretório .luof
-		if (mkdir(caminhoDB, S_IRWXU) == -1) {
+		if (mkdir(db->caminhoDB, S_IRWXU) == -1) {
 			printf("Erro: não foi possível criar diretório na home do usuário.\n");
 			return 1;
 		}
 
 		//cria banco de dados
-		fSetaCaminhoArquivo(dir, "luof");
+		fSetaCaminhoArquivo(db, dir, "luof");
 		db->aLuof = fopen(dir, "w");
 		if (db->aLuof == NULL) {
 			printf("Erro: não foi possível criar banco de dados.\n");
@@ -42,7 +42,7 @@ int fInicializaDB(sBanco *db) {
 		printf("Banco de dados criado com sucesso.\n\n");
 	}
 	else {//se existe o DB
-		fSetaCaminhoArquivo(dir, "luof");
+		fSetaCaminhoArquivo(db, dir, "luof");
 		db->aLuof = fopen(dir, "r");
 
 		if (db->aLuof == NULL) {

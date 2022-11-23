@@ -9,7 +9,6 @@
 #include <sys/types.h>
 #include <sys/stat.h>
 #include "lista-iterador.h"
-#include "pilha.h"
 
 #define TAMNOMEFAV 100//tamanho de nome de favoritos
 #define TAMCAMINHO 1000//tamanho caminho da categoria
@@ -42,14 +41,12 @@ typedef struct sCat {
 typedef struct sBanco {
 	FILE *aLuof;
 	FILE *aCat;
-	sLista raiz;
+	char caminhoDB[TAMLINKARQ];
+	int tamCaminhoDB;
 	sCat *listaCategorias;
+	sLista raiz;
 	sLista listaSites;
 } sBanco;
-
-//variaveis globais
-char caminhoDB[TAMLINKARQ];
-int tamCaminhoDB;
 
 // --- Protótipo das funções ---
 //modulos
@@ -59,7 +56,7 @@ int fSetaSiteLink(sSite *s);
 int fSetaSiteTexto(sSite *s);
 int fSetaCatCategoria(sSite *s);
 int fSetaCatNome(sSite *s);
-void fSetaCaminhoArquivo(char *arq, char *nome);
+void fSetaCaminhoArquivo(sBanco *db, char *arq, char *nome);
 void fIncrementaCamCat(char *caminho, char *nome);
 void fSetaCaminhoCategoria(char caminho[], sSite s);
 void fEscreveLuof_private(sBanco *db, sLista listaCategorias, int hierarquia);
@@ -117,6 +114,7 @@ void fRemoveCategory();
 void fModifyBookmark();
 void fReposicionaCatArvore(sBanco *db, sCat *categoria, sCat *categoria2, sCat **categoria3, char *nome);
 void fModifyCategory();
+//void fJoinCategorys_juntaCatsArvore(sBanco *db, sCat *catIt, sCat *cat2);
 //void fJoinCategorys_juntaLista(sBanco *db, sCat *cate, sCat *cate2, sSite c1, sSite c2);
 //void fJoinCategorys_private(sBanco *db, sSite c1, sSite c2);
 //void fJoinCategorys();
@@ -124,15 +122,16 @@ void fModifyCategory();
 //list
 void fListCategory(int opcao);
 void fListTree_printaFavorito(sSite s, char linhas[], int hierarquia);
-sLista fListTree_preencheSites(sSite s);
+sLista fListTree_preencheSites(sBanco *db, sSite s);
 void fListTree_private(sBanco *db, char linhas[], sSite s, int hierarquia);
 void fListTree();
 
-/*
+//backup
+char* fBackup_criar(sBanco *db);
 void fBackup();
-void fExport();
-void fImport();
-void fHtml();
-*/
+
+//void fExport();
+//void fImport();
+//void fHtml();
 
 #endif

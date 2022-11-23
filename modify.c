@@ -64,7 +64,7 @@ void fModifyBookmark() {
 	printf("\nVocê deseja modificar? [1]categoria [2]nome [3]link [4]texto [5]tudo [6]nada : ");
 	scanf(" %d", &opcao);
 
-	//se os usuário não desejar modificar nada
+	//se o usuário não desejar modificar nada
 	if (opcao < 1 || opcao > 5) {
 		printf("\nSaindo...\n");
 		fFinalizaDB(&db);
@@ -469,7 +469,37 @@ void fModifyCategory() {
 
 }
 
-/*void fJoinCategorys_juntaLista(sBanco *db, sCat *cate, sCat *cate2, sSite c1, sSite c2) {
+/*void fJoinCategorys_juntaCatsArvore(sBanco *db, sCat *catIt, sCat *cat2) {
+
+	sCat *catTemp, *catTemp2;
+	sLista listaSitesA;
+	sIterador it2;
+	int inserir;
+
+	while (!emptyList(catIt->catFilhos)) {
+		inserir = 1;
+		it2 = criaIt(cat2->catFilhos);
+		catTemp = (struct sCat*) frontList(catIt->catFilhos);
+		if (!emptyList(cat2->catFilhos)) {
+			do {
+				catTemp2 = (struct sCat*) retornaItera(&it2);
+				if (strcmp(catTemp2->nome, catTemp->nome) == 0) {
+					inserir = 0;
+					fJoinCategorys_juntaCatsArvore(db, catTemp, catTemp2);
+				}
+				else {
+					iteraProximo(&it2);
+				}
+			} while (inserir == 1 && !inicioIt(&it2));
+		}
+		if (inserir == 1)
+			pushBackList(cat2->catFilhos, catTemp);
+		popFrontList(catIt->catFilhos);
+	}
+
+}
+
+void fJoinCategorys_juntaLista(sBanco *db, sCat *cate, sCat *cate2, sSite c1, sSite c2) {
 
 	sCat *catIt, *cat1;
 	sSite *siteDoIterador, *siteDoIterador2;
@@ -577,7 +607,7 @@ printf("17\n");
 	freeList(db->listaSites);
 	db->listaSites = listaSitesA;
 	if (emptyList(listaSitesA)) {
-		fSetaCaminhoArquivo(nomeArqCat, c1.nome);
+		fSetaCaminhoArquivo(db, nomeArqCat, c1.nome);
 		remove(nomeArqCat);
 	}
 	else {
@@ -702,7 +732,7 @@ printf("6\n");//CORRETO
 
 	//se a lista listaSitesA estiver vazia apenas exclui a a categoria
 	if (!emptyList(listaSitesA)) {
-		fSetaCaminhoArquivo(nomeArqCat, c1.nome);
+		fSetaCaminhoArquivo(db, nomeArqCat, c1.nome);
 		remove(nomeArqCat);
 	}
 printf("7\n");
@@ -778,7 +808,7 @@ printf("9\n");
 	freeList(db->listaSites);
 	db->listaSites = listaSitesA;
 	if (emptyList(listaSitesA)) {
-		fSetaCaminhoArquivo(nomeArqCat, c1.nome);
+		fSetaCaminhoArquivo(db, nomeArqCat, c1.nome);
 		remove(nomeArqCat);
 	}
 	else {

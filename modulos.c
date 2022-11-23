@@ -171,9 +171,9 @@ int fSetaCatNome(sSite *s) {
 
 }
 
-void fSetaCaminhoArquivo(char *arq, char *nome) {
-	strcpy(arq, caminhoDB);
-	strcpy(&arq[tamCaminhoDB], nome);
+void fSetaCaminhoArquivo(sBanco *db, char *arq, char *nome) {
+	strcpy(arq, db->caminhoDB);
+	strcpy(&arq[db->tamCaminhoDB], nome);
 }
 
 void fIncrementaCamCat(char *caminho, char *nome) {
@@ -215,7 +215,7 @@ void fEscreveLuof(sBanco *db) {
 	char nomeArqCat[TAMLINKARQ];
 
 	//reabre o arquivo aLuof para sobreescreve-lo
-	fSetaCaminhoArquivo(nomeArqCat, "luof");
+	fSetaCaminhoArquivo(db, nomeArqCat, "luof");
 	if (db->aLuof)
 		db->aLuof = freopen(nomeArqCat, "w", db->aLuof);
 	else
@@ -244,7 +244,7 @@ void fEscreveArquivoCat(sBanco *db, char *nomeArq) {
 	char nomeArqCat[TAMLINKARQ];
 
 	//reabre o arquivo para sobreescreve-lo
-	fSetaCaminhoArquivo(nomeArqCat, nomeArq);
+	fSetaCaminhoArquivo(db, nomeArqCat, nomeArq);
 	if (db->aCat)
 		db->aCat = freopen(nomeArqCat, "w", db->aCat);
 	else
@@ -280,7 +280,7 @@ int fSeparaArquivoCategoria(sBanco *db, char categoria[], sCat *cat, char nomeA[
 
 	//verifica se já existe um arquivo com o novo nome da categoria, se sim preenche uma lista com seus favoritos
 	listaSitesN = criaLista(struct sSite);
-	fSetaCaminhoArquivo(nomeArqCat, cat->nome);
+	fSetaCaminhoArquivo(db, nomeArqCat, cat->nome);
 	arq = fopen(nomeArqCat, "r");
 	if (arq) {
 		while (fgets(nomeTemp, 100, arq) != NULL) {
@@ -359,7 +359,7 @@ int fSeparaArquivoCategoria(sBanco *db, char categoria[], sCat *cat, char nomeA[
 
 	//se a lista da categoria (nome antigo) ficou vazia remove o arquivo antigo, caso contrário só atualiza o arquivo
 	if (emptyList(db->listaSites)) {
-		fSetaCaminhoArquivo(nomeArqCat, nomeA);
+		fSetaCaminhoArquivo(db, nomeArqCat, nomeA);
 		remove(nomeArqCat);
 	}
 	else {

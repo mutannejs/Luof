@@ -11,7 +11,6 @@ int main(int argc, char *argv[]) {
 			fHelp(argv[2]);
 		else
 			fHelp(NULL);
-		//printf("Função ainda não implementada\n");
 	}
 	else if (strcmp(argv[1], "-ab") == 0 || strcmp(argv[1], "--add-bookmark") == 0) {
 		fAddBookmark();
@@ -45,8 +44,7 @@ int main(int argc, char *argv[]) {
 		printf("Função ainda não implementada\n");
 	}
 	else if (strcmp(argv[1], "--backup") == 0) {
-		//fBackup();
-		printf("Função ainda não implementada\n");
+		fBackup();
 	}
 	else if (strcmp(argv[1], "--export") == 0) {
 		//fExport();

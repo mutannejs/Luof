@@ -68,8 +68,10 @@ void fListCategory(int opcao) {
 
 	//se db.listaSites não está vazio, mas não possui favoritos dessa categoria
 	if (cont == 0) {
-		printf("\nLista vazia.\n");
+		printf("\nLista vazia.");
 	}
+
+	printf("\n");
 
 	fFinalizaDB(&db);
 
@@ -94,7 +96,7 @@ void fListTree_printaFavorito(sSite s, char linhas[], int hierarquia) {
 		printf("_ %s\n", s.nome);
 }
 
-sLista fListTree_preencheSites(sSite s) {
+sLista fListTree_preencheSites(sBanco *db, sSite s) {
 
 	sSite siteTemp;
 	sLista listaFavoritos;
@@ -110,7 +112,7 @@ sLista fListTree_preencheSites(sSite s) {
 		fIncrementaCamCat(categoria, s.nome);
 	}
 
-	fSetaCaminhoArquivo(nomeArqCat, s.nome);
+	fSetaCaminhoArquivo(db, nomeArqCat, s.nome);
 	arqCat = fopen(nomeArqCat, "r");
 	listaFavoritos = criaLista(struct sSite);
 
@@ -156,7 +158,7 @@ void fListTree_private(sBanco *db, char linhas[], sSite s, int hierarquia) {
 	linhas[hierarquia] = '1';
 
 	//preenche a lista de favoritos e guarda em listaFavoritos
-	listaFavoritos = fListTree_preencheSites(s);
+	listaFavoritos = fListTree_preencheSites(db, s);
 
 	//se a categoria estiver vazia
 	if (emptyList(listaFavoritos)) {
@@ -226,6 +228,8 @@ void fListTree() {
 			siteDoIterador = (struct sSite*) retornaItera(&it);
 		} while (!inicioIt(&it) && siteDoIterador->ehCat == '0');
 	}
+
+	printf("\n");
 
 	fFinalizaDB(&db);
 

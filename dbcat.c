@@ -83,7 +83,7 @@ int fPreencheListaSite(sBanco *db, sCat *c) {
 	char nomeArqCat[TAMLINKARQ];
 
 	//abre o arquivo da categoria
-	fSetaCaminhoArquivo(nomeArqCat, c->nome);
+	fSetaCaminhoArquivo(db, nomeArqCat, c->nome);
 	if (db->aCat)
 		db->aCat = freopen(nomeArqCat, "r", db->aCat);
 	else
@@ -331,7 +331,7 @@ void fAdicionaCatLuof(sBanco *db, sSite s, sCat *c) {
 	//se não entrar no if significa que a categoria pai possui o mesmo nome da nova categoria
 	if (strcmp(c->nome, cNova.nome) != 0) {
 
-		fSetaCaminhoArquivo(nomeArqCat, s.nome);
+		fSetaCaminhoArquivo(db, nomeArqCat, s.nome);
 		nCat = fopen(nomeArqCat, "r");
 
 		//se nCat == NULL significa que o arquivo não existe, então ele é criado e em ambos os casos fechado
@@ -387,7 +387,7 @@ void fRemoveArqCat(sBanco *db, sSite s) {
 
 	//se a lista estiver vazia exclui o arquivo
 	if (emptyList(db->listaSites)) {
-		fSetaCaminhoArquivo(nomeArqCat, s.nome);
+		fSetaCaminhoArquivo(db, nomeArqCat, s.nome);
 		remove(nomeArqCat);
 		return;
 	}
@@ -423,7 +423,7 @@ void fRemoveArqCat(sBanco *db, sSite s) {
 
 	//se a lista da categoria ficou vazia remove o arquivo, caso contrário só atualiza o arquivo
 	if (emptyList(db->listaSites)) {
-		fSetaCaminhoArquivo(nomeArqCat, s.nome);
+		fSetaCaminhoArquivo(db, nomeArqCat, s.nome);
 		remove(nomeArqCat);
 	}
 	else {
