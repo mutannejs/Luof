@@ -127,6 +127,8 @@ void fListTree_private(sBanco *db, char linhas[], sSite s, int hierarquia);
 void fListTree();
 
 //backup
+void fBackup_escreveArvore(FILE *arqCat, sLista listaCategorias, int hierarquia);
+void fBackup_preencnheListaCats(sLista listaCats, sCat *cat);
 char* fBackup_criar(sBanco *db);
 void fBackup();
 
