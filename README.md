@@ -26,6 +26,7 @@ Em geral foi utilizado a Linguagem C para desenvolver este projeto, possuindo ta
 4. Implementado funções para listar favoritos de uma categoria, e depois para listar todas
 categorias e favoritos em árvore.
 5. Implementado funções para modificar favoritos e categorias.
+6. Implementado função de criar e restaurar backup.
 
 ## Instalação
 

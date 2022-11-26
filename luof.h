@@ -102,6 +102,7 @@ void fHelp_lt();
 void fHelp_lc(int opcao);
 void fHelp_mb();
 void fHelp_mc();
+void fHelp_backup();
 void fHelp(char *argv);
 
 //add-remove

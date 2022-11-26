@@ -70,6 +70,12 @@ void fHelp_private() {
 	"\tUse para modificar uma categoria. Primeiramente informe a categoria pai da categoria"
 	" que será modificada, depois seu nome, qual dado dela deseja-se modificar, e por fim"
 	" basta informar o(s) novo(s) dado(s) da categoria.\n\n"
+
+	"\t--backup:\n"
+	"\tUse para criar ou restaurar um backup. Informe a opção desejada, se for [1]criar,"
+	" o arquivo de backup (o arquivo possui a extensão .luof) será adicionado no diretório"
+	" atual. Caso a opção seja [2]restaurar será necessário informar o caminho do arquivo de"
+	" backup que se deseja restaurar.\n\n"
 	);
 }
 
@@ -250,6 +256,26 @@ void fHelp_mc() {
 	);
 }
 
+void fHelp_backup() {
+	printf(
+	"luof:\t--backup:\n"
+	"\tUse para criar ou restaurar um backup. Informe a opção desejada; se a opção for"
+	" [1]criar, o arquivo de backup (o arquivo possui a extensão .luof) será adicionado"
+	" no diretório atual, caso já exista um arquivo de backup no diretório ele não será"
+	" perdido. Caso a opção seja [2]restaurar, será necessário informar o caminho do arquivo"
+	" de backup que se deseja restaurar, lembrando que ao restaurar um backup todos os"
+	" dados atuais do banco serão perdidos.\n\n"
+	"Ex: Caso quisesse-se criar um backup, porém na pasta atual já exista o arquivo backup.luof:\n\n"
+	"Você deseja criar um backup novo ou restaurar um antigo? [1]criar [2]restaurar [3]sair : 1\n"
+	"Arquivo backup1.luof adicionado no diretório atual.\n"
+	"Backup criado com sucesso.\n\n"
+	"Ex: Caso quisesse-se restaurar um backup com o caminho \"/home/usuario/Downloads/backup5.luof\":\n\n"
+	"Você deseja criar um backup novo ou restaurar um antigo? [1]criar [2]restaurar [3]sair : 2\n"
+	"Informe o caminho do arquivo de backup: /home/usuario/Downloads/backup5.luof\n"
+	"Backup restaurado com sucesso.\n\n"
+	);
+}
+
 void fHelp(char *argv) {
 
 	if (!argv) {
@@ -285,15 +311,14 @@ void fHelp(char *argv) {
 	else if (strcmp(argv, "-mc") == 0 || strcmp(argv, "--modify-category") == 0) {
 		fHelp_mc();
 	}
+	else if (strcmp(argv, "--backup") == 0) {
+		fHelp_backup();
+	}
 	else {
 		printf("%s não é um comando de luof. Use \"luof --help\" para ver comandos válidos.\n", argv);
 	}
 	/*else if (strcmp(argv, "-jc") == 0 || strcmp(argv, "--join-categorys") == 0) {
 		//fHelp_jc();
-		printf("Função ainda não implementada\n");
-	}
-	else if (strcmp(argv, "--backup") == 0) {
-		//fHelp_backup();
 		printf("Função ainda não implementada\n");
 	}
 	else if (strcmp(argv, "--export") == 0) {
