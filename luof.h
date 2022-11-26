@@ -130,6 +130,10 @@ void fListTree();
 void fBackup_escreveArvore(FILE *arqCat, sLista listaCategorias, int hierarquia);
 void fBackup_preencnheListaCats(sLista listaCats, sCat *cat);
 char* fBackup_criar(sBanco *db);
+void fBackup_excluirArquivos(sBanco *db);
+int fBackup_separaNomeQuantidade(char *nomeQtdArq, char *nomeArq);
+void fBackup_adicionaSite(FILE *arq, sLista l);
+void fBackup_restaurar(sBanco *db, FILE *arqBackup);
 void fBackup();
 
 //void fExport();

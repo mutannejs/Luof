@@ -58,7 +58,7 @@ char* fBackup_criar(sBanco *db) {
 	sLista listaCats;
 	sIterador it, it2;
 	char nomeBackup[TAMNOMEFAV], *nomeB;
-	FILE *arqCat;
+	FILE *arqBackup;
 
 	//preenche a listaCats com todas as categorias sem repetir categorias com o mesmo nome
 	listaCats = criaLista(struct sCat);
@@ -73,29 +73,29 @@ char* fBackup_criar(sBanco *db) {
 
 	//cria arquivo do backup
 	strcpy(nomeBackup, "backup.luof");
-	arqCat = fopen(nomeBackup, "r");
+	arqBackup = fopen(nomeBackup, "r");
 	//faz um loop para não haver conflito entre backup's caso já exista algum no diretório atual
-	for (int i = 1; arqCat; i++) {
+	for (int i = 1; arqBackup; i++) {
 		sprintf(nomeBackup, "backup%d.luof", i);
-		arqCat = freopen(nomeBackup, "r", arqCat);
+		arqBackup = freopen(nomeBackup, "r", arqBackup);
 	}
-	arqCat = fopen(nomeBackup, "w");
-	if (!arqCat)
+	arqBackup = fopen(nomeBackup, "w");
+	if (!arqBackup)
 		return NULL;
 
 	//escreve a árvore de categorias no arquivo
-	fBackup_escreveArvore(arqCat, db->listaCategorias->catFilhos, 0);
+	fBackup_escreveArvore(arqBackup, db->listaCategorias->catFilhos, 0);
 
 	//marca o fim da árvore de categorias
-	fprintf(arqCat, "##\n");
+	fprintf(arqBackup, "##\n");
 
 	//escreve a raiz no arquivo
-	fprintf(arqCat, "luof/%ld\n", sizeList(db->raiz));
+	fprintf(arqBackup, "luof/%ld\n", sizeList(db->raiz));
 	if (!emptyList(db->raiz)) {
 		it = criaIt(db->raiz);
 		do {
 			siteDoIterador = (struct sSite*) retornaItera(&it);
-			fprintf(arqCat, "%s\n%s\n%s\n%s\n%c\n", siteDoIterador->nome, siteDoIterador->categoria, siteDoIterador->link, siteDoIterador->texto, siteDoIterador->ehCat);
+			fprintf(arqBackup, "%s\n%s\n%s\n%s\n%c\n", siteDoIterador->nome, siteDoIterador->categoria, siteDoIterador->link, siteDoIterador->texto, siteDoIterador->ehCat);
 			iteraProximo(&it);
 		} while (!inicioIt(&it));
 	}
@@ -106,17 +106,17 @@ char* fBackup_criar(sBanco *db) {
 		do {
 			cat = (struct sCat*) retornaItera(&it);
 			if (fPreencheListaSite(db, cat)) {
-				fclose(arqCat);
+				fclose(arqBackup);
 				remove(nomeBackup);
 				return NULL;
 			}
 			//escreve os sites do arquivo
-			fprintf(arqCat, "%s/%ld\n", cat->nome, sizeList(db->listaSites));
+			fprintf(arqBackup, "%s/%ld\n", cat->nome, sizeList(db->listaSites));
 			if (!emptyList(db->listaSites)) {
 				it2 = criaIt(db->listaSites);
 				do {
 					siteDoIterador = (struct sSite*) retornaItera(&it2);
-					fprintf(arqCat, "%s\n%s\n%s\n%s\n%c\n", siteDoIterador->nome, siteDoIterador->categoria, siteDoIterador->link, siteDoIterador->texto, siteDoIterador->ehCat);
+					fprintf(arqBackup, "%s\n%s\n%s\n%s\n%c\n", siteDoIterador->nome, siteDoIterador->categoria, siteDoIterador->link, siteDoIterador->texto, siteDoIterador->ehCat);
 					iteraProximo(&it2);
 				} while (!inicioIt(&it2));
 			}
@@ -125,18 +125,136 @@ char* fBackup_criar(sBanco *db) {
 	}
 
 	//fecha o arquivo e retorna seu nome
-	fclose(arqCat);
+	fclose(arqBackup);
 	nomeB = malloc(sizeof(char)*strlen(nomeBackup));
 	strcpy(nomeB, nomeBackup);
 	return nomeB;
 
 }
 
+void fBackup_excluirArquivos(sBanco *db) {
+
+	sCat *cat;
+	sLista listaCats;
+	sIterador it;
+	char nomeArqCat[TAMLINKARQ];
+
+	//preenche a listaCats com todas as categorias sem repetir categorias com o mesmo nome
+	listaCats = criaLista(struct sCat);
+	if (!emptyList(db->listaCategorias->catFilhos)) {
+		it = criaIt(db->listaCategorias->catFilhos);
+		do {
+			cat = (struct sCat*) retornaItera(&it);
+			fBackup_preencnheListaCats(listaCats, cat);
+			iteraProximo(&it);
+		} while (!inicioIt(&it));
+	}
+
+	//remove todos os arquivos usando o nome das categorias
+	it = criaIt(listaCats);
+	while (!emptyList(listaCats)) {
+		cat = (struct sCat*) retornaItera(&it);
+		fSetaCaminhoArquivo(db, nomeArqCat, cat->nome);
+		remove(nomeArqCat);
+		removeIt(&it);
+	}
+
+}
+
+int fBackup_separaNomeQuantidade(char *nomeQtdArq, char *nomeArq) {
+
+	int i = 0;
+	int qtdSites;
+
+	while (nomeQtdArq[i] != '/')
+		i++;
+
+	strncpy(nomeArq, nomeQtdArq, i);
+	nomeArq[i] = '\0';
+	qtdSites = atoi(&nomeQtdArq[i+1]);
+
+	return qtdSites;
+
+}
+
+void fBackup_adicionaSite(FILE *arq, sLista l) {
+
+	sSite s;
+	char ehCategoria[3];
+
+	fgets(s.nome, TAMCAMINHO, arq);
+	s.nome[strlen(s.nome)-1] = '\0';
+
+	fgets(s.categoria, TAMCAMINHO, arq);
+	s.categoria[strlen(s.categoria)-1] = '\0';
+
+	fgets(s.link, TAMLINKARQ, arq);
+	s.link[strlen(s.link)-1] = '\0';
+
+	fgets(s.texto, TAMTEXTO, arq);
+	s.texto[strlen(s.texto)-1] = '\0';
+
+	fgets(ehCategoria, 3, arq);
+	s.ehCat = ehCategoria[0];
+
+	pushBackList(l, &s);
+
+}
+
+void fBackup_restaurar(sBanco *db, FILE *arqBackup) {
+
+	char nomeQtdArq[TAMNOMEFAV+10], nomeArq[TAMNOMEFAV];
+	int qtdSites;
+
+	//recupera a árvore de categorias
+	fclose(db->aLuof);
+	fLiberaCats(db->listaCategorias);
+	db->aLuof = arqBackup;
+	fPreencheListaCat(db);
+	arqBackup = db->aLuof;
+	db->aLuof = NULL;
+
+	//recupera a raiz
+	freeList(db->raiz);
+	db->raiz = criaLista(struct sSite);
+	fgets(nomeQtdArq, 100, arqBackup);
+	qtdSites = fBackup_separaNomeQuantidade(nomeQtdArq, nomeArq);
+
+	for (int i = 0; i < qtdSites; i++)
+		fBackup_adicionaSite(arqBackup, db->raiz);
+
+	//escreve o arquivo luof
+	fEscreveLuof(db);
+	fclose(db->aLuof);
+	db->aLuof = NULL;
+
+	//escreve os demais arquivos
+	while(fgets(nomeQtdArq, 100, arqBackup) != NULL) {
+
+		if (db->listaSites)
+			freeList(db->listaSites);
+
+		db->listaSites = criaLista(struct sSite);
+		qtdSites = fBackup_separaNomeQuantidade(nomeQtdArq, nomeArq);
+
+		for (int i = 0; i < qtdSites; i++)
+			fBackup_adicionaSite(arqBackup, db->listaSites);
+
+		fEscreveArquivoCat(db, nomeArq);
+
+		fclose(db->aCat);
+		db->aCat = NULL;
+
+	}
+
+}
+
 void fBackup() {
 
-	char *nomeBackup;
+	char *nomeBackup, caminhoBackup[TAMLINKARQ];
 	int opcao;
 	sBanco db;
+	FILE *arqBackup;
 
 	if (fInicializaDB(&db))
 		return;
@@ -156,6 +274,7 @@ void fBackup() {
 		//cria o arquivo do backup no diretório atual
 		nomeBackup = fBackup_criar(&db);
 
+		//retorna mensagem de sucesso ou erro
 		if (!nomeBackup) {
 			printf("\nErro ao tentar criar backup.\n");
 			printf("Saindo...\n");
@@ -165,8 +284,31 @@ void fBackup() {
 			printf("Backup criado com sucesso.\n");
 			free(nomeBackup);
 		}
+
 	}
 	else {
+
+		//pede ao usuário o caminho do backup
+		printf("Informe o caminho do arquivo de backup: ");
+		scanf(" %[^\n]", caminhoBackup);
+
+		//abre o arquivo
+		arqBackup = fopen(caminhoBackup, "r");
+
+		//retorna mensagem de erro ou continua a restauração
+		if (!arqBackup) {
+			printf("\nErro ao tentar abrir o arquivo de backup.\n");
+			printf("Saindo...\n");
+		}
+		else {
+			//apaga os arquivos já existentes no banco
+			fBackup_excluirArquivos(&db);
+			//restaura o backup
+			fBackup_restaurar(&db, arqBackup);
+
+			printf("\nBackup restaurado com sucesso.\n");
+		}
+
 	}
 
 	//fecha os arquivos abertos

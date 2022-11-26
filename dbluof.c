@@ -71,9 +71,8 @@ void fFinalizaDB(sBanco *db) {
 		fclose(db->aCat);
 
 	//libera estruturas do banco
-	if (db->listaCategorias) {
+	if (db->listaCategorias)
 		fLiberaCats(db->listaCategorias);
-	}
 	if (db->listaSites && db->listaSites != db->raiz)
 		freeList(db->listaSites);
 	if (db->raiz)
