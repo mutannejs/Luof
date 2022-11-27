@@ -49,18 +49,6 @@ void fHelp_private() {
 	"\tUse para remover uma categoria. Primeiro informe a categoria pai da categoria que"
 	" será removida, e depois o nome dela.\n\n"
 
-	"\t-lt\tou   --list-tree:\n"
-	"\tUse para ver todas as categorias e favoritos que estão armazenados. Os dados serão"
-	" mostrados em forma de árvore, obedecendo à hierarquia das categorias.\n\n"
-
-	"\t-lc\tou   --list-category:\n"
-	"\tUse para ver o nome das categorias e dados dos favoritos que pertencem a categoria"
-	" informada.\n\n"
-
-	"\t-lcs\tou   --list-category-short:\n"
-	"\tUse para ver apenas os nomes das categorias e favoritos que pertencem a categoria"
-	" informada.\n\n"
-
 	"\t-mb\tou   --modify-bookmark:\n"
 	"\tUse para modificar um favorito. Primeiramente informe a categoria a qual o favorito"
 	" pertence, depois o seu nome, qual dado dele deseja-se modificar, e, por fim, basta"
@@ -70,6 +58,18 @@ void fHelp_private() {
 	"\tUse para modificar uma categoria. Primeiramente informe a categoria pai da categoria"
 	" que será modificada, depois seu nome, qual dado dela deseja-se modificar, e por fim"
 	" basta informar o(s) novo(s) dado(s) da categoria.\n\n"
+
+	"\t-lc\tou   --list-category:\n"
+	"\tUse para ver o nome das categorias e dados dos favoritos que pertencem a categoria"
+	" informada.\n\n"
+
+	"\t-lcs\tou   --list-category-short:\n"
+	"\tUse para ver apenas os nomes das categorias e favoritos que pertencem a categoria"
+	" informada.\n\n"
+
+	"\t-lt\tou   --list-tree:\n"
+	"\tUse para ver todas as categorias e favoritos que estão armazenados. Os dados serão"
+	" mostrados em forma de árvore, obedecendo à hierarquia das categorias.\n\n"
 
 	"\t--backup:\n"
 	"\tUse para criar ou restaurar um backup. Informe a opção desejada, se for [1]criar,"
@@ -159,56 +159,6 @@ void fHelp_rc() {
 	);
 }
 
-void fHelp_lt() {
-	printf(
-	"luof:\t-lt\tou   --list-tree:\n\n"
-	"\tUse para ver todas as categorias e favoritos que estão armazenados. Os dados serão"
-	" mostrados em forma de árvore, obedecendo à hierarquia das categorias, onde as categorias"
-	" serão mostradas com um apóstrofo (*) antes de seu nome.\n"
-	"\tAlém de mostrar uma visão de tudo que está armazenado, serve principalmente para saber"
-	" o caminho (categoria e/ou nome) de algo específico.\n\n"
-	"Ex: Caso o comando \"luof -lt\" gerasse a saída:\n"
-	"|_ * Jogos\n"
-	"|    |_ * steam\n"
-	"|         |_ * Dark Souls\n"
-	"|         |    |_ ds2 sotfs\n"
-	"|         |    |_ dsr\n"
-	"|_ ilovepdf\n"
-	"|_ randoma11y\n\n"
-	"\tPoderia-se concluir que o caminho do favorito \"dsr\" é \"Jogos/steam/Dark Souls/dsr\","
-	" e caso quisesse-se removê-lo, os dados informados teriam que ser:\n"
-	"Categoria : Jogos/steam/Dark Souls\n"
-	"Nome      : dsr\n\n"
-	"\tDa mesma forma, se se quisesse remover o favorito \"ilovepdf\" ou a categoria \"steam\","
-	" os dados informados teriam que ser:\n"
-	"\tPara o favorito \"ilovepdf\"\n"
-	"Categoria : /\n"
-	"Nome      : ilovepdf\n\n"
-	"\tPara a categoria \"steam\"\n"
-	"Categoria pai     : Jogos\n"
-	"Nome da categoria : steam\n\n"
-	);
-}
-
-void fHelp_lc(int opcao) {
-	if (opcao == 0) {
-		printf(
-		"luof:\t-lc\tou   --list-category:\n\n"
-		"\tUse para ver o nome das categorias e dados dos favoritos que pertencem a categoria"
-		" informada. As subcategorias serão mostradas com um apóstrofo (*) antes de seu"
-		" nome, e os favoritos terão seu nome, link e texto mostrados.\n\n"
-		);
-	}
-	else {
-		printf(
-		"luof:\t-lcs\tou   --list-category-short:\n\n"
-		"\tUse para ver o nome das categorias e nome dos favoritos que pertencem a categoria"
-		" informada. Onde as categorias serão mostradas com um apóstrofo (*) antes de seu"
-		" nome, e os favoritos terão apenas seu nome mostrado.\n\n"
-		);
-	}
-}
-
 void fHelp_mb() {
 	printf(
 	"luof:\t-mb\tou   --modify-bookmark:\n\n"
@@ -256,6 +206,56 @@ void fHelp_mc() {
 	);
 }
 
+void fHelp_lc(int opcao) {
+	if (opcao == 0) {
+		printf(
+		"luof:\t-lc\tou   --list-category:\n\n"
+		"\tUse para ver o nome das categorias e dados dos favoritos que pertencem a categoria"
+		" informada. As subcategorias serão mostradas com um apóstrofo (*) antes de seu"
+		" nome, e os favoritos terão seu nome, link e texto mostrados.\n\n"
+		);
+	}
+	else {
+		printf(
+		"luof:\t-lcs\tou   --list-category-short:\n\n"
+		"\tUse para ver o nome das categorias e nome dos favoritos que pertencem a categoria"
+		" informada. Onde as categorias serão mostradas com um apóstrofo (*) antes de seu"
+		" nome, e os favoritos terão apenas seu nome mostrado.\n\n"
+		);
+	}
+}
+
+void fHelp_lt() {
+	printf(
+	"luof:\t-lt\tou   --list-tree:\n\n"
+	"\tUse para ver todas as categorias e favoritos que estão armazenados. Os dados serão"
+	" mostrados em forma de árvore, obedecendo à hierarquia das categorias, onde as categorias"
+	" serão mostradas com um apóstrofo (*) antes de seu nome.\n"
+	"\tAlém de mostrar uma visão de tudo que está armazenado, serve principalmente para saber"
+	" o caminho (categoria e/ou nome) de algo específico.\n\n"
+	"Ex: Caso o comando \"luof -lt\" gerasse a saída:\n"
+	"|_ * Jogos\n"
+	"|    |_ * steam\n"
+	"|         |_ * Dark Souls\n"
+	"|         |    |_ ds2 sotfs\n"
+	"|         |    |_ dsr\n"
+	"|_ ilovepdf\n"
+	"|_ randoma11y\n\n"
+	"\tPoderia-se concluir que o caminho do favorito \"dsr\" é \"Jogos/steam/Dark Souls/dsr\","
+	" e caso quisesse-se removê-lo, os dados informados teriam que ser:\n"
+	"Categoria : Jogos/steam/Dark Souls\n"
+	"Nome      : dsr\n\n"
+	"\tDa mesma forma, se se quisesse remover o favorito \"ilovepdf\" ou a categoria \"steam\","
+	" os dados informados teriam que ser:\n"
+	"\tPara o favorito \"ilovepdf\"\n"
+	"Categoria : /\n"
+	"Nome      : ilovepdf\n\n"
+	"\tPara a categoria \"steam\"\n"
+	"Categoria pai     : Jogos\n"
+	"Nome da categoria : steam\n\n"
+	);
+}
+
 void fHelp_backup() {
 	printf(
 	"luof:\t--backup:\n"
@@ -296,8 +296,11 @@ void fHelp(char *argv) {
 	else if (strcmp(argv, "-rc") == 0 || strcmp(argv, "--remove-category") == 0) {
 		fHelp_rc();
 	}
-	else if (strcmp(argv, "-lt") == 0 || strcmp(argv, "--list-tree") == 0) {
-		fHelp_lt();
+	else if (strcmp(argv, "-mb") == 0 || strcmp(argv, "--modify-bookmark") == 0) {
+		fHelp_mb();
+	}
+	else if (strcmp(argv, "-mc") == 0 || strcmp(argv, "--modify-category") == 0) {
+		fHelp_mc();
 	}
 	else if (strcmp(argv, "-lc") == 0 || strcmp(argv, "--list-category") == 0) {
 		fHelp_lc(0);
@@ -305,11 +308,8 @@ void fHelp(char *argv) {
 	else if (strcmp(argv, "-lcs") == 0 || strcmp(argv, "--list-category-short") == 0) {
 		fHelp_lc(1);
 	}
-	else if (strcmp(argv, "-mb") == 0 || strcmp(argv, "--modify-bookmark") == 0) {
-		fHelp_mb();
-	}
-	else if (strcmp(argv, "-mc") == 0 || strcmp(argv, "--modify-category") == 0) {
-		fHelp_mc();
+	else if (strcmp(argv, "-lt") == 0 || strcmp(argv, "--list-tree") == 0) {
+		fHelp_lt();
 	}
 	else if (strcmp(argv, "--backup") == 0) {
 		fHelp_backup();

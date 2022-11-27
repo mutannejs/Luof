@@ -235,6 +235,9 @@ void fEscreveLuof(sBanco *db) {
 		iteraProximo(&it);
 	} while (!inicioIt(&it));
 
+	fclose(db->aLuof);
+	db->aLuof = NULL;
+
 }
 
 void fEscreveArquivoCat(sBanco *db, char *nomeArq) {
@@ -259,6 +262,9 @@ void fEscreveArquivoCat(sBanco *db, char *nomeArq) {
 			iteraProximo(&it);
 		} while (!inicioIt(&it));
 	}
+
+	fclose(db->aCat);
+	db->aCat = NULL;
 
 }
 

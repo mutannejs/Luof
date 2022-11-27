@@ -137,8 +137,12 @@ void fBackup_adicionaSite(FILE *arq, sLista l);
 void fBackup_restaurar(sBanco *db, FILE *arqBackup);
 void fBackup();
 
-//void fExport();
-//void fImport();
+//import-export
+void fImport();
+sLista fExport_preencheSites(sBanco *db, sSite s);
+void fExport_private(sBanco *db, FILE *arqExport, sSite s, int hierarquia);
+void fExport();
+
 //void fHtml();
 
 #endif

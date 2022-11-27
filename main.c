@@ -24,15 +24,6 @@ int main(int argc, char *argv[]) {
 	else if (strcmp(argv[1], "-rc") == 0 || strcmp(argv[1], "--remove-category") == 0) {
 		fRemoveCategory();
 	}
-	else if (strcmp(argv[1], "-lt") == 0 || strcmp(argv[1], "--list-tree") == 0) {
-		fListTree();
-	}
-	else if (strcmp(argv[1], "-lc") == 0 || strcmp(argv[1], "--list-category") == 0) {
-		fListCategory(0);
-	}
-	else if (strcmp(argv[1], "-lcs") == 0 || strcmp(argv[1], "--list-category-short") == 0) {
-		fListCategory(1);
-	}
 	else if (strcmp(argv[1], "-mb") == 0 || strcmp(argv[1], "--modify-bookmark") == 0) {
 		fModifyBookmark();
 	}
@@ -43,11 +34,23 @@ int main(int argc, char *argv[]) {
 		//fJoinCategorys();
 		printf("Função ainda não implementada\n");
 	}
+	else if (strcmp(argv[1], "-lc") == 0 || strcmp(argv[1], "--list-category") == 0) {
+		fListCategory(0);
+	}
+	else if (strcmp(argv[1], "-lcs") == 0 || strcmp(argv[1], "--list-category-short") == 0) {
+		fListCategory(1);
+	}
+	else if (strcmp(argv[1], "-lt") == 0 || strcmp(argv[1], "--list-tree") == 0) {
+		fListTree();
+	}
 	else if (strcmp(argv[1], "--backup") == 0) {
 		fBackup();
 	}
 	else if (strcmp(argv[1], "--export") == 0) {
-		//fExport();
+		fExport();
+	}
+	else if (strcmp(argv[1], "--import") == 0) {
+		//fInport();
 		printf("Função ainda não implementada\n");
 	}
 	else if (strcmp(argv[1], "--html") == 0) {

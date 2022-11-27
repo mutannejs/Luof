@@ -64,12 +64,6 @@ int fInicializaDB(sBanco *db) {
 
 void fFinalizaDB(sBanco *db) {
 
-	//fecha arquivos
-	if (db->aLuof)
-		fclose(db->aLuof);
-	if (db->aCat)
-		fclose(db->aCat);
-
 	//libera estruturas do banco
 	if (db->listaCategorias)
 		fLiberaCats(db->listaCategorias);

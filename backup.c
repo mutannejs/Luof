@@ -57,7 +57,7 @@ char* fBackup_criar(sBanco *db) {
 	sCat *cat;
 	sLista listaCats;
 	sIterador it, it2;
-	char nomeBackup[TAMNOMEFAV], *nomeB;
+	char nomeBackup[TAMLINKARQ], *nomeB;
 	FILE *arqBackup;
 
 	//preenche a listaCats com todas as categorias sem repetir categorias com o mesmo nome
@@ -260,7 +260,7 @@ void fBackup() {
 		return;
 
 	//pergunta ao usuário o que ele deseja fazer
-	printf("Você deseja criar um backup novo ou restaurar um antigo? [1]criar [2]restaurar [3]sair : ");
+	printf("Você deseja criar ou restaurar um backup? [1]criar [2]restaurar [3]sair : ");
 	scanf(" %d", &opcao);
 
 	//se o usuário não desejar fazer nada
