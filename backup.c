@@ -177,32 +177,9 @@ int fBackup_separaNomeQuantidade(char *nomeQtdArq, char *nomeArq) {
 
 }
 
-void fBackup_adicionaSite(FILE *arq, sLista l) {
-
-	sSite s;
-	char ehCategoria[3];
-
-	fgets(s.nome, TAMCAMINHO, arq);
-	s.nome[strlen(s.nome)-1] = '\0';
-
-	fgets(s.categoria, TAMCAMINHO, arq);
-	s.categoria[strlen(s.categoria)-1] = '\0';
-
-	fgets(s.link, TAMLINKARQ, arq);
-	s.link[strlen(s.link)-1] = '\0';
-
-	fgets(s.texto, TAMTEXTO, arq);
-	s.texto[strlen(s.texto)-1] = '\0';
-
-	fgets(ehCategoria, 3, arq);
-	s.ehCat = ehCategoria[0];
-
-	pushBackList(l, &s);
-
-}
-
 void fBackup_restaurar(sBanco *db, FILE *arqBackup) {
 
+	sSite s;
 	char nomeQtdArq[TAMNOMEFAV+10], nomeArq[TAMNOMEFAV];
 	int qtdSites;
 
@@ -219,9 +196,10 @@ void fBackup_restaurar(sBanco *db, FILE *arqBackup) {
 	db->raiz = criaLista(struct sSite);
 	fgets(nomeQtdArq, 100, arqBackup);
 	qtdSites = fBackup_separaNomeQuantidade(nomeQtdArq, nomeArq);
-
-	for (int i = 0; i < qtdSites; i++)
-		fBackup_adicionaSite(arqBackup, db->raiz);
+	for (int i = 0; i < qtdSites; i++) {
+		s = fRecuperaFavorito(arqBackup, NULL);
+		pushBackList(db->raiz, &s);
+	}
 
 	//escreve o arquivo luof
 	fEscreveLuof(db);
@@ -237,8 +215,11 @@ void fBackup_restaurar(sBanco *db, FILE *arqBackup) {
 		db->listaSites = criaLista(struct sSite);
 		qtdSites = fBackup_separaNomeQuantidade(nomeQtdArq, nomeArq);
 
-		for (int i = 0; i < qtdSites; i++)
-			fBackup_adicionaSite(arqBackup, db->listaSites);
+		for (int i = 0; i < qtdSites; i++) {
+			//fBackup_adicionaSite(arqBackup, db->listaSites);
+			s = fRecuperaFavorito(arqBackup, NULL);
+			pushBackList(db->listaSites, &s);
+		}
 
 		fEscreveArquivoCat(db, nomeArq);
 

@@ -37,3 +37,11 @@ void printaSite(sSite s) {
 	printf("Texto: %s\n", s.texto);
 	printf("ehCat: %c\n\n", s.ehCat);
 }
+
+void printaColorido() {
+	printf(ANSI_CLEAR);
+	printf("Teste de cores:\n");
+	printf(ANSI_COLOR_RED "Esse texto está em vermelho?\n" ANSI_COLOR_RESET);
+	printf(ANSI_COLOR_GRAY "Se sim, esse texto deve estar em cinza.\n" ANSI_COLOR_RESET);
+	printf("Fim do teste.\n");
+}

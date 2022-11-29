@@ -96,58 +96,6 @@ void fListTree_printaFavorito(sSite s, char linhas[], int hierarquia) {
 		printf("_ %s\n", s.nome);
 }
 
-sLista fListTree_preencheSites(sBanco *db, sSite s) {
-
-	sSite siteTemp;
-	sLista listaFavoritos;
-	FILE *arqCat;
-	char categoria[TAMCAMINHO], nomeArqCat[TAMLINKARQ], nomeTemp[TAMNOMEFAV], ehCategoria[3];
-	int tamanho;
-
-	if (strcmp(s.categoria, "luof") == 0) {
-		strcpy(categoria, s.nome);
-	}
-	else {
-		strcpy(categoria, s.categoria);
-		fIncrementaCamCat(categoria, s.nome);
-	}
-
-	fSetaCaminhoArquivo(db, nomeArqCat, s.nome);
-	arqCat = fopen(nomeArqCat, "r");
-	listaFavoritos = criaLista(struct sSite);
-
-	while (fgets(nomeTemp, 100, arqCat) != NULL) {
-
-		tamanho = strlen(nomeTemp);
-		nomeTemp[tamanho-1] = '\0';
-		strcpy(siteTemp.nome, nomeTemp);
-
-		fgets(siteTemp.categoria, TAMCAMINHO, arqCat);
-		tamanho = strlen(siteTemp.categoria);
-		siteTemp.categoria[tamanho-1] = '\0';
-
-		fgets(siteTemp.link, TAMLINKARQ, arqCat);
-		tamanho = strlen(siteTemp.link);
-		siteTemp.link[tamanho-1] = '\0';
-
-		fgets(siteTemp.texto, TAMTEXTO, arqCat);
-		tamanho = strlen(siteTemp.texto);
-		siteTemp.texto[tamanho-1] = '\0';
-
-		fgets(ehCategoria, 3, arqCat);
-		siteTemp.ehCat = ehCategoria[0];
-
-		//adiciona na lista apenas se pertencer a categoria correta
-		if (strcmp(siteTemp.categoria, categoria) == 0)
-			pushBackList(listaFavoritos, &siteTemp);
-	}
-
-	fclose(arqCat);
-	
-	return listaFavoritos;
-
-}
-
 void fListTree_private(sBanco *db, char linhas[], sSite s, int hierarquia) {
 
 	sSite *siteDoIterador;
@@ -158,7 +106,7 @@ void fListTree_private(sBanco *db, char linhas[], sSite s, int hierarquia) {
 	linhas[hierarquia] = '1';
 
 	//preenche a lista de favoritos e guarda em listaFavoritos
-	listaFavoritos = fListTree_preencheSites(db, s);
+	listaFavoritos = fPreencheListaSiteCmp(db, s);
 
 	//se a categoria estiver vazia
 	if (emptyList(listaFavoritos)) {

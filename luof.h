@@ -15,6 +15,12 @@
 #define TAMLINKARQ 2100//tamanho de links e de arquivos
 #define TAMTEXTO 3000//tamanho texto
 
+#define ANSI_COLOR_RED "\x1b[31m"
+#define ANSI_COLOR_GRAY "\033[0;37m"
+#define ANSI_COLOR_RESET "\033[0m"
+#define ANSI_BOLD "\x1b[1m"
+#define ANSI_CLEAR "\x1B[2J"
+
 /* fNome é usado para funções
  * rNome é usado para retorno de função
  * aNome é usado para arquivos
@@ -59,9 +65,7 @@ int fSetaCatNome(sSite *s);
 void fSetaCaminhoArquivo(sBanco *db, char *arq, char *nome);
 void fIncrementaCamCat(char *caminho, char *nome);
 void fSetaCaminhoCategoria(char caminho[], sSite s);
-void fEscreveLuof_private(sBanco *db, sLista listaCategorias, int hierarquia);
-void fEscreveLuof(sBanco *db);
-void fEscreveArquivoCat(sBanco *db, char *nomeArq);
+sSite fRecuperaFavorito(FILE *arq, char *nomeT);
 int fSeparaArquivoCategoria(sBanco *db, char categoria[], sCat *cat, char nomeA[]);
 void fMudaCaminhoCategoriaArvore(sBanco *db, sCat *cat, char *caminhoA, char *caminhoN);
 
@@ -71,11 +75,15 @@ void fFinalizaDB(sBanco *db);
 void fLiberaCats(sCat *listaCategorias);
 void fPreencheListaCat(sBanco *db);
 void fPreencheRaiz(sBanco *db);
+void fEscreveLuof_private(sBanco *db, sLista listaCategorias, int hierarquia);
+void fEscreveLuof(sBanco *db);
 
 //dbcat
 int fBuscaCat(sBanco *db, sSite s, sCat **c);
 int fPreencheListaSite(sBanco *db, sCat *c);
+sLista fPreencheListaSiteCmp(sBanco *db, sSite s);
 int fBuscaFavorito(sBanco *db, sSite *s);
+void fEscreveArquivoCat(sBanco *db, char *nomeArq);
 void fAdicionaFavorito(sBanco *db, sSite s, sCat *c);
 void fRemoveFavorito(sBanco *db, sSite s, sCat *c);
 void fModificaFavorito(sBanco *db, sSite s, sSite sNew, sCat *c);
@@ -87,6 +95,7 @@ void fRemoveArqCat(sBanco *db, sSite s);
 void percursoCategorias(sCat *cat, int hie);
 void printaListaSites(sLista l);
 void printaSite(sSite s);
+void printaColorido();
 
 //menu
 //void fMenu();
@@ -123,7 +132,6 @@ void fModifyCategory();
 //list
 void fListCategory(int opcao);
 void fListTree_printaFavorito(sSite s, char linhas[], int hierarquia);
-sLista fListTree_preencheSites(sBanco *db, sSite s);
 void fListTree_private(sBanco *db, char linhas[], sSite s, int hierarquia);
 void fListTree();
 
@@ -133,13 +141,11 @@ void fBackup_preencnheListaCats(sLista listaCats, sCat *cat);
 char* fBackup_criar(sBanco *db);
 void fBackup_excluirArquivos(sBanco *db);
 int fBackup_separaNomeQuantidade(char *nomeQtdArq, char *nomeArq);
-void fBackup_adicionaSite(FILE *arq, sLista l);
 void fBackup_restaurar(sBanco *db, FILE *arqBackup);
 void fBackup();
 
 //import-export
 void fImport();
-sLista fExport_preencheSites(sBanco *db, sSite s);
 void fExport_private(sBanco *db, FILE *arqExport, sSite s, int hierarquia);
 void fExport();
 

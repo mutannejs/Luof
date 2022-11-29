@@ -76,60 +76,62 @@ int fPreencheListaSite(sBanco *db, sCat *c) {
 
 	//usado para armazenar temporariamente os sites da categorias
 	sSite siteTemp;
-	char nomeTemp[TAMNOMEFAV], ehCategoria[3];
-	int tamanho;
-
-	//nome do arquivo da categoria
-	char nomeArqCat[TAMLINKARQ];
+	FILE *arqCat;
+	char nomeTemp[TAMNOMEFAV], nomeArqCat[TAMLINKARQ];
 
 	//abre o arquivo da categoria
 	fSetaCaminhoArquivo(db, nomeArqCat, c->nome);
-	if (db->aCat)
-		db->aCat = freopen(nomeArqCat, "r", db->aCat);
-	else
-		db->aCat = fopen(nomeArqCat, "r");
-	
+	arqCat = fopen(nomeArqCat, "r");
+
 	//documento não encontrado
-	if (db->aCat == NULL) {
+	if (arqCat == NULL) {
 		printf("\nO arquivo %s não pode ser aberto.\n", nomeArqCat);
 		return 1;
 	}
-	
+
 	db->listaSites = criaLista(struct sSite);
 
 	//pega linha por linha do arquivo da categoria, faz a comparação usando a primeira linha de um site, e depois pega as outras três referentes ao mesmo site
-	while (fgets(nomeTemp, 100, db->aCat) != NULL) {
-
-		//guarda em siteTemp o nome
-		tamanho = strlen(nomeTemp);
-		nomeTemp[tamanho-1] = '\0';
-		strcpy(siteTemp.nome, nomeTemp);
-
-		//guarda em siteTemp a categoria
-		fgets(siteTemp.categoria, TAMCAMINHO, db->aCat);
-		tamanho = strlen(siteTemp.categoria);
-		siteTemp.categoria[tamanho-1] = '\0';
-
-		//guarda em siteTemp o link
-		fgets(siteTemp.link, TAMLINKARQ, db->aCat);
-		tamanho = strlen(siteTemp.link);
-		siteTemp.link[tamanho-1] = '\0';
-
-		//guarda em siteTemp o texto
-		fgets(siteTemp.texto, TAMTEXTO, db->aCat);
-		tamanho = strlen(siteTemp.texto);
-		siteTemp.texto[tamanho-1] = '\0';
-
-		//guarda em siteTemp o ehCat e ignora o '\n'
-		fgets(ehCategoria, 3, db->aCat);
-		siteTemp.ehCat = ehCategoria[0];
-
-		//adiciona o site na lista
+	while (fgets(nomeTemp, 100, arqCat) != NULL) {
+		siteTemp = fRecuperaFavorito(arqCat, nomeTemp);
 		pushBackList(db->listaSites, &siteTemp);
-
 	}
 
+	fclose(arqCat);
+
 	return 0;
+
+}
+
+sLista fPreencheListaSiteCmp(sBanco *db, sSite s) {
+
+	sSite siteTemp;
+	sLista listaFavoritos;
+	FILE *arqCat;
+	char categoria[TAMCAMINHO], nomeArqCat[TAMLINKARQ], nomeTemp[TAMNOMEFAV];
+
+	if (strcmp(s.categoria, "luof") == 0) {
+		strcpy(categoria, s.nome);
+	}
+	else {
+		strcpy(categoria, s.categoria);
+		fIncrementaCamCat(categoria, s.nome);
+	}
+
+	fSetaCaminhoArquivo(db, nomeArqCat, s.nome);
+	arqCat = fopen(nomeArqCat, "r");
+	listaFavoritos = criaLista(struct sSite);
+
+	while (fgets(nomeTemp, 100, arqCat) != NULL) {
+		siteTemp = fRecuperaFavorito(arqCat, nomeTemp);
+		//adiciona na lista apenas se pertencer a categoria correta
+		if (strcmp(siteTemp.categoria, categoria) == 0)
+			pushBackList(listaFavoritos, &siteTemp);
+	}
+
+	fclose(arqCat);
+	
+	return listaFavoritos;
 
 }
 
@@ -157,6 +159,34 @@ int fBuscaFavorito(sBanco *db, sSite *s) {
 
 	//não encontrou o site
 	return 0;
+
+}
+
+void fEscreveArquivoCat(sBanco *db, char *nomeArq) {
+
+	sSite *siteDoIterador;
+	sIterador it;
+	char nomeArqCat[TAMLINKARQ];
+
+	//reabre o arquivo para sobreescreve-lo
+	fSetaCaminhoArquivo(db, nomeArqCat, nomeArq);
+	if (db->aCat)
+		db->aCat = freopen(nomeArqCat, "w", db->aCat);
+	else
+		db->aCat = fopen(nomeArqCat, "w");
+
+	if (!emptyList(db->listaSites)) {
+		//escreve a lista no arquivo da categoria
+		it = criaIt(db->listaSites);
+		do {
+			siteDoIterador = (struct sSite*) retornaItera(&it);
+			fprintf(db->aCat, "%s\n%s\n%s\n%s\n%c\n", siteDoIterador->nome, siteDoIterador->categoria, siteDoIterador->link, siteDoIterador->texto, siteDoIterador->ehCat);
+			iteraProximo(&it);
+		} while (!inicioIt(&it));
+	}
+
+	fclose(db->aCat);
+	db->aCat = NULL;
 
 }
 

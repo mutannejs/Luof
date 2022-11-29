@@ -189,82 +189,33 @@ void fSetaCaminhoCategoria(char caminho[], sSite s) {
 		fIncrementaCamCat(caminho, s.nome);
 }
 
-void fEscreveLuof_private(sBanco *db, sLista listaCategorias, int hierarquia) {
+sSite fRecuperaFavorito(FILE *arq, char *nomeT) {
 
-	sCat *cat;
-	sIterador it;
+	sSite s;
+	char ehCategoria[3];
 
-	if (!emptyList(listaCategorias)) {
-		it = criaIt(listaCategorias);
-		do {
-			cat = (struct sCat*) retornaItera(&it);
-			//escreve no arquivo
-			fprintf(db->aLuof, "%d%s\n", hierarquia, cat->nome);
-			//------------------
-			fEscreveLuof_private(db, cat->catFilhos, hierarquia+1);
-			iteraProximo(&it);
-		} while (!inicioIt(&it));
+	if (nomeT) {
+		strncpy(s.nome, nomeT, strlen(nomeT));
+		s.nome[strlen(nomeT)-1] = '\0';
+	}
+	else {
+		fgets(s.nome, TAMCAMINHO, arq);
+		s.nome[strlen(s.nome)-1] = '\0';
 	}
 
-}
+	fgets(s.categoria, TAMCAMINHO, arq);
+	s.categoria[strlen(s.categoria)-1] = '\0';
 
-void fEscreveLuof(sBanco *db) {
+	fgets(s.link, TAMLINKARQ, arq);
+	s.link[strlen(s.link)-1] = '\0';
 
-	sSite *siteDoIterador;
-	sIterador it;
-	char nomeArqCat[TAMLINKARQ];
+	fgets(s.texto, TAMTEXTO, arq);
+	s.texto[strlen(s.texto)-1] = '\0';
 
-	//reabre o arquivo aLuof para sobreescreve-lo
-	fSetaCaminhoArquivo(db, nomeArqCat, "luof");
-	if (db->aLuof)
-		db->aLuof = freopen(nomeArqCat, "w", db->aLuof);
-	else
-		db->aLuof = fopen(nomeArqCat, "w");
+	fgets(ehCategoria, 3, arq);
+	s.ehCat = ehCategoria[0];
 
-	//escreve a árvore de categorias no arquivo aLuof
-	fEscreveLuof_private(db, db->listaCategorias->catFilhos, 0);
-
-	//marca o fim da árvore de categorias
-	fprintf(db->aLuof, "##\n");
-
-	//escreve os favoritos da raiz
-	it = criaIt(db->raiz);
-	do {
-		siteDoIterador = (struct sSite*) retornaItera(&it);
-		fprintf(db->aLuof, "%s\n%s\n%s\n%s\n%c\n", siteDoIterador->nome, siteDoIterador->categoria, siteDoIterador->link, siteDoIterador->texto, siteDoIterador->ehCat);
-		iteraProximo(&it);
-	} while (!inicioIt(&it));
-
-	fclose(db->aLuof);
-	db->aLuof = NULL;
-
-}
-
-void fEscreveArquivoCat(sBanco *db, char *nomeArq) {
-
-	sSite *siteDoIterador;
-	sIterador it;
-	char nomeArqCat[TAMLINKARQ];
-
-	//reabre o arquivo para sobreescreve-lo
-	fSetaCaminhoArquivo(db, nomeArqCat, nomeArq);
-	if (db->aCat)
-		db->aCat = freopen(nomeArqCat, "w", db->aCat);
-	else
-		db->aCat = fopen(nomeArqCat, "w");
-
-	if (!emptyList(db->listaSites)) {
-		//escreve a lista no arquivo da categoria
-		it = criaIt(db->listaSites);
-		do {
-			siteDoIterador = (struct sSite*) retornaItera(&it);
-			fprintf(db->aCat, "%s\n%s\n%s\n%s\n%c\n", siteDoIterador->nome, siteDoIterador->categoria, siteDoIterador->link, siteDoIterador->texto, siteDoIterador->ehCat);
-			iteraProximo(&it);
-		} while (!inicioIt(&it));
-	}
-
-	fclose(db->aCat);
-	db->aCat = NULL;
+	return s;
 
 }
 
@@ -274,7 +225,7 @@ int fSeparaArquivoCategoria(sBanco *db, char categoria[], sCat *cat, char nomeA[
 	sLista listaSitesA, listaSitesN;
 	sIterador it, it2;
 	FILE *arq;
-	char nomeTemp[TAMNOMEFAV], ehCategoria[3], nomeArqCat[TAMLINKARQ];
+	char nomeTemp[TAMNOMEFAV], nomeArqCat[TAMLINKARQ];
 	int qtdLista, encontrouPos;
 
 	//preenche db->listaSites com os favoritos do arquivo com nome antigo
@@ -290,21 +241,7 @@ int fSeparaArquivoCategoria(sBanco *db, char categoria[], sCat *cat, char nomeA[
 	arq = fopen(nomeArqCat, "r");
 	if (arq) {
 		while (fgets(nomeTemp, 100, arq) != NULL) {
-			nomeTemp[strlen(nomeTemp)-1] = '\0';
-			strcpy(siteTemp.nome, nomeTemp);
-
-			fgets(siteTemp.categoria, TAMCAMINHO, arq);
-			siteTemp.categoria[strlen(siteTemp.categoria)-1] = '\0';
-
-			fgets(siteTemp.link, TAMLINKARQ, arq);
-			siteTemp.link[strlen(siteTemp.link)-1] = '\0';
-
-			fgets(siteTemp.texto, TAMTEXTO, arq);
-			siteTemp.texto[strlen(siteTemp.texto)-1] = '\0';
-
-			fgets(ehCategoria, 3, arq);
-			siteTemp.ehCat = ehCategoria[0];
-
+			siteTemp = fRecuperaFavorito(arq, nomeTemp);
 			pushBackList(listaSitesN, &siteTemp);
 		}
 		fclose(arq);
