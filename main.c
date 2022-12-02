@@ -53,10 +53,6 @@ int main(int argc, char *argv[]) {
 		//fInport();
 		printf("Função ainda não implementada\n");
 	}
-	else if (strcmp(argv[1], "--html") == 0) {
-		//fHtml();
-		printf("Função ainda não implementada\n");
-	}
 	else {
 		printf("Função inválida\n");
 	}

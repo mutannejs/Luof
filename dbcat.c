@@ -166,27 +166,24 @@ void fEscreveArquivoCat(sBanco *db, char *nomeArq) {
 
 	sSite *siteDoIterador;
 	sIterador it;
+	FILE *arqCat;
 	char nomeArqCat[TAMLINKARQ];
 
-	//reabre o arquivo para sobreescreve-lo
+	//abre o arquivo da categoria para escrita
 	fSetaCaminhoArquivo(db, nomeArqCat, nomeArq);
-	if (db->aCat)
-		db->aCat = freopen(nomeArqCat, "w", db->aCat);
-	else
-		db->aCat = fopen(nomeArqCat, "w");
+	arqCat = fopen(nomeArqCat, "w");
 
 	if (!emptyList(db->listaSites)) {
 		//escreve a lista no arquivo da categoria
 		it = criaIt(db->listaSites);
 		do {
 			siteDoIterador = (struct sSite*) retornaItera(&it);
-			fprintf(db->aCat, "%s\n%s\n%s\n%s\n%c\n", siteDoIterador->nome, siteDoIterador->categoria, siteDoIterador->link, siteDoIterador->texto, siteDoIterador->ehCat);
+			fprintf(arqCat, "%s\n%s\n%s\n%s\n%c\n", siteDoIterador->nome, siteDoIterador->categoria, siteDoIterador->link, siteDoIterador->texto, siteDoIterador->ehCat);
 			iteraProximo(&it);
 		} while (!inicioIt(&it));
 	}
 
-	fclose(db->aCat);
-	db->aCat = NULL;
+	fclose(arqCat);
 
 }
 

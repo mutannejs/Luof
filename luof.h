@@ -46,7 +46,6 @@ typedef struct sCat {
 
 typedef struct sBanco {
 	FILE *aLuof;
-	FILE *aCat;
 	char caminhoDB[TAMLINKARQ];
 	int tamCaminhoDB;
 	sCat *listaCategorias;
@@ -148,7 +147,5 @@ void fBackup();
 void fImport();
 void fExport_private(sBanco *db, FILE *arqExport, sSite s, int hierarquia);
 void fExport();
-
-//void fHtml();
 
 #endif

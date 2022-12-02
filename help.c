@@ -321,12 +321,12 @@ void fHelp(char *argv) {
 		//fHelp_jc();
 		printf("Função ainda não implementada\n");
 	}
-	else if (strcmp(argv, "--export") == 0) {
-		//fHelp_export();
+	else if (strcmp(argv, "--import") == 0) {
+		//fHelp_import();
 		printf("Função ainda não implementada\n");
 	}
-	else if (strcmp(argv, "--html") == 0) {
-		//fHelp_html();
+	else if (strcmp(argv, "--export") == 0) {
+		//fHelp_export();
 		printf("Função ainda não implementada\n");
 	}*/
 

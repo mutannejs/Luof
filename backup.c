@@ -184,7 +184,6 @@ void fBackup_restaurar(sBanco *db, FILE *arqBackup) {
 	int qtdSites;
 
 	//recupera a árvore de categorias
-	fclose(db->aLuof);
 	fLiberaCats(db->listaCategorias);
 	db->aLuof = arqBackup;
 	fPreencheListaCat(db);
@@ -203,8 +202,6 @@ void fBackup_restaurar(sBanco *db, FILE *arqBackup) {
 
 	//escreve o arquivo luof
 	fEscreveLuof(db);
-	fclose(db->aLuof);
-	db->aLuof = NULL;
 
 	//escreve os demais arquivos
 	while(fgets(nomeQtdArq, 100, arqBackup) != NULL) {
@@ -222,9 +219,6 @@ void fBackup_restaurar(sBanco *db, FILE *arqBackup) {
 		}
 
 		fEscreveArquivoCat(db, nomeArq);
-
-		fclose(db->aCat);
-		db->aCat = NULL;
 
 	}
 

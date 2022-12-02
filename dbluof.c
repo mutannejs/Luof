@@ -57,7 +57,6 @@ int fInicializaDB(sBanco *db) {
 	fPreencheRaiz(db);
 	//fecha o arquivo db->aLuof e aponta os ponteiros não usado para NULL
 	fclose(db->aLuof);
-	db->aCat = NULL;
 	db->aLuof = NULL;
 	db->listaSites = NULL;
 
