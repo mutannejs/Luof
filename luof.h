@@ -97,7 +97,7 @@ void printaSite(sSite s);
 void printaColorido();
 
 //menu
-//void fMenu();
+void fMenu();
 
 //help
 void fHelp_private();
@@ -111,6 +111,7 @@ void fHelp_lc(int opcao);
 void fHelp_mb();
 void fHelp_mc();
 void fHelp_backup();
+void fHelp_export();
 void fHelp(char *argv);
 
 //add-remove
@@ -123,10 +124,6 @@ void fRemoveCategory();
 void fModifyBookmark();
 void fReposicionaCatArvore(sBanco *db, sCat *categoria, sCat *categoria2, sCat **categoria3, char *nome);
 void fModifyCategory();
-//void fJoinCategorys_juntaCatsArvore(sBanco *db, sCat *catIt, sCat *cat2);
-//void fJoinCategorys_juntaLista(sBanco *db, sCat *cate, sCat *cate2, sSite c1, sSite c2);
-//void fJoinCategorys_private(sBanco *db, sSite c1, sSite c2);
-//void fJoinCategorys();
 
 //list
 void fListCategory(int opcao);
@@ -144,7 +141,6 @@ void fBackup_restaurar(sBanco *db, FILE *arqBackup);
 void fBackup();
 
 //import-export
-void fImport();
 void fExport_private(sBanco *db, FILE *arqExport, sSite s, int hierarquia);
 void fExport();
 

@@ -76,6 +76,9 @@ void fHelp_private() {
 	" o arquivo de backup (o arquivo possui a extensão .luof) será adicionado no diretório"
 	" atual. Caso a opção seja [2]restaurar será necessário informar o caminho do arquivo de"
 	" backup que se deseja restaurar.\n\n"
+
+	"\t--export:\n"
+	"\tUse para exportar uma categoria do luof para ser importada em um browser.\n\n"
 	);
 }
 
@@ -276,6 +279,17 @@ void fHelp_backup() {
 	);
 }
 
+void fHelp_export() {
+	printf(
+	"luof:\t--export:\n"
+	"\tUse para exportar uma categoria do luof para ser importada em um browser."
+	" É necessário apenas informar o caminho da categoria desejada. o arquivo de"
+	" export possui a extensão .html e nome \"bookmarks-luof\", podendo ter um número"
+	" após caso já exista um arquivo de export (este não será perdido) no diretório atual,"
+	" o mesmo no qual será armazenado o novo arquivo de export.\n\n"
+	);
+}
+
 void fHelp(char *argv) {
 
 	if (!argv) {
@@ -314,20 +328,11 @@ void fHelp(char *argv) {
 	else if (strcmp(argv, "--backup") == 0) {
 		fHelp_backup();
 	}
+	else if (strcmp(argv, "--export") == 0) {
+		fHelp_export();
+	}
 	else {
 		printf("%s não é um comando de luof. Use \"luof --help\" para ver comandos válidos.\n", argv);
 	}
-	/*else if (strcmp(argv, "-jc") == 0 || strcmp(argv, "--join-categorys") == 0) {
-		//fHelp_jc();
-		printf("Função ainda não implementada\n");
-	}
-	else if (strcmp(argv, "--import") == 0) {
-		//fHelp_import();
-		printf("Função ainda não implementada\n");
-	}
-	else if (strcmp(argv, "--export") == 0) {
-		//fHelp_export();
-		printf("Função ainda não implementada\n");
-	}*/
 
 }

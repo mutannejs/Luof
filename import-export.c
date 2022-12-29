@@ -1,8 +1,5 @@
 #include "luof.h"
 
-void fImport() {
-}
-
 void fExport_private(sBanco *db, FILE *arqExport, sSite s, int hierarquia) {
 
 	sSite *siteDoIterador;
@@ -130,7 +127,7 @@ void fExport() {
 	arqExport = fopen(nomeExport, "r");
 	//faz um loop para não haver conflito entre export's caso já exista algum no diretório atual
 	for (int i = 1; arqExport; i++) {
-		sprintf(nomeExport, "bookmarks-luof%d.html", i);
+		sprintf(nomeExport, "bookmarks-luof-%d.html", i);
 		arqExport = freopen(nomeExport, "r", arqExport);
 	}
 	arqExport = fopen(nomeExport, "w");
@@ -190,5 +187,7 @@ void fExport() {
 
 	//fecha os arquivos abertos
 	fFinalizaDB(&db);
+
+	printf("\nExport criado com sucesso.\n");
 
 }

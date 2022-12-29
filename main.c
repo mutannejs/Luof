@@ -3,8 +3,7 @@
 int main(int argc, char *argv[]) {
 
 	if (argc == 1) {
-		//fMenu();
-		printf("Função ainda não implementada\n");
+		fMenu();
 	}
 	else if (strcmp(argv[1], "-h") == 0 || strcmp(argv[1], "--help") == 0) {
 		if (argc > 2)
@@ -30,10 +29,6 @@ int main(int argc, char *argv[]) {
 	else if (strcmp(argv[1], "-mc") == 0 || strcmp(argv[1], "--modify-category") == 0) {
 		fModifyCategory();
 	}
-	else if (strcmp(argv[1], "-jc") == 0 || strcmp(argv[1], "--join-categorys") == 0) {
-		//fJoinCategorys();
-		printf("Função ainda não implementada\n");
-	}
 	else if (strcmp(argv[1], "-lc") == 0 || strcmp(argv[1], "--list-category") == 0) {
 		fListCategory(0);
 	}
@@ -49,14 +44,70 @@ int main(int argc, char *argv[]) {
 	else if (strcmp(argv[1], "--export") == 0) {
 		fExport();
 	}
-	else if (strcmp(argv[1], "--import") == 0) {
-		//fInport();
-		printf("Função ainda não implementada\n");
-	}
 	else {
 		printf("Função inválida\n");
 	}
 
 	return 0;
+
+}
+
+void fMenu() {
+
+	int opcao;
+
+	printf(
+	"O que você deseja fazer?\n"
+	"0.  Adicionar um favorito\n"
+	"1.  Remover um favorito\n"
+	"2.  Modificar um favorito\n"
+	"3.  Adicionar uma categoria\n"
+	"4.  Remover uma categoria\n"
+	"5.  Modificar uma categoria\n"
+	"6.  Listar uma categoria\n"
+	"7.  Listar uma categoria de modo resumido\n"
+	"8.  Ver a árvore de categorias e favoritos\n"
+	"9.  Criar ou restaurar um backup\n"
+	"10. Exportar uma categoria\n"
+	"11. Ver um manual de como usar o Luof\n"
+	"12. Sair\n\n"
+	"Opção: "
+	);
+
+	do {
+		scanf(" %d", &opcao);
+		if (opcao < 0 || opcao > 12)
+			printf("Digite apenas valores válidos.\nOpção: ");
+	} while (opcao < 0 || opcao > 12);
+	printf("\n");
+
+	switch (opcao) {
+		case 0 :	fAddBookmark();
+					break;
+		case 1 :	fRemoveBookmark();
+					break;
+		case 2 :	fModifyBookmark();
+					break;
+		case 3 :	fAddCategory();
+					break;
+		case 4 :	fRemoveCategory();
+					break;
+		case 5 :	fModifyCategory();
+					break;
+		case 6 :	fListCategory(0);
+					break;
+		case 7 :	fListCategory(1);
+					break;
+		case 8 :	fListTree();
+					break;
+		case 9 :	fBackup();
+					break;
+		case 10:	fExport();
+					break;
+		case 11:	fHelp(NULL);
+					break;
+		default :	printf("Saindo...\n");
+					break;
+	};
 
 }

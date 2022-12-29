@@ -76,7 +76,7 @@ char* fBackup_criar(sBanco *db) {
 	arqBackup = fopen(nomeBackup, "r");
 	//faz um loop para não haver conflito entre backup's caso já exista algum no diretório atual
 	for (int i = 1; arqBackup; i++) {
-		sprintf(nomeBackup, "backup%d.luof", i);
+		sprintf(nomeBackup, "backup-%d.luof", i);
 		arqBackup = freopen(nomeBackup, "r", arqBackup);
 	}
 	arqBackup = fopen(nomeBackup, "w");
