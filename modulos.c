@@ -5,7 +5,7 @@ int fSetaSiteCategoria(sSite *s) {
 	int cont = 0;
 	char c;
 
-	printf("Categoria : ");
+	printf(ANSI_BOLD_WHT "Categoria : " ANSI_COLOR_GRA);
 
 	do {
 		c = getchar();
@@ -16,7 +16,8 @@ int fSetaSiteCategoria(sSite *s) {
 			cont--;
 		}
 		else if (cont == TAMCAMINHO - 1) {
-			printf("\nCategorias devem ter no máximo %d caracteres.\n", TAMCAMINHO - 1);
+			printf(ERRO);
+			printf("Categorias devem ter no máximo %d caracteres.\n", TAMCAMINHO - 1);
 			return 1;
 		}
 		s->categoria[cont] = c;
@@ -34,7 +35,7 @@ int fSetaSiteNome(sSite *s) {
 	int cont = 0;
 	char c;
 
-	printf("Nome      : ");
+	printf(ANSI_BOLD_WHT "Nome      : " ANSI_COLOR_GRA);
 
 	do {
 		c = getchar();
@@ -42,7 +43,8 @@ int fSetaSiteNome(sSite *s) {
 
 	do {
 		if (cont == TAMNOMEFAV - 1) {
-			printf("\nNomes de favoritos devem ter no máximo %d caracteres.\n", TAMNOMEFAV - 1);
+			printf(ERRO);
+			printf("Nomes de favoritos devem ter no máximo %d caracteres.\n", TAMNOMEFAV - 1);
 			return 1;
 		}
 		s->nome[cont] = c;
@@ -60,7 +62,7 @@ int fSetaSiteLink(sSite *s) {
 	int cont = 0;
 	char c;
 
-	printf("Link      : ");
+	printf(ANSI_BOLD_WHT "Link      : " ANSI_COLOR_GRA);
 
 	do {
 		c = getchar();
@@ -68,7 +70,8 @@ int fSetaSiteLink(sSite *s) {
 
 	do {
 		if (cont == TAMLINKARQ - 1) {
-			printf("\nLinks devem ter no máximo %d caracteres.\n", TAMLINKARQ - 1);
+			printf(ERRO);
+			printf("Links devem ter no máximo %d caracteres.\n", TAMLINKARQ - 1);
 			return 1;
 		}
 		s->link[cont] = c;
@@ -86,7 +89,7 @@ int fSetaSiteTexto(sSite *s) {
 	int cont = 0;
 	char c;
 
-	printf("Texto     : ");
+	printf(ANSI_BOLD_WHT "Texto     : " ANSI_COLOR_GRA);
 
 	do {
 		c = getchar();
@@ -94,7 +97,8 @@ int fSetaSiteTexto(sSite *s) {
 
 	do {
 		if (cont == TAMTEXTO - 1) {
-			printf("\nTextos devem ter no máximo %d caracteres.\n", TAMTEXTO - 1);
+			printf(ERRO);
+			printf("Textos devem ter no máximo %d caracteres.\n", TAMTEXTO - 1);
 			return 1;
 		}
 		s->texto[cont] = c;
@@ -112,7 +116,7 @@ int fSetaCatCategoria(sSite *s) {
 	int cont = 0;
 	char c;
 
-	printf("Categoria pai     : ");
+	printf(ANSI_BOLD_WHT "Categoria pai     : " ANSI_COLOR_GRA);
 
 	do {
 		c = getchar();
@@ -123,7 +127,8 @@ int fSetaCatCategoria(sSite *s) {
 			cont--;
 		}
 		else if (cont == TAMCAMINHO - 1) {
-			printf("\nCategorias devem ter no máximo %d caracteres.\n", TAMCAMINHO - 1);
+			printf(ERRO);
+			printf("Categorias devem ter no máximo %d caracteres.\n", TAMCAMINHO - 1);
 			return 1;
 		}
 		s->categoria[cont] = c;
@@ -141,7 +146,7 @@ int fSetaCatNome(sSite *s) {
 	int cont = 0;
 	char c;
 
-	printf("Nome da categoria : ");
+	printf(ANSI_BOLD_WHT "Nome da categoria : " ANSI_COLOR_GRA);
 
 	do {
 		c = getchar();
@@ -149,11 +154,13 @@ int fSetaCatNome(sSite *s) {
 
 	do {
 		if (c == '/') {
-			printf("\nCategorias não podem ter '/' no nome.\n");
+			printf(ERRO);
+			printf("Categorias não podem ter '/' no nome.\n");
 			return 1;
 		}
 		else if (cont == TAMNOMEFAV - 1) {
-			printf("\nNomes de categorias devem ter no máximo %d caracteres.\n", TAMNOMEFAV - 1);
+			printf(ERRO);
+			printf("Nomes de categorias devem ter no máximo %d caracteres.\n", TAMNOMEFAV - 1);
 			return 1;
 		}
 		s->nome[cont] = c;
@@ -163,7 +170,8 @@ int fSetaCatNome(sSite *s) {
 	s->nome[cont] = '\0';
 
 	if (strcmp(s->nome, "luof") == 0) {
-		printf("\nluof é um nome reservado do sistema e não pode ser usado para nomes de categorias.\n");
+		printf(ERRO);
+		printf("luof é um nome reservado do sistema e não pode ser usado para nomes de categorias.\n");
 		return 1;
 	}
 

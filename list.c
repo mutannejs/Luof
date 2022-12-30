@@ -13,6 +13,7 @@ void fListCategory(int opcao) {
 
 	//caso o banco esteja vazio
 	if (emptyList(db.raiz)) {
+		printf(ERRO);
 		printf("Nada ainda foi inserido.\n");
 		fFinalizaDB(&db);
 		return;
@@ -38,7 +39,8 @@ void fListCategory(int opcao) {
 	}
 
 	if (emptyList(db.listaSites)) {
-		printf("\nLista vazia.\n");
+		printf(ERRO);
+		printf("Lista vazia.\n");
 		fFinalizaDB(&db);
 		return;
 	}
@@ -48,27 +50,38 @@ void fListCategory(int opcao) {
 	do {
 		siteDoIterador = (struct sSite*) retornaItera(&it);
 		if (strcmp(siteDoIterador->categoria, s.categoria) == 0) {
-			if ((siteDoIterador->ehCat == '0' && opcao == 0) || (cont == 0 && siteDoIterador->ehCat == '1'))
+
+			if ((siteDoIterador->ehCat == '0' && opcao == 0) || (siteDoIterador->ehCat == '0' && cont == 0))
 				printf("\n");
+			if (siteDoIterador->ehCat == '0' && cont <= 0) {
+				cont *= -1;
+				cont++;
+				printf("\n");
+			}
+
 			if (siteDoIterador->ehCat == '1') {
-				printf("* %s\n", siteDoIterador->nome);
+				printf(ANSI_BOLD_WHT "* %s\n", siteDoIterador->nome);
+				cont--;
 			}
 			else if (opcao == 0) {
-				printf("Nome  : %s\n", siteDoIterador->nome);
-				printf("Link  : %s\n", siteDoIterador->link);
-				printf("Texto : %s\n", siteDoIterador->texto);
+				printf(ANSI_BOLD_WHT "Nome  : " ANSI_COLOR_GRA "%s\n", siteDoIterador->nome);
+				printf(ANSI_BOLD_WHT "Link  : " ANSI_COLOR_GRA "%s\n", siteDoIterador->link);
+				printf(ANSI_BOLD_WHT "Texto : " ANSI_COLOR_GRA "%s\n", siteDoIterador->texto);
+				cont++;
 			}
 			else {
-				printf("%s\n", siteDoIterador->nome);
+				printf(ANSI_COLOR_GRA "%s\n", siteDoIterador->nome);
+				cont++;
 			}
-			cont++;
+
 		}
 		iteraProximo(&it);
 	} while (!inicioIt(&it));
 
 	//se db.listaSites não está vazio, mas não possui favoritos dessa categoria
 	if (cont == 0) {
-		printf("\nLista vazia.");
+		printf(ERRO);
+		printf("Lista vazia.");
 	}
 
 	printf("\n");
@@ -79,21 +92,21 @@ void fListCategory(int opcao) {
 
 void fListTree_printaFavorito(sSite s, char linhas[], int hierarquia) {
 	if (linhas[0] == '1')
-		printf("|");
+		printf(ANSI_COLOR_GRA "|");
 	else
 		printf(" ");
 
 	for (int i = 1; i < hierarquia+1; i++) {
 		if (linhas[i] == '1')
-			printf("    |");
+			printf(ANSI_COLOR_GRA "    |");
 		else
 			printf("     ");
 	}
 
 	if (s.ehCat == '1')
-		printf("_ * %s\n", s.nome);
+		printf(ANSI_COLOR_GRA "_ " ANSI_BOLD_WHT "* %s\n", s.nome);
 	else
-		printf("_ %s\n", s.nome);
+		printf(ANSI_COLOR_GRA "_ " ANSI_COLOR_WHT "%s\n", s.nome);
 }
 
 void fListTree_private(sBanco *db, char linhas[], sSite s, int hierarquia) {
@@ -146,6 +159,7 @@ void fListTree() {
 		return;
 
 	if (emptyList(db.raiz)) {
+		printf(ERRO);
 		printf("Nada ainda foi inserido.\n");
 		fFinalizaDB(&db);
 		return;

@@ -15,11 +15,12 @@
 #define TAMLINKARQ 2100//tamanho de links e de arquivos
 #define TAMTEXTO 3000//tamanho texto
 
-#define ANSI_COLOR_RED "\x1b[31m"
-#define ANSI_COLOR_GRAY "\033[0;37m"
-#define ANSI_COLOR_RESET "\033[0m"
-#define ANSI_BOLD "\x1b[1m"
-#define ANSI_CLEAR "\x1B[2J"
+#define ANSI_COLOR_RED "\x1b[0;31m"
+#define ANSI_COLOR_GRA "\x1b[0;37m"
+#define ANSI_COLOR_WHT "\x1b[0;97m"
+#define ANSI_BOLD_WHT "\x1b[1;97m"
+
+#define ERRO "\n\x1b[0;95mERRO\x1b[0;97m: "
 
 /* fNome é usado para funções
  * rNome é usado para retorno de função

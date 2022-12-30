@@ -45,7 +45,8 @@ int main(int argc, char *argv[]) {
 		fExport();
 	}
 	else {
-		printf("Função inválida\n");
+		printaColorido();
+		printf(ANSI_BOLD_WHT "Função inválida\n");
 	}
 
 	return 0;
@@ -57,27 +58,27 @@ void fMenu() {
 	int opcao;
 
 	printf(
-	"O que você deseja fazer?\n"
-	"0.  Adicionar um favorito\n"
-	"1.  Remover um favorito\n"
-	"2.  Modificar um favorito\n"
-	"3.  Adicionar uma categoria\n"
-	"4.  Remover uma categoria\n"
-	"5.  Modificar uma categoria\n"
-	"6.  Listar uma categoria\n"
-	"7.  Listar uma categoria de modo resumido\n"
-	"8.  Ver a árvore de categorias e favoritos\n"
-	"9.  Criar ou restaurar um backup\n"
-	"10. Exportar uma categoria\n"
-	"11. Ver um manual de como usar o Luof\n"
-	"12. Sair\n\n"
-	"Opção: "
+	ANSI_BOLD_WHT "O que você deseja fazer?\n"
+	"0." ANSI_COLOR_WHT "  Adicionar um favorito\n"
+	ANSI_BOLD_WHT "1." ANSI_COLOR_WHT "  Remover um favorito\n"
+	ANSI_BOLD_WHT "2." ANSI_COLOR_WHT "  Modificar um favorito\n"
+	ANSI_BOLD_WHT "3." ANSI_COLOR_WHT "  Adicionar uma categoria\n"
+	ANSI_BOLD_WHT "4." ANSI_COLOR_WHT "  Remover uma categoria\n"
+	ANSI_BOLD_WHT "5." ANSI_COLOR_WHT "  Modificar uma categoria\n"
+	ANSI_BOLD_WHT "6." ANSI_COLOR_WHT "  Listar uma categoria\n"
+	ANSI_BOLD_WHT "7." ANSI_COLOR_WHT "  Listar uma categoria de modo resumido\n"
+	ANSI_BOLD_WHT "8." ANSI_COLOR_WHT "  Ver a árvore de categorias e favoritos\n"
+	ANSI_BOLD_WHT "9." ANSI_COLOR_WHT "  Criar ou restaurar um backup\n"
+	ANSI_BOLD_WHT "10." ANSI_COLOR_WHT " Exportar uma categoria\n"
+	ANSI_BOLD_WHT "11." ANSI_COLOR_WHT " Ver um manual de como usar o Luof\n"
+	ANSI_BOLD_WHT "12." ANSI_COLOR_WHT " Sair\n\n"
+	ANSI_BOLD_WHT "Opção: " ANSI_COLOR_GRA
 	);
 
 	do {
 		scanf(" %d", &opcao);
 		if (opcao < 0 || opcao > 12)
-			printf("Digite apenas valores válidos.\nOpção: ");
+			printf(ANSI_BOLD_WHT "\nDigite apenas valores válidos.\nOpção: " ANSI_COLOR_GRA);
 	} while (opcao < 0 || opcao > 12);
 	printf("\n");
 
@@ -106,7 +107,7 @@ void fMenu() {
 					break;
 		case 11:	fHelp(NULL);
 					break;
-		default :	printf("Saindo...\n");
+		default :	printf(ANSI_BOLD_WHT "Saindo...\n");
 					break;
 	};
 

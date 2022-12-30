@@ -16,7 +16,8 @@ void fModifyBookmark() {
 
 	if (strcmp(s.categoria, "/") == 0) {
 		if (emptyList(db.raiz)) {
-			printf("\nCategoria vazia.\n");
+			printf(ERRO);
+			printf("Categoria vazia.\n");
 			fFinalizaDB(&db);
 			return;
 		}
@@ -34,7 +35,8 @@ void fModifyBookmark() {
 			return;
 		}
 		if (emptyList(db.listaSites)) {
-			printf("\nCategoria vazia.\n");
+			printf(ERRO);
+			printf("Categoria vazia.\n");
 			fFinalizaDB(&db);
 			return;
 		}
@@ -45,28 +47,29 @@ void fModifyBookmark() {
 	s.ehCat = '0';
 
 	if (!fBuscaFavorito(&db, &s)) {
-		printf("\nO favorito não existe para ser modificado.\n");
+		printf(ERRO);
+		printf("O favorito não existe para ser modificado.\n");
 		fFinalizaDB(&db);
 		return;
 	}
 
 	//printa os dados do site para o usuário saber o que modificar
-	printf("\nDados antigos:\n");
+	printf(ANSI_BOLD_WHT "\nDados antigos:\n");
 	if (strcmp(s.categoria, "luof") == 0)
-		printf("Categoria : /\n");
+		printf(ANSI_BOLD_WHT "Categoria : /\n");
 	else
-		printf("Categoria : %s\n", s.categoria);
-	printf("Nome      : %s\n", s.nome);
-	printf("Link      : %s\n", s.link);
-	printf("Texto     : %s\n", s.texto);
+		printf(ANSI_BOLD_WHT "Categoria : %s\n", s.categoria);
+	printf(ANSI_BOLD_WHT "Nome      : %s\n", s.nome);
+	printf(ANSI_BOLD_WHT "Link      : %s\n", s.link);
+	printf(ANSI_BOLD_WHT "Texto     : %s\n", s.texto);
 
 	//pergunta qual atributo será modificado
-	printf("\nVocê deseja modificar? [1]categoria [2]nome [3]link [4]texto [5]tudo [6]nada : ");
+	printf(ANSI_BOLD_WHT "\nVocê deseja modificar? [1]categoria [2]nome [3]link [4]texto [5]tudo [6]nada : " ANSI_COLOR_GRA);
 	scanf(" %d", &opcao);
 
 	//se o usuário não desejar modificar nada
 	if (opcao < 1 || opcao > 5) {
-		printf("\nSaindo...\n");
+		printf(ANSI_BOLD_WHT "\nSaindo...\n");
 		fFinalizaDB(&db);
 		return;
 	}
@@ -89,7 +92,7 @@ void fModifyBookmark() {
 		categoria = db.listaCategorias;
 
 	//Pede os novos dados do site
-	printf("\nNovos dados:\n");
+	printf(ANSI_BOLD_WHT "\nNovos dados:\n" ANSI_COLOR_GRA);
 
 	//pede a categoria
 	if (opcao == 1 || opcao == 5) {
@@ -123,7 +126,8 @@ void fModifyBookmark() {
 	//se o nome ou a categoria for modificados é necessário ver se já não existe um favorito igual
 	if (strcmp(s.categoria, sNew.categoria) || strcmp(s.nome, sNew.nome)) {
 		if (fBuscaFavorito(&db, &sNew)) {
-			printf("\nJá existe outro favorito com esse nome e categoria, logo a modificação não pode ser concluída.\n");
+			printf(ERRO);
+			printf("Já existe outro favorito com esse nome e categoria, logo a modificação não pode ser concluída.\n");
 			fFinalizaDB(&db);
 			return;
 		}
@@ -143,7 +147,7 @@ void fModifyBookmark() {
 
 	//se nada foi modificado
 	if (!strcmp(s.nome, sNew.nome) && !strcmp(s.categoria, sNew.categoria) && !strcmp(s.link, sNew.link) && !strcmp(s.texto, sNew.texto)) {
-		printf("\nNão foi feito modificações.\n");
+		printf(ANSI_BOLD_WHT "\nNão foi feito modificações.\n");
 		fFinalizaDB(&db);
 		return;
 	}
@@ -173,7 +177,7 @@ void fModifyBookmark() {
 	//freeList(listaTemp1);
 	fFinalizaDB(&db);
 	
-	printf("\nFavorito modificado com sucesso.\n");
+	printf(ANSI_BOLD_WHT "\nFavorito modificado com sucesso.\n");
 
 }
 
@@ -219,7 +223,8 @@ void fModifyCategory() {
 
 	if (strcmp(c.categoria, "/") == 0) {
 		if (emptyList(db.raiz)) {
-			printf("\nCategoria pai vazia.\n");
+			printf(ERRO);
+			printf("Categoria pai vazia.\n");
 			fFinalizaDB(&db);
 			return;
 		}
@@ -237,7 +242,8 @@ void fModifyCategory() {
 			return;
 		}
 		if (emptyList(db.listaSites)) {
-			printf("\nCategoria pai vazia.\n");
+			printf(ERRO);
+			printf("Categoria pai vazia.\n");
 			fFinalizaDB(&db);
 			return;
 		}
@@ -248,26 +254,27 @@ void fModifyCategory() {
 	c.ehCat = '1';
 
 	if (!fBuscaFavorito(&db, &c)) {
-		printf("\nA categoria não existe para ser modificada.\n");
+		printf(ERRO);
+		printf("A categoria não existe para ser modificada.\n");
 		fFinalizaDB(&db);
 		return;
 	}
 
 	//printa os dados da categoria para o usuário saber o que modificar
-	printf("\nDados antigos:\n");
+	printf(ANSI_BOLD_WHT "\nDados antigos:\n");
 	if (strcmp(c.categoria, "luof") == 0)
-		printf("Categoria pai     : /\n");
+		printf(ANSI_BOLD_WHT "Categoria pai     : /\n");
 	else
-		printf("Categoria pai     : %s\n", c.categoria);
-	printf("Nome da categoria : %s\n", c.nome);
+		printf(ANSI_BOLD_WHT "Categoria pai     : %s\n", c.categoria);
+	printf(ANSI_BOLD_WHT "Nome da categoria : %s\n", c.nome);
 
 	//pergunta qual atributo será modificado
-	printf("\nVocê deseja modificar? [1]categoria pai [2]nome da categoria [3]tudo [4]nada : ");
+	printf(ANSI_BOLD_WHT "\nVocê deseja modificar? [1]categoria pai [2]nome da categoria [3]tudo [4]nada : " ANSI_COLOR_GRA);
 	scanf(" %d", &opcao);
 
 	//se o usuário não deseja modificar nada
 	if (opcao < 1 || opcao > 3) {
-		printf("\nSaindo...\n");
+		printf(ANSI_BOLD_WHT "\nSaindo...\n");
 		fFinalizaDB(&db);
 		return;
 	}
@@ -290,7 +297,7 @@ void fModifyCategory() {
 		categoria = db.listaCategorias;
 
 	//Pede os novos dados da categoria
-	printf("\nNovos dados:\n");
+	printf(ANSI_BOLD_WHT "\nNovos dados:\n");
 
 	//pede a categoria pai
 	if (opcao == 1 || opcao == 3) {
@@ -338,7 +345,8 @@ void fModifyCategory() {
 
 	//verifica se a nova categoria pai não é ou pertence a uma subcategoria da categoria que será modificada
 	if (strlen(caminhoA) <= strlen(cNew.categoria) && strncmp(cNew.categoria, caminhoA, strlen(caminhoA)) == 0) {
-		printf("\nA nova categoria pai não pode ser ou pertencer a uma subcategoria da categoria que será modificada.\n");
+		printf(ERRO);
+		printf("A nova categoria pai não pode ser ou pertencer a uma subcategoria da categoria que será modificada.\n");
 		fFinalizaDB(&db);
 		return;
 	}
@@ -347,7 +355,8 @@ void fModifyCategory() {
 		rBuscaFavorito = fBuscaFavorito(&db, &cNew);
 		if (rBuscaFavorito) {
 			if (vBooleana != 's') {
-				printf("\nJá existe outro favorito com esse nome e categoria.\n");
+				printf(ERRO);
+				printf("Já existe outro favorito com esse nome e categoria.\n");
 				printf("Saindo...\n");
 				fFinalizaDB(&db);
 				return;
@@ -357,7 +366,7 @@ void fModifyCategory() {
 
 	//se nada foi modificado
 	if (!strcmp(c.nome, cNew.nome) && !strcmp(c.categoria, cNew.categoria) && !strcmp(c.link, cNew.link) && !strcmp(c.texto, cNew.texto)) {
-		printf("\nNão foi feito modificações.\n");
+		printf(ANSI_BOLD_WHT "\nNão foi feito modificações.\n");
 		fFinalizaDB(&db);
 		return;
 	}
@@ -446,6 +455,6 @@ void fModifyCategory() {
 
 	fFinalizaDB(&db);
 
-	printf("\nFavorito modificado com sucesso.\n");
+	printf(ANSI_BOLD_WHT "\nFavorito modificado com sucesso.\n");
 
 }

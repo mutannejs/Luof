@@ -12,7 +12,8 @@ int fBuscaCat(sBanco *db, sSite s, sCat **c) {
 		if (s.categoria[i] == '/') {//chegou no fim do nome de alguma categoria
 			//só pode haver 10 categorias no máximo, logo a categoria atual não pode ser adicionada
 			if (qtdCats == 10) {
-				printf("\nNo máximo pode existir 9 subcategorias.\n");
+				printf(ERRO);
+				printf("No máximo pode existir 9 subcategorias.\n");
 				return 1;
 			}
 			//marca o fim do nome da categoria
@@ -33,7 +34,8 @@ int fBuscaCat(sBanco *db, sSite s, sCat **c) {
 
 	//se ainda não tiver sido criado nenhuma categoria
 	if (emptyList(db->listaCategorias->catFilhos)) {
-		printf("\nCategoria \"%s\" não encontrada.\n", categorias[0]);
+		printf(ERRO);
+		printf("Categoria \"%s\" não encontrada.\n", categorias[0]);
 		return 1;
 	}
 
@@ -46,7 +48,8 @@ int fBuscaCat(sBanco *db, sSite s, sCat **c) {
 		int encontrou = 0;
 		//se chegou em uma categoria vazia
 		if (emptyList(it.lista)) {
-			printf("\nCategoria \"%s\" não encontrada.\n", categorias[i]);
+			printf(ERRO);
+			printf("Categoria \"%s\" não encontrada.\n", categorias[i]);
 			return 1;
 		}
 		do {
@@ -63,7 +66,8 @@ int fBuscaCat(sBanco *db, sSite s, sCat **c) {
 		} while (encontrou == 0 && !inicioIt(&it));
 		//se não encontrou a categoria[i] na árvore de categoria
 		if (encontrou == 0) {
-			printf("\nCategoria \"%s\" não encontrada.\n", categorias[i]);
+			printf(ERRO);
+			printf("Categoria \"%s\" não encontrada.\n", categorias[i]);
 			return 1;
 		}
 	}
@@ -85,7 +89,7 @@ int fPreencheListaSite(sBanco *db, sCat *c) {
 
 	//documento não encontrado
 	if (arqCat == NULL) {
-		printf("\nO arquivo %s não pode ser aberto.\n", nomeArqCat);
+		printf(ANSI_COLOR_RED "\nErro: O arquivo %s não pode ser aberto.\n", nomeArqCat);
 		return 1;
 	}
 
@@ -408,7 +412,7 @@ void fRemoveArqCat(sBanco *db, sSite s) {
 
 	//cria uma lista de favoritos pertecentes à categoria
 	if (fPreencheListaSite(db, &cNova)) {
-		printf("Erro no arquivo da categoria excluida.\n");
+		printf(ANSI_COLOR_RED "Erro: Não foi possível abrir o arquivo da categoria excluida.\n");
 		return;
 	}
 

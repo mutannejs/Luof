@@ -235,12 +235,12 @@ void fBackup() {
 		return;
 
 	//pergunta ao usuário o que ele deseja fazer
-	printf("Você deseja criar ou restaurar um backup? [1]criar [2]restaurar [3]sair : ");
+	printf(ANSI_BOLD_WHT "Você deseja criar ou restaurar um backup? [1]criar [2]restaurar [3]sair : " ANSI_COLOR_GRA);
 	scanf(" %d", &opcao);
 
 	//se o usuário não desejar fazer nada
 	if (opcao < 1 || opcao > 2) {
-		printf("\nSaindo...\n");
+		printf(ANSI_BOLD_WHT "\nSaindo...\n");
 		fFinalizaDB(&db);
 		return;
 	}
@@ -251,11 +251,12 @@ void fBackup() {
 
 		//retorna mensagem de sucesso ou erro
 		if (!nomeBackup) {
-			printf("\nErro ao tentar criar backup.\n");
+			printf(ERRO);
+			printf("Erro ao tentar criar backup.\n");
 			printf("Saindo...\n");
 		}
 		else {
-			printf("\nArquivo %s adicionado no diretório atual.\n", nomeBackup);
+			printf(ANSI_BOLD_WHT "\nArquivo %s adicionado no diretório atual.\n", nomeBackup);
 			printf("Backup criado com sucesso.\n");
 			free(nomeBackup);
 		}
@@ -264,7 +265,7 @@ void fBackup() {
 	else {
 
 		//pede ao usuário o caminho do backup
-		printf("Informe o caminho do arquivo de backup: ");
+		printf(ANSI_BOLD_WHT "Informe o caminho do arquivo de backup: " ANSI_COLOR_GRA);
 		scanf(" %[^\n]", caminhoBackup);
 
 		//abre o arquivo
@@ -272,7 +273,8 @@ void fBackup() {
 
 		//retorna mensagem de erro ou continua a restauração
 		if (!arqBackup) {
-			printf("\nErro ao tentar abrir o arquivo de backup.\n");
+			printf(ERRO);
+			printf("Erro ao tentar abrir o arquivo de backup.\n");
 			printf("Saindo...\n");
 		}
 		else {
@@ -281,7 +283,7 @@ void fBackup() {
 			//restaura o backup
 			fBackup_restaurar(&db, arqBackup);
 
-			printf("\nBackup restaurado com sucesso.\n");
+			printf(ANSI_BOLD_WHT "\nBackup restaurado com sucesso.\n");
 		}
 
 	}

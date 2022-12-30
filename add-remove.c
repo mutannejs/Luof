@@ -45,7 +45,8 @@ void fAddBookmark() {
 
 	//verifica se já existe um favorito com esse nome na categoria e se o arquivo pode ser aberto
 	if (fBuscaFavorito(&db, &s)) {
-		printf("\nO favorito já existe.\n");
+		printf(ERRO);
+		printf("O favorito já existe.\n");
 		fFinalizaDB(&db);
 		return;
 	}
@@ -64,7 +65,7 @@ void fAddBookmark() {
 	//fecha os arquivos abertos
 	fFinalizaDB(&db);
 
-	printf("\nFavorito adicionado com sucesso.\n");
+	printf(ANSI_BOLD_WHT "\nFavorito adicionado com sucesso.\n");
 
 }
 
@@ -107,7 +108,8 @@ void fAddCategory() {
 	c.ehCat = '1';
 
 	if (fBuscaFavorito(&db, &c)) {
-		printf("\nA categoria já existe.\n");
+		printf(ERRO);
+		printf("A categoria já existe.\n");
 		fFinalizaDB(&db);
 		return;
 	}
@@ -118,7 +120,7 @@ void fAddCategory() {
 	fAdicionaFavorito(&db, c, categoria);
 	fFinalizaDB(&db);
 
-	printf("\nCategoria adicionada com sucesso.\n");
+	printf(ANSI_BOLD_WHT "\nCategoria adicionada com sucesso.\n");
 
 }
 
@@ -137,7 +139,8 @@ void fRemoveBookmark() {
 	if (strcmp(s.categoria, "/") == 0) {
 		//se a lista está vazia não continua a função
 		if (emptyList(db.raiz)) {
-			printf("\nCategoria vazia.\n");
+			printf(ERRO);
+			printf("Categoria vazia.\n");
 			fFinalizaDB(&db);
 			return;
 		}
@@ -158,7 +161,8 @@ void fRemoveBookmark() {
 
 		//se a lista está vazia não continua a função
 		if (emptyList(db.listaSites)) {
-			printf("\nCategoria vazia.\n");
+			printf(ERRO);
+			printf("Categoria vazia.\n");
 			fFinalizaDB(&db);
 			return;
 		}
@@ -169,7 +173,8 @@ void fRemoveBookmark() {
 	s.ehCat = '0';
 
 	if (!fBuscaFavorito(&db, &s)) {
-		printf("\nO favorito não existe para ser excluido.\n");
+		printf(ERRO);
+		printf("O favorito não existe para ser excluido.\n");
 		fFinalizaDB(&db);
 		return;
 	}
@@ -179,7 +184,7 @@ void fRemoveBookmark() {
 
 	fFinalizaDB(&db);
 
-	printf("\nFavorito removido com sucesso.\n");
+	printf(ANSI_BOLD_WHT "\nFavorito removido com sucesso.\n");
 
 }
 
@@ -197,7 +202,8 @@ void fRemoveCategory() {
 
 	if (strcmp(c.categoria, "/") == 0) {
 		if (emptyList(db.raiz)) {
-			printf("\nCategoria vazia.\n");
+			printf(ERRO);
+			printf("Categoria vazia.\n");
 			fFinalizaDB(&db);
 			return;
 		}
@@ -215,7 +221,8 @@ void fRemoveCategory() {
 			return;
 		}
 		if (emptyList(db.listaSites)) {
-			printf("\nCategoria vazia.\n");
+			printf(ERRO);
+			printf("Categoria vazia.\n");
 			fFinalizaDB(&db);
 			return;
 		}
@@ -226,7 +233,8 @@ void fRemoveCategory() {
 	c.ehCat = '1';
 	
 	if (!fBuscaFavorito(&db, &c)) {
-		printf("\nA categoria não existe para ser excluida.\n");
+		printf(ERRO);
+		printf("A categoria não existe para ser excluida.\n");
 		fFinalizaDB(&db);
 		return;
 	}
@@ -241,6 +249,6 @@ void fRemoveCategory() {
 
 	fFinalizaDB(&db);
 
-	printf("\nCategoria removida com sucesso.\n");
+	printf(ANSI_BOLD_WHT "\nCategoria removida com sucesso.\n");
 
 }

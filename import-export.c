@@ -63,6 +63,7 @@ void fExport() {
 		return;
 
 	if (emptyList(db.raiz)) {
+		printf(ERRO);
 		printf("Nada ainda foi inserido.\n");
 		fFinalizaDB(&db);
 		return;
@@ -74,7 +75,8 @@ void fExport() {
 
 	if (strcmp(c.categoria, "/") == 0) {
 		if (emptyList(db.raiz)) {
-			printf("\nCategoria vazia.\n");
+			printf(ERRO);
+			printf("Categoria vazia.\n");
 			fFinalizaDB(&db);
 			return;
 		}
@@ -93,7 +95,8 @@ void fExport() {
 			return;
 		}
 		if (emptyList(db.listaSites)) {
-			printf("\nCategoria vazia.\n");
+			printf(ERRO);
+			printf("Categoria vazia.\n");
 			fFinalizaDB(&db);
 			return;
 		}
@@ -188,6 +191,6 @@ void fExport() {
 	//fecha os arquivos abertos
 	fFinalizaDB(&db);
 
-	printf("\nExport criado com sucesso.\n");
+	printf(ANSI_BOLD_WHT "\nExport criado com sucesso.\n");
 
 }
