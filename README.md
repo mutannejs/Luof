@@ -30,6 +30,30 @@ categorias e favoritos em árvore.
 
 ## Instalação
 
+### Usando make
+Para instalar o programa usando o makefile, basta entrar na pasta do projeto e rodar o comando:
+```
+make install
+```
+Ao utilizar o comando acima será requisitado a senha de seu usuário. Este comando compila o
+ programa e move o arquivo binário para a basta _/usr/bin_, para que possa executa-lo em
+ qualquer diretório dentro do sistema sem a necessidade de informar seu caminho completo.
+ Caso queira apenas criar um arquivo binário no diretório atual basta rodar o comando:
+```
+make compile
+```
+
+### Usando gcc
+Para compilar o programa usando o gcc, basta entrar na pasta do projeto e rodar o comando:
+```
+gcc -o luof main.c add-remove.c list.c modify.c dbluof.c dbcat.c modulos.c help.c backup.c import-export.c lista-iterador.c teste.c
+```
+Para poder executa-lo em qualquer diretório dentro do sistema sem a necessidade de informar
+ seu caminho completo, após rodar o comando acima será necessário usar o comando:
+```
+sudo mv luof /usr/bin
+```
+
 ## Execução
 
 ## Bugs/problemas conhecidos

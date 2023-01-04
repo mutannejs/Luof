@@ -55,7 +55,12 @@ int main(int argc, char *argv[]) {
 
 void fMenu() {
 
+	sBanco db;
 	int opcao;
+
+	if (fInicializaDB(&db))
+		return;
+	fFinalizaDB(&db);
 
 	printf(
 	ANSI_BOLD_WHT "O que você deseja fazer?\n"
