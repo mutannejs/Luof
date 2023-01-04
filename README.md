@@ -38,7 +38,7 @@ make install
 Ao utilizar o comando acima será requisitado a senha de seu usuário. Este comando compila o
  programa e move o arquivo binário para a basta _/usr/bin_, para que possa executa-lo em
  qualquer diretório dentro do sistema sem a necessidade de informar seu caminho completo.
- Caso queira apenas criar um arquivo binário no diretório atual basta rodar o comando:
+ Caso queira apenas criar um arquivo binário no diretório atual, basta rodar o comando:
 ```
 make compile
 ```

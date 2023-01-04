@@ -63,7 +63,7 @@ void fExport() {
 		return;
 
 	if (emptyList(db.raiz)) {
-		printf(ERRO);
+		printf(ERRO2);
 		printf("Nada ainda foi inserido.\n");
 		fFinalizaDB(&db);
 		return;

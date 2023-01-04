@@ -13,7 +13,7 @@ void fListCategory(int opcao) {
 
 	//caso o banco esteja vazio
 	if (emptyList(db.raiz)) {
-		printf(ERRO);
+		printf(ERRO2);
 		printf("Nada ainda foi inserido.\n");
 		fFinalizaDB(&db);
 		return;
@@ -159,7 +159,7 @@ void fListTree() {
 		return;
 
 	if (emptyList(db.raiz)) {
-		printf(ERRO);
+		printf(ERRO2);
 		printf("Nada ainda foi inserido.\n");
 		fFinalizaDB(&db);
 		return;

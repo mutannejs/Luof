@@ -24,6 +24,7 @@
 #define ANSI_BOLD_WHT "\x1b[1;97m"
 
 #define ERRO "\n\x1b[0;95mERRO\x1b[0;97m: "
+#define ERRO2 "\x1b[0;95mERRO\x1b[0;97m: "
 
 /* fNome é usado para funções
  * rNome é usado para retorno de função

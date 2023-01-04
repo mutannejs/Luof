@@ -2,19 +2,24 @@
 
 void fHelp_private() {
 	printf(
+	ANSI_BOLD_WHT
 	"\t* -------------- Luof -------------- *\n\n"
+	ANSI_COLOR_WHT
 	"\tEste projeto foi criado com a intenção de ser outro meio de guardar links de páginas web,"
 	" assim como no Favoritos de um browser, pelo terminal linux de modo hierárquico, sendo"
 	" fácil de adicionar e gerenciá-los.\n\n\n"
 	
+	ANSI_BOLD_WHT
 	"\t* -- Alguns detalhes importantes --- *\n\n"
+	ANSI_COLOR_WHT
 	"\tEsse pequeno texto terá algumas informações em comum a todos ou a maioria dos comandos"
 	" deste programa:\n"
 	"\tPara usar o Luof, basta digitar na linha de comandos \"luof\" seguido do comando que se"
 	" deseja utilizar, por extenso (com dois traços: -- ) ou abreviado (com um traço: - ), ou"
 	" não informar nenhum comando para ver um menu das opções disponíveis.\n"
-	"\tExs: luof -ab\n"
+	ANSI_BOLD_WHT "\tExs: " ANSI_COLOR_BLU "luof -ab\n"
 	"\t     luof --list-category\n"
+	ANSI_COLOR_WHT
 	"\tUma categoria é por exemplo como uma pasta no favoritos de um browser, e da mesma forma"
 	" que pode existir pastas dentro de pastas, pode existir categorias dentro de categorias."
 	" Quando um favorito não está dentro de nenhuma categoria, ou uma categoria não possui"
@@ -24,71 +29,86 @@ void fHelp_private() {
 	" Para separar o nome de uma categoria de sua categoria pai, basta usar uma barra (/) entre"
 	" seus nomes. E caso se deseje gerenciar algo que está na raiz, deve-se entrar com apenas"
 	" uma barra (/) e teclar enter.\n"
-	"\tExs: Categoria     : Filmes/Terror\n"
-	"\t     Categoria pai : /\n\n\n"
+	ANSI_BOLD_WHT "\tExs: " ANSI_BOLD_CYA "Categoria     : " ANSI_COLOR_BLU "Filmes/Terror\n"
+							ANSI_BOLD_CYA "\t     Categoria pai : " ANSI_COLOR_BLU "/\n\n\n"
 
+	ANSI_BOLD_WHT
 	"\t* ------------ Comandos ------------ *\n\n"
-	"\t-h\tou   --help:\n"
+	ANSI_BOLD_YEL "\t-h\tou   --help:\n"
+	ANSI_COLOR_WHT
 	"\tUse para ver este menu, contendo uma breve descrição do programa Luof e os comandos que"
 	" este possui, e uma breve descrição de como usá-los. Para uma descrição mais detalhada"
-	" pode-se usar o comando --help (ou -h) seguido do comando que se deseja saber mais.\n\n"
+	" pode-se usar o comando --help (ou -h) seguido do comando que se deseja saber mais.\n"
+	ANSI_BOLD_WHT "\tEx: " ANSI_COLOR_BLU "luof -h -ab\n\n"
 
-	"\t-ab\tou   --add-bookmark:\n"
+	ANSI_BOLD_YEL "\t-ab\tou   --add-bookmark:\n"
+	ANSI_COLOR_WHT
 	"\tUse para guardar um favorito. Primeiro informe a categoria na qual se deseja adicionar"
 	" o favorito, depois seu nome, depois o link da página, e, por fim, um comentário sobre.\n\n"
 
-	"\t-ac\tou   --add-category:\n"
+	ANSI_BOLD_YEL "\t-ac\tou   --add-category:\n"
+	ANSI_COLOR_WHT
 	"\tUse para adicionar uma categoria. Primeiro informe a categoria pai da categoria que"
 	" será adicionada, e depois o nome dela.\n\n"
 
-	"\t-rb\tou   --remove-bookmark:\n"
+	ANSI_BOLD_YEL "\t-rb\tou   --remove-bookmark:\n"
+	ANSI_COLOR_WHT
 	"\tUse para remover um favorito. Primeiro informe a categoria a qual o favorito pertence,"
 	" e depois o nome dele.\n\n"
 
-	"\t-rc\tou   --remove-category:\n"
+	ANSI_BOLD_YEL "\t-rc\tou   --remove-category:\n"
+	ANSI_COLOR_WHT
 	"\tUse para remover uma categoria. Primeiro informe a categoria pai da categoria que"
 	" será removida, e depois o nome dela.\n\n"
 
-	"\t-mb\tou   --modify-bookmark:\n"
+	ANSI_BOLD_YEL "\t-mb\tou   --modify-bookmark:\n"
+	ANSI_COLOR_WHT
 	"\tUse para modificar um favorito. Primeiramente informe a categoria a qual o favorito"
 	" pertence, depois o seu nome, qual dado dele deseja-se modificar, e, por fim, basta"
 	" informar o(s) novo(s) dado(s) do favorito.\n\n"
 
-	"\t-mc\tou   --modify-category:\n"
+	ANSI_BOLD_YEL "\t-mc\tou   --modify-category:\n"
+	ANSI_COLOR_WHT
 	"\tUse para modificar uma categoria. Primeiramente informe a categoria pai da categoria"
 	" que será modificada, depois seu nome, qual dado dela deseja-se modificar, e por fim"
 	" basta informar o(s) novo(s) dado(s) da categoria.\n\n"
 
-	"\t-lc\tou   --list-category:\n"
+	ANSI_BOLD_YEL "\t-lc\tou   --list-category:\n"
+	ANSI_COLOR_WHT
 	"\tUse para ver o nome das categorias e dados dos favoritos que pertencem a categoria"
 	" informada.\n\n"
 
-	"\t-lcs\tou   --list-category-short:\n"
+	ANSI_BOLD_YEL "\t-lcs\tou   --list-category-short:\n"
+	ANSI_COLOR_WHT
 	"\tUse para ver apenas os nomes das categorias e favoritos que pertencem a categoria"
 	" informada.\n\n"
 
-	"\t-lt\tou   --list-tree:\n"
+	ANSI_BOLD_YEL "\t-lt\tou   --list-tree:\n"
+	ANSI_COLOR_WHT
 	"\tUse para ver todas as categorias e favoritos que estão armazenados. Os dados serão"
 	" mostrados em forma de árvore, obedecendo à hierarquia das categorias.\n\n"
 
-	"\t--backup:\n"
+	ANSI_BOLD_YEL "\t--backup:\n"
+	ANSI_COLOR_WHT
 	"\tUse para criar ou restaurar um backup. Informe a opção desejada, se for [1]criar,"
 	" o arquivo de backup (o arquivo possui a extensão .luof) será adicionado no diretório"
 	" atual. Caso a opção seja [2]restaurar será necessário informar o caminho do arquivo de"
 	" backup que se deseja restaurar.\n\n"
 
-	"\t--export:\n"
+	ANSI_BOLD_YEL "\t--export:\n"
+	ANSI_COLOR_WHT
 	"\tUse para exportar uma categoria do luof para ser importada em um browser.\n\n"
 	);
 }
 
 void fHelp_h() {
 	printf(
-	"luof:\t-h\tou   --help:\n\n"
+	ANSI_BOLD_WHT "luof:" ANSI_BOLD_YEL "\t-h\tou   --help:\n\n"
+	ANSI_COLOR_WHT
 	"\tUse para ver um menu contendo uma breve descrição do programa Luof e os comandos que"
 	" este possui, e uma breve descrição de como usá-los. Para uma descrição mais detalhada"
 	" pode-se usar o comando --help (ou -h) seguido do comando que se deseja saber mais.\n\n"
-	"Exs:\tluof -h\n"
+	ANSI_BOLD_WHT "Exs:" ANSI_COLOR_BLU "\tluof -h\n"
 	"\tluof --help\n"
 	"\tluof -h -ab\n"
 	"\tluof -h --add-bookmark\n"
@@ -99,7 +119,8 @@ void fHelp_h() {
 
 void fHelp_ab() {
 	printf(
-	"luof:\t-ab\tou   --add-bookmark:\n\n"
+	ANSI_BOLD_WHT "luof:" ANSI_BOLD_YEL "\t-ab\tou   --add-bookmark:\n\n"
+	ANSI_COLOR_WHT
 	"\tUse para guardar um favorito. Primeiro informe a categoria na qual se deseja adicionar"
 	" o favorito, depois seu nome, depois o link da página, e, por fim, um comentário sobre.\n"
 	"\tÉ necessário preencher todos os campos requeridos. Caso tecle enter sem nada informado,"
@@ -107,17 +128,18 @@ void fHelp_ab() {
 	" esperada.\n"
 	"\tNo geral, todos os campos aceitam um número grande de caracteres, com exceção do nome"
 	" que aceita no máximo 99.\n\n"
-	"Ex:\n"
-	"Categoria : Jogos/steam\n"
-	"Nome      : Dark Souls\n"
-	"Link      : https://store.steampowered.com/app/570940/DARK_SOULS_REMASTERED/\n"
-	"Texto     : Página da steam referente ao jogo Dark Souls: Remastered\n\n"
+	ANSI_BOLD_WHT "Ex:\n"
+	ANSI_BOLD_CYA "Categoria : " ANSI_COLOR_BLU "Jogos/steam\n"
+	ANSI_BOLD_CYA "Nome      : " ANSI_COLOR_BLU "Dark Souls\n"
+	ANSI_BOLD_CYA "Link      : " ANSI_COLOR_BLU "https://store.steampowered.com/app/570940/DARK_SOULS_REMASTERED/\n"
+	ANSI_BOLD_CYA "Texto     : " ANSI_COLOR_BLU "Página da steam referente ao jogo Dark Souls: Remastered\n\n"
 	);
 }
 
 void fHelp_ac() {
 	printf(
-	"luof:\t-ac\tou   --add-category:\n\n"
+	ANSI_BOLD_WHT "luof: " ANSI_BOLD_YEL "\t-ac\tou   --add-category:\n\n"
+	ANSI_COLOR_WHT
 	"\tUse para adicionar uma categoria. Primeiro informe a categoria pai da categoria que será"
 	" adicionada, e depois o nome dela.\n"
 	"\tÉ necessário preencher todos os campos requeridos. Caso tecle enter sem nada informado,"
@@ -126,93 +148,102 @@ void fHelp_ac() {
 	"\tO nome da categoria aceita no máximo 99 caracteres, não pode conter o caractere \"/\", e"
 	" também não pode ser igual à palavra \"luof\".\n"
 	"\tUma categoria pode no máximo alcançar 9 níveis de subcategoria (considerando que a raiz"
-	" está na ).\n"
-	"Ex:\n"
-	"Categoria pai     : /\n"
-	"Nome da categoria : Jogos\n\n"
+	" está na ).\n\n"
+	ANSI_BOLD_WHT "Ex:\n"
+	ANSI_BOLD_CYA "Categoria pai     : " ANSI_COLOR_BLU "/\n"
+	ANSI_BOLD_CYA "Nome da categoria : " ANSI_COLOR_BLU "Jogos\n\n"
 	);
 }
 
 void fHelp_rb() {
 	printf(
-	"luof:\t-rb\tou   --remove-bookmark:\n\n"
+	ANSI_BOLD_WHT "luof:" ANSI_BOLD_YEL "\t-rb\tou   --remove-bookmark:\n\n"
+	ANSI_COLOR_WHT
 	"\tUse para remover um favorito. Primeiro informe a categoria a qual o favorito pertence,"
 	" depois informe o nome dele.\n"
 	"\tÉ necessário preencher todos os campos requeridos. Caso tecle enter sem nada informado,"
 	" terá uma quebra de linha na saída do terminal, mas a entrada daquele dado ainda será"
 	" esperada.\n\n"
-	"Ex:\n"
-	"Categoria : Jogos/steam\n"
-	"Nome      : Dark Souls\n\n"
+	ANSI_BOLD_WHT "Ex:\n"
+	ANSI_BOLD_CYA "Categoria : " ANSI_COLOR_BLU "Jogos/steam\n"
+	ANSI_BOLD_CYA "Nome      : " ANSI_COLOR_BLU "Dark Souls\n\n"
 	);
 }
 
 void fHelp_rc() {
 	printf(
-	"luof:\t-rc\tou   --remove-category:\n\n"
+	ANSI_BOLD_WHT "luof:" ANSI_BOLD_YEL "\t-rc\tou   --remove-category:\n\n"
+	ANSI_COLOR_WHT
 	"\tUse para remover uma categoria. Primeiro informe a categoria pai da categoria que"
 	" será removida, e depois o nome dela.\n"
 	"\tUma categoria removida também terá suas subcategorias e favoritos removidos.\n"
 	"\tÉ necessário preencher todos os campos requeridos. Caso tecle enter sem nada informado,"
 	" terá uma quebra de linha na saída do terminal, mas a entrada daquele dado ainda será"
 	" esperada.\n\n"
-	"Ex:\n"
-	"Categoria pai     : Jogos\n"
-	"Nome da categoria : steam\n\n"
+	ANSI_BOLD_WHT "Ex:\n"
+	ANSI_BOLD_CYA "Categoria pai     : " ANSI_COLOR_BLU "Jogos\n"
+	ANSI_BOLD_CYA "Nome da categoria : " ANSI_COLOR_BLU "steam\n\n"
 	);
 }
 
 void fHelp_mb() {
 	printf(
-	"luof:\t-mb\tou   --modify-bookmark:\n\n"
+	ANSI_BOLD_WHT "luof:" ANSI_BOLD_YEL "\t-mb\tou   --modify-bookmark:\n\n"
+	ANSI_COLOR_WHT
 	"\tUse para modificar um favorito. Primeiramente informe a categoria a qual o favorito"
 	" pertence, depois o seu nome, qual dado dele deseja-se modificar (deve ser informado o"
 	" número), e, por fim, basta informar o(s) novo(s) dado(s) do favorito.\n"
 	"\tÉ necessário preencher todos os campos requeridos. Caso tecle enter sem nada informado,"
 	" terá uma quebra de linha na saída do terminal, mas a entrada daquele dado ainda será"
 	" esperada.\n\n"
-	"Ex: Caso quisesse-se modificar o nome, o link e o texto do favorito \"Dark Souls\""
+	ANSI_BOLD_WHT "Ex:"
+	ANSI_COLOR_WHT " Caso quisesse-se modificar o nome, o link e o texto do favorito \"Dark Souls\""
 	" pertencente a categoria \"Jogos/steam\", poderia-se escolher a opção tudo (teclando 5"
 	" quando requisitado a entrada), fazer as modificações necessárias e copiar os dados"
 	" que não deseja-se modificar:\n\n"
-	"Dados antigos:\n"
+	ANSI_BOLD_WHT "Ex:\n"
+	ANSI_BOLD_CYA "Categoria : " ANSI_COLOR_BLU "Jogos/steam\n"
+	ANSI_BOLD_CYA "Nome      : " ANSI_COLOR_BLU "Dark Souls\n\n"
+	ANSI_BOLD_CYA "Dados antigos:\n"
 	"Categoria : Jogos/steam\n"
 	"Nome      : Dark Souls\n"
 	"Link      : https://store.steampowered.com/app/570940/DARK_SOULS_REMASTERED/\n"
 	"Texto     : Página da steam referente ao jogo Dark Souls: Remastered\n\n"
-	"Você deseja modificar? [1]categoria [2]nome [3]link [4]texto [5]tudo [6]nada : 5\n\n"
-	"Novos dados:\n"
-	"Categoria : Jogos/steam\n"
-	"Nome      : Dark Souls II\n"
-	"Link      : https://store.steampowered.com/app/335300/DARK_SOULS_II_Scholar_of_the_First_Sin/\n"
-	"Texto     : Página da steam referente ao jogo Dark souls II: Scholar Of The First Sin\n\n"
+	"Você deseja modificar? [1]categoria [2]nome [3]link [4]texto [5]tudo [6]nada : " ANSI_COLOR_BLU "5\n\n"
+	ANSI_BOLD_CYA "Novos dados:\n"
+	ANSI_BOLD_CYA "Categoria : " ANSI_COLOR_BLU "Jogos/steam\n"
+	ANSI_BOLD_CYA "Nome      : " ANSI_COLOR_BLU "Dark Souls II\n"
+	ANSI_BOLD_CYA "Link      : " ANSI_COLOR_BLU "https://store.steampowered.com/app/335300/DARK_SOULS_II_Scholar_of_the_First_Sin/\n"
+	ANSI_BOLD_CYA "Texto     : " ANSI_COLOR_BLU "Página da steam referente ao jogo Dark souls II: Scholar Of The First Sin\n\n"
 	);
 }
 
 void fHelp_mc() {
 	printf(
-	"luof:\t-mc\tou   --modify-category:\n\n"
+	ANSI_BOLD_WHT "luof:" ANSI_BOLD_YEL "\t-mc\tou   --modify-category:\n\n"
+	ANSI_COLOR_WHT
 	"\tUse para modificar uma categoria. Primeiro informe a categoria pai da categoria que"
 	" será modificada, depois o nome dela, qual dado seseja-se modificar (deve ser informado o"
 	" número), e, por fim, basta informar o(s) novo(s) dado(s) da categoria.\n"
 	"\tÉ necessário preencher todos os campos requeridos. Caso tecle enter sem nada informado,"
 	" terá uma quebra de linha na saída do terminal, mas a entrada daquele dado ainda será"
 	" esperada.\n\n"
-	"Ex: Caso quisesse-se modificar a categoria pai da categoria \"Jogos/steam\" para a"
+	ANSI_BOLD_WHT "Ex:"
+	ANSI_COLOR_WHT " Caso quisesse-se modificar a categoria pai da categoria \"Jogos/steam\" para a"
 	" categoria raiz:\n\n"
-	"Dados antigos:\n"
-	"Categoria pai     : Jogos\n"
-	"Nome da categoria : steam\n\n"
-	"Você deseja modificar? [1]categoria pai [2]nome da categoria [3]tudo [4]nada : 1\n\n"
-	"Novos dados:\n"
-	"Categoria pai     : /\n\n"
+	ANSI_BOLD_CYA "Categoria pai     : " ANSI_COLOR_BLU "Jogos\n"
+	ANSI_BOLD_CYA "Nome da categoria : " ANSI_COLOR_BLU "steam\n\n"
+	ANSI_BOLD_CYA "Você deseja modificar? [1]categoria pai [2]nome da categoria [3]tudo [4]nada : " ANSI_COLOR_BLU "1\n\n"
+	ANSI_BOLD_CYA "Novos dados:\n"
+	ANSI_BOLD_CYA "Categoria pai     : " ANSI_COLOR_BLU "/\n\n"
 	);
 }
 
 void fHelp_lc(int opcao) {
 	if (opcao == 0) {
 		printf(
-		"luof:\t-lc\tou   --list-category:\n\n"
+		ANSI_BOLD_WHT "luof:" ANSI_BOLD_YEL "\t-lc\tou   --list-category:\n\n"
+		ANSI_COLOR_WHT
 		"\tUse para ver o nome das categorias e dados dos favoritos que pertencem a categoria"
 		" informada. As subcategorias serão mostradas com um apóstrofo (*) antes de seu"
 		" nome, e os favoritos terão seu nome, link e texto mostrados.\n\n"
@@ -220,7 +251,8 @@ void fHelp_lc(int opcao) {
 	}
 	else {
 		printf(
-		"luof:\t-lcs\tou   --list-category-short:\n\n"
+		ANSI_BOLD_WHT "luof:" ANSI_BOLD_YEL "\t-lcs\tou   --list-category-short:\n\n"
+		ANSI_COLOR_WHT
 		"\tUse para ver o nome das categorias e nome dos favoritos que pertencem a categoria"
 		" informada. Onde as categorias serão mostradas com um apóstrofo (*) antes de seu"
 		" nome, e os favoritos terão apenas seu nome mostrado.\n\n"
@@ -230,58 +262,64 @@ void fHelp_lc(int opcao) {
 
 void fHelp_lt() {
 	printf(
-	"luof:\t-lt\tou   --list-tree:\n\n"
+	ANSI_BOLD_WHT "luof:" ANSI_BOLD_YEL "\t-lt\tou   --list-tree:\n\n"
+	ANSI_COLOR_WHT
 	"\tUse para ver todas as categorias e favoritos que estão armazenados. Os dados serão"
 	" mostrados em forma de árvore, obedecendo à hierarquia das categorias, onde as categorias"
 	" serão mostradas com um apóstrofo (*) antes de seu nome.\n"
 	"\tAlém de mostrar uma visão de tudo que está armazenado, serve principalmente para saber"
 	" o caminho (categoria e/ou nome) de algo específico.\n\n"
-	"Ex: Caso o comando \"luof -lt\" gerasse a saída:\n"
-	"|_ * Jogos\n"
+	ANSI_BOLD_WHT "Ex:"
+	ANSI_COLOR_WHT " Caso o comando \"luof -lt\" gerasse a saída:\n"
+	ANSI_BOLD_CYA "|_ * Jogos\n"
 	"|    |_ * steam\n"
 	"|         |_ * Dark Souls\n"
 	"|         |    |_ ds2 sotfs\n"
 	"|         |    |_ dsr\n"
 	"|_ ilovepdf\n"
 	"|_ randoma11y\n\n"
-	"\tPoderia-se concluir que o caminho do favorito \"dsr\" é \"Jogos/steam/Dark Souls/dsr\","
+	ANSI_COLOR_WHT "\tPoderia-se concluir que o caminho do favorito \"dsr\" é \"Jogos/steam/Dark Souls/dsr\","
 	" e caso quisesse-se removê-lo, os dados informados teriam que ser:\n"
-	"Categoria : Jogos/steam/Dark Souls\n"
-	"Nome      : dsr\n\n"
-	"\tDa mesma forma, se se quisesse remover o favorito \"ilovepdf\" ou a categoria \"steam\","
+	ANSI_BOLD_CYA "Categoria : " ANSI_COLOR_BLU "Jogos/steam/Dark Souls\n"
+	ANSI_BOLD_CYA "Nome      : " ANSI_COLOR_BLU "dsr\n\n"
+	ANSI_COLOR_WHT "\tDa mesma forma, se se quisesse remover o favorito \"ilovepdf\" ou a categoria \"steam\","
 	" os dados informados teriam que ser:\n"
 	"\tPara o favorito \"ilovepdf\"\n"
-	"Categoria : /\n"
-	"Nome      : ilovepdf\n\n"
-	"\tPara a categoria \"steam\"\n"
-	"Categoria pai     : Jogos\n"
-	"Nome da categoria : steam\n\n"
+	ANSI_BOLD_CYA "Categoria : " ANSI_COLOR_BLU "/\n"
+	ANSI_BOLD_CYA "Nome      : " ANSI_COLOR_BLU "ilovepdf\n\n"
+	ANSI_COLOR_WHT "\tPara a categoria \"steam\"\n"
+	ANSI_BOLD_CYA "Categoria pai     : " ANSI_COLOR_BLU "Jogos\n"
+	ANSI_BOLD_CYA "Nome da categoria : " ANSI_COLOR_BLU "steam\n\n"
 	);
 }
 
 void fHelp_backup() {
 	printf(
-	"luof:\t--backup:\n"
+	ANSI_BOLD_WHT "luof:" ANSI_BOLD_YEL "\t--backup:\n\n"
+	ANSI_COLOR_WHT
 	"\tUse para criar ou restaurar um backup. Informe a opção desejada; se a opção for"
 	" [1]criar, o arquivo de backup (o arquivo possui a extensão .luof) será adicionado"
 	" no diretório atual, caso já exista um arquivo de backup no diretório ele não será"
 	" perdido. Caso a opção seja [2]restaurar, será necessário informar o caminho do arquivo"
 	" de backup que se deseja restaurar, lembrando que ao restaurar um backup todos os"
 	" dados atuais do banco serão perdidos.\n\n"
-	"Ex: Caso quisesse-se criar um backup, porém na pasta atual já exista o arquivo backup.luof:\n\n"
-	"Você deseja criar um backup novo ou restaurar um antigo? [1]criar [2]restaurar [3]sair : 1\n"
-	"Arquivo backup1.luof adicionado no diretório atual.\n"
+	ANSI_BOLD_WHT "Ex:"
+	ANSI_COLOR_WHT " Caso quisesse-se criar um backup, porém na pasta atual já exista o arquivo backup.luof:\n"
+	ANSI_BOLD_CYA "Você deseja criar um backup novo ou restaurar um antigo? [1]criar [2]restaurar [3]sair : " ANSI_COLOR_BLU "1\n"
+	ANSI_BOLD_CYA "Arquivo backup-1.luof adicionado no diretório atual.\n\n"
 	"Backup criado com sucesso.\n\n"
-	"Ex: Caso quisesse-se restaurar um backup com o caminho \"/home/usuario/Downloads/backup5.luof\":\n\n"
-	"Você deseja criar um backup novo ou restaurar um antigo? [1]criar [2]restaurar [3]sair : 2\n"
-	"Informe o caminho do arquivo de backup: /home/usuario/Downloads/backup5.luof\n"
-	"Backup restaurado com sucesso.\n\n"
+	ANSI_BOLD_WHT "Ex:"
+	ANSI_COLOR_WHT " Caso quisesse-se restaurar um backup com o caminho \"/home/usuario/Downloads/backup5.luof\":\n"
+	ANSI_BOLD_CYA "Você deseja criar um backup novo ou restaurar um antigo? [1]criar [2]restaurar [3]sair : " ANSI_COLOR_BLU "2\n"
+	ANSI_BOLD_CYA "Informe o caminho do arquivo de backup: " ANSI_COLOR_BLU "/home/usuario/Downloads/backup5.luof\n\n"
+	ANSI_BOLD_CYA "Backup restaurado com sucesso.\n\n"
 	);
 }
 
 void fHelp_export() {
 	printf(
-	"luof:\t--export:\n"
+	ANSI_BOLD_WHT "luof:" ANSI_BOLD_YEL "\t--export:\n\n"
+	ANSI_COLOR_WHT
 	"\tUse para exportar uma categoria do luof para ser importada em um browser."
 	" É necessário apenas informar o caminho da categoria desejada. o arquivo de"
 	" export possui a extensão .html e nome \"bookmarks-luof\", podendo ter um número"
@@ -332,6 +370,7 @@ void fHelp(char *argv) {
 		fHelp_export();
 	}
 	else {
+		printf(ERRO2);
 		printf("%s não é um comando de luof. Use \"luof --help\" para ver comandos válidos.\n", argv);
 	}
 
