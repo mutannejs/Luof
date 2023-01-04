@@ -1,17 +1,17 @@
-install: compile move create-db
+install: compile create-db move
 
 compile:
 	@ gcc -o luof main.c add-remove.c list.c modify.c dbluof.c dbcat.c modulos.c help.c backup.c import-export.c lista-iterador.c teste.c
 	@ chmod 777 luof
-
-move:
-	@ sudo mv luof /usr/bin/
 
 create-db:
 	@ mkdir ~/.luof
 	@ chmod u+rxw ~/.luof
 	@ touch ~/.luof/luof
 	@ chmod u+rxw ~/.luof/luof
+
+move:
+	@ sudo mv luof /usr/bin/
 
 desinstall:
 	@ rm -r ~/.luof

@@ -51,9 +51,9 @@ void fListCategory(int opcao) {
 		siteDoIterador = (struct sSite*) retornaItera(&it);
 		if (strcmp(siteDoIterador->categoria, s.categoria) == 0) {
 
-			if ((siteDoIterador->ehCat == '0' && opcao == 0) || (siteDoIterador->ehCat == '0' && cont == 0))
+			if ((siteDoIterador->ehCat == '0' && opcao == 0) || cont == 0)
 				printf("\n");
-			if (siteDoIterador->ehCat == '0' && cont <= 0) {
+			else if (siteDoIterador->ehCat == '0' && cont <= 0) {
 				cont *= -1;
 				cont++;
 				printf("\n");

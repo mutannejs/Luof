@@ -7,13 +7,13 @@ int fInicializaDB(sBanco *db) {
 	struct stat st;
 
 	//seta a variável caminhoDB com o caminho para o banco de dados
-	/* --- quando caminhoDB estiver com o caminho da diretório atual ---
 	strcpy(db->caminhoDB, ".luof/");
 	db->tamCaminhoDB = strlen(db->caminhoDB);
-	------------------------------------------------------------------*/
+	/* --- quando caminhoDB estiver com o caminho da diretório atual ---
 	char *login;
 	login = getlogin();
 	sprintf(db->caminhoDB, "/home/%s/.luof/", login);
+	------------------------------------------------------------------*/
 
 	strcpy(dir, db->caminhoDB);
 

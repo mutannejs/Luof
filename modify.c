@@ -56,12 +56,12 @@ void fModifyBookmark() {
 	//printa os dados do site para o usuário saber o que modificar
 	printf(ANSI_BOLD_WHT "\nDados antigos:\n");
 	if (strcmp(s.categoria, "luof") == 0)
-		printf(ANSI_BOLD_WHT "Categoria : /\n");
+		printf(ANSI_BOLD_YEL "Categoria : /\n");
 	else
-		printf(ANSI_BOLD_WHT "Categoria : %s\n", s.categoria);
-	printf(ANSI_BOLD_WHT "Nome      : %s\n", s.nome);
-	printf(ANSI_BOLD_WHT "Link      : %s\n", s.link);
-	printf(ANSI_BOLD_WHT "Texto     : %s\n", s.texto);
+		printf("Categoria : %s\n", s.categoria);
+	printf("Nome      : %s\n", s.nome);
+	printf("Link      : %s\n", s.link);
+	printf("Texto     : %s\n", s.texto);
 
 	//pergunta qual atributo será modificado
 	printf(ANSI_BOLD_WHT "\nVocê deseja modificar? [1]categoria [2]nome [3]link [4]texto [5]tudo [6]nada : " ANSI_COLOR_GRA);
@@ -259,14 +259,6 @@ void fModifyCategory() {
 		fFinalizaDB(&db);
 		return;
 	}
-
-	//printa os dados da categoria para o usuário saber o que modificar
-	printf(ANSI_BOLD_WHT "\nDados antigos:\n");
-	if (strcmp(c.categoria, "luof") == 0)
-		printf(ANSI_BOLD_WHT "Categoria pai     : /\n");
-	else
-		printf(ANSI_BOLD_WHT "Categoria pai     : %s\n", c.categoria);
-	printf(ANSI_BOLD_WHT "Nome da categoria : %s\n", c.nome);
 
 	//pergunta qual atributo será modificado
 	printf(ANSI_BOLD_WHT "\nVocê deseja modificar? [1]categoria pai [2]nome da categoria [3]tudo [4]nada : " ANSI_COLOR_GRA);

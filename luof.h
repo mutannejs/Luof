@@ -17,7 +17,10 @@
 
 #define ANSI_COLOR_RED "\x1b[0;31m"
 #define ANSI_COLOR_GRA "\x1b[0;37m"
+#define ANSI_COLOR_BLU "\x1b[0;94m"
 #define ANSI_COLOR_WHT "\x1b[0;97m"
+#define ANSI_BOLD_YEL "\x1b[1;93m"
+#define ANSI_BOLD_CYA "\x1b[1;96m"
 #define ANSI_BOLD_WHT "\x1b[1;97m"
 
 #define ERRO "\n\x1b[0;95mERRO\x1b[0;97m: "
