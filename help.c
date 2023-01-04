@@ -91,7 +91,7 @@ void fHelp_private() {
 	ANSI_BOLD_YEL "\t--backup:\n"
 	ANSI_COLOR_WHT
 	"\tUse para criar ou restaurar um backup. Informe a opção desejada, se for [1]criar,"
-	" o arquivo de backup (o arquivo possui a extensão .luof) será adicionado no diretório"
+	" o arquivo de backup (o arquivo possui o nome luof.bkp) será adicionado no diretório"
 	" atual. Caso a opção seja [2]restaurar será necessário informar o caminho do arquivo de"
 	" backup que se deseja restaurar.\n\n"
 
@@ -247,6 +247,18 @@ void fHelp_lc(int opcao) {
 		"\tUse para ver o nome das categorias e dados dos favoritos que pertencem a categoria"
 		" informada. As subcategorias serão mostradas com um apóstrofo (*) antes de seu"
 		" nome, e os favoritos terão seu nome, link e texto mostrados.\n\n"
+		ANSI_BOLD_WHT "Ex:\n"
+		ANSI_BOLD_CYA "Categoria : " ANSI_COLOR_BLU "/\n\n" ANSI_BOLD_CYA
+		"* Jogos\n\n"
+		"Nome  : ilovepdf\n"
+		"Link  : https://www.ilovepdf.com/pt\n"
+		"Texto : Site com diversas ferramentas para manipular pdf's\n\n"
+		"Nome  : randoma11y\n"
+		"Link  : https://randoma11y.com/\n"
+		"Texto : Site que combina cores aleatoriamente para uso em páginas web\n\n"
+		ANSI_BOLD_WHT "Ex:\n"
+		ANSI_BOLD_CYA "Categoria : " ANSI_COLOR_BLU "Jogos\n\n" ANSI_BOLD_CYA
+		"* steam\n\n"
 		);
 	}
 	else {
@@ -256,6 +268,14 @@ void fHelp_lc(int opcao) {
 		"\tUse para ver o nome das categorias e nome dos favoritos que pertencem a categoria"
 		" informada. Onde as categorias serão mostradas com um apóstrofo (*) antes de seu"
 		" nome, e os favoritos terão apenas seu nome mostrado.\n\n"
+		ANSI_BOLD_WHT "Ex:\n"
+		ANSI_BOLD_CYA "Categoria : " ANSI_COLOR_BLU "/\n\n" ANSI_BOLD_CYA
+		"* Jogos\n\n"
+		"ilovepdf\n"
+		"randoma11y\n\n"
+		ANSI_BOLD_WHT "Ex:\n"
+		ANSI_BOLD_CYA "Categoria : " ANSI_COLOR_BLU "Jogos\n\n" ANSI_BOLD_CYA
+		"* steam\n\n"
 		);
 	}
 }
@@ -298,20 +318,20 @@ void fHelp_backup() {
 	ANSI_BOLD_WHT "luof:" ANSI_BOLD_YEL "\t--backup:\n\n"
 	ANSI_COLOR_WHT
 	"\tUse para criar ou restaurar um backup. Informe a opção desejada; se a opção for"
-	" [1]criar, o arquivo de backup (o arquivo possui a extensão .luof) será adicionado"
+	" [1]criar, o arquivo de backup (o arquivo possui o nome luof.bkp) será adicionado"
 	" no diretório atual, caso já exista um arquivo de backup no diretório ele não será"
 	" perdido. Caso a opção seja [2]restaurar, será necessário informar o caminho do arquivo"
 	" de backup que se deseja restaurar, lembrando que ao restaurar um backup todos os"
 	" dados atuais do banco serão perdidos.\n\n"
 	ANSI_BOLD_WHT "Ex:"
-	ANSI_COLOR_WHT " Caso quisesse-se criar um backup, porém na pasta atual já exista o arquivo backup.luof:\n"
-	ANSI_BOLD_CYA "Você deseja criar um backup novo ou restaurar um antigo? [1]criar [2]restaurar [3]sair : " ANSI_COLOR_BLU "1\n"
-	ANSI_BOLD_CYA "Arquivo backup-1.luof adicionado no diretório atual.\n\n"
+	ANSI_COLOR_WHT " Caso quisesse-se criar um backup, porém na pasta atual já exista o arquivo luof.bkp:\n"
+	ANSI_BOLD_CYA "Você deseja criar um backup novo ou restaurar um antigo? [1]criar [2]restaurar [3]sair : " ANSI_COLOR_BLU "1\n\n"
+	ANSI_BOLD_CYA "Arquivo luof-1.bkp adicionado no diretório atual.\n"
 	"Backup criado com sucesso.\n\n"
 	ANSI_BOLD_WHT "Ex:"
-	ANSI_COLOR_WHT " Caso quisesse-se restaurar um backup com o caminho \"/home/usuario/Downloads/backup5.luof\":\n"
-	ANSI_BOLD_CYA "Você deseja criar um backup novo ou restaurar um antigo? [1]criar [2]restaurar [3]sair : " ANSI_COLOR_BLU "2\n"
-	ANSI_BOLD_CYA "Informe o caminho do arquivo de backup: " ANSI_COLOR_BLU "/home/usuario/Downloads/backup5.luof\n\n"
+	ANSI_COLOR_WHT " Caso quisesse-se restaurar um backup com o caminho \"/home/usuario/Downloads/luof-5.bkp\":\n"
+	ANSI_BOLD_CYA "Você deseja criar um backup novo ou restaurar um antigo? [1]criar [2]restaurar [3]sair : " ANSI_COLOR_BLU "2\n\n"
+	ANSI_BOLD_CYA "Informe o caminho do arquivo de backup: " ANSI_COLOR_BLU "/home/usuario/Downloads/luof-5.bkp\n"
 	ANSI_BOLD_CYA "Backup restaurado com sucesso.\n\n"
 	);
 }
@@ -325,6 +345,11 @@ void fHelp_export() {
 	" export possui a extensão .html e nome \"bookmarks-luof\", podendo ter um número"
 	" após caso já exista um arquivo de export (este não será perdido) no diretório atual,"
 	" o mesmo no qual será armazenado o novo arquivo de export.\n\n"
+	ANSI_BOLD_WHT "Ex:\n"
+	ANSI_COLOR_WHT " Caso quisesse-se exportar a categoria \"Jogos\" e não exista nenhum arquivo exportado no diretório atual:\n"
+	ANSI_BOLD_CYA "Categoria : " ANSI_COLOR_BLU "Jogos\n\n"
+	ANSI_BOLD_CYA "Arquivo bookmarks-luof.html adicionado no diretório atual.\n"
+	"Export criado com sucesso.\n\n"
 	);
 }
 

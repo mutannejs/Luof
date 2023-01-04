@@ -191,6 +191,7 @@ void fExport() {
 	//fecha os arquivos abertos
 	fFinalizaDB(&db);
 
-	printf(ANSI_BOLD_WHT "\nExport criado com sucesso.\n");
+	printf(ANSI_BOLD_WHT "\nArquivo %s adicionado no diretório atual.", nomeExport);
+	printf("\nExport criado com sucesso.\n");
 
 }
