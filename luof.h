@@ -28,7 +28,6 @@
 
 /* fNome é usado para funções
  * rNome é usado para retorno de função
- * aNome é usado para arquivos
  * sNome é usado para struct's
  * nome é usado para outras variáveis
  * */
@@ -44,6 +43,7 @@ typedef struct sSite {
 
 typedef struct sCat {
 	char nome[TAMNOMEFAV];
+	char caminho[TAMCAMINHO];
 	int hie;
 	struct sCat *catPai;
 	sLista catFilhos;
@@ -68,7 +68,7 @@ int fSetaCatCategoria(sSite *s);
 int fSetaCatNome(sSite *s);
 void fSetaCaminhoArquivo(sBanco *db, char *arq, char *nome);
 void fIncrementaCamCat(char *caminho, char *nome);
-void fSetaCaminhoCategoria(char caminho[], sSite s);
+void fSetaCaminhoCategoria(char caminho[], char nome[]);
 sSite fRecuperaFavorito(FILE *arq, char *nomeT);
 int fSeparaArquivoCategoria(sBanco *db, char categoria[], sCat *cat, char nomeA[]);
 void fMudaCaminhoCategoriaArvore(sBanco *db, sCat *cat, char *caminhoA, char *caminhoN);
@@ -100,8 +100,9 @@ void percursoCategorias(sCat *cat, int hie);
 void printaListaSites(sLista l);
 void printaSite(sSite s);
 void printaColorido();
+void fTeste();
 
-//menu
+/*//menu
 void fMenu();
 
 //help
@@ -147,6 +148,6 @@ void fBackup();
 
 //import-export
 void fExport_private(sBanco *db, FILE *arqExport, sSite s, int hierarquia);
-void fExport();
+void fExport();*/
 
 #endif

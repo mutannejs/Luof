@@ -2,7 +2,9 @@
 
 int main(int argc, char *argv[]) {
 
-	if (argc == 1) {
+	fTeste();
+
+	/*if (argc == 1) {
 		fMenu();
 	}
 	else if (strcmp(argv[1], "-h") == 0 || strcmp(argv[1], "--help") == 0) {
@@ -45,15 +47,15 @@ int main(int argc, char *argv[]) {
 		fExport();
 	}
 	else {
-		printaColorido();
+		//printaColorido();
 		printf(ANSI_BOLD_WHT "Função inválida\n");
-	}
+	}*/
 
 	return 0;
 
 }
 
-void fMenu() {
+/*void fMenu() {
 
 	sBanco db;
 	int opcao;
@@ -117,3 +119,4 @@ void fMenu() {
 	};
 
 }
+*/

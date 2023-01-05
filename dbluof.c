@@ -2,9 +2,10 @@
 
 int fInicializaDB(sBanco *db) {
 
-	char dir[TAMLINKARQ];
+	char caminho[TAMLINKARQ];
 	char vBooleana;
 	struct stat st;
+	FILE *arquivo;
 
 	//seta a variável caminhoDB com o caminho para o banco de dados
 	strcpy(db->caminhoDB, ".luof/");
@@ -15,7 +16,7 @@ int fInicializaDB(sBanco *db) {
 	sprintf(db->caminhoDB, "/home/%s/.luof/", login);
 	------------------------------------------------------------------*/
 
-	strcpy(dir, db->caminhoDB);
+	strcpy(caminho, db->caminhoDB);
 
 	if (stat(db->caminhoDB, &st) == -1) {//se ainda não existe o DB
 		printf(ANSI_BOLD_WHT "Criar novo Banco de dados? [s/n]: " ANSI_COLOR_GRA);
@@ -31,22 +32,36 @@ int fInicializaDB(sBanco *db) {
 			return 1;
 		}
 
-		//cria banco de dados
-		fSetaCaminhoArquivo(db, dir, "luof");
-		db->aLuof = fopen(dir, "w");
-		if (db->aLuof == NULL) {
-			printf(ANSI_COLOR_RED "Erro: não foi possível criar banco de dados.\n");
+		//cria arquivo luof
+		fSetaCaminhoArquivo(db, caminho, "luof");
+		arquivo = fopen(caminho, "w");
+		if (arquivo == NULL) {
+			printf(ANSI_COLOR_RED "Erro: não foi possível criar banco de dados louf.\n");
+			return 1;
+		}
+
+		//cria arquivo raiz
+		fSetaCaminhoArquivo(db, caminho, "raiz");
+		arquivo = freopen(caminho, "w", arquivo);
+		if (arquivo == NULL) {
+			printf(ANSI_COLOR_RED "Erro: não foi possível criar banco de dados raiz.\n");
 			return 1;
 		}
 
 		printf(ANSI_BOLD_WHT "Banco de dados criado com sucesso.\n\n");
 	}
 	else {//se existe o DB
-		fSetaCaminhoArquivo(db, dir, "luof");
-		db->aLuof = fopen(dir, "r");
+		fSetaCaminhoArquivo(db, caminho, "luof");
+		arquivo = fopen(caminho, "r");
+		if (arquivo == NULL) {
+			printf(ANSI_COLOR_RED "Erro: Não foi possível acessar o banco de dados luof.\n");
+			return 1;
+		}
 
-		if (db->aLuof == NULL) {
-			printf(ANSI_COLOR_RED "Erro: Não foi possível acessar o banco de dados.\n");
+		fSetaCaminhoArquivo(db, caminho, "raiz");
+		arquivo = freopen(caminho, "r", arquivo);
+		if (arquivo == NULL) {
+			printf(ANSI_COLOR_RED "Erro: Não foi possível acessar o banco de dados raiz.\n");
 			return 1;
 		}
 	}
@@ -56,8 +71,7 @@ int fInicializaDB(sBanco *db) {
 	//preenche uma sLista com todos os favoritos da raiz
 	fPreencheRaiz(db);
 	//fecha o arquivo db->aLuof e aponta os ponteiros não usado para NULL
-	fclose(db->aLuof);
-	db->aLuof = NULL;
+	fclose(arquivo);
 	db->listaSites = NULL;
 
 	return 0;
@@ -69,6 +83,8 @@ void fFinalizaDB(sBanco *db) {
 	//libera estruturas do banco
 	if (db->listaCategorias)
 		fLiberaCats(db->listaCategorias);
+	if (db->listaCategorias)
+		free(db->listaCategorias);
 	if (db->listaSites && db->listaSites != db->raiz)
 		freeList(db->listaSites);
 	if (db->raiz)
@@ -99,12 +115,17 @@ void fPreencheListaCat(sBanco *db) {
 
 	sCat c;//a categoria lida terá seus dados guardados aqui
 	sCat *cPaiAtual;//aponta para a categoria que possui a lista onde a categoria lida será inserida
-	char linhaCat[TAMNOMEFAV+1];//usado para ler as linhas do arquivo
+	char linhaCat[TAMNOMEFAV+1], camLuof[TAMLINKARQ];//usado para ler as linhas do arquivo
+	FILE *aLuof;
+
+	fSetaCaminhoArquivo(db, camLuof, "luof");
+	aLuof = fopen(camLuof, "r");
 
 	//seta os dados de db->listaCategorias
 	db->listaCategorias = malloc(sizeof(struct sCat));
 	strcpy(db->listaCategorias->nome, "luof");
 	db->listaCategorias->hie = -1;
+	strcpy(db->listaCategorias->caminho, "/");
 	db->listaCategorias->catPai = NULL;
 	db->listaCategorias->catFilhos = criaLista(struct sCat);
 
@@ -112,36 +133,41 @@ void fPreencheListaCat(sBanco *db) {
 	cPaiAtual = db->listaCategorias;
 
 	//lê linha por linha e constroi a árvore de categorias
-	if (fgets(linhaCat, 100, db->aLuof)) {
-		while (strcmp(linhaCat, "##\n") != 0) {
+	while (fgets(linhaCat, 100, aLuof)) {
 
-			//seta os dados da caategoria lida
-			strcpy(c.nome, &linhaCat[1]);
+		//seta os dados da categoria lida (com excecão de catPai e caminho (este depende do anterior))
+		strcpy(c.nome, &linhaCat[1]);
+		if (c.nome[strlen(c.nome) - 1] == '\n')
 			c.nome[strlen(c.nome) - 1] = '\0';
-			c.hie = linhaCat[0] - 48;
-			c.catFilhos = criaLista(struct sCat);
+		c.hie = linhaCat[0] - 48;
+		c.catFilhos = criaLista(struct sCat);
 
-			if (c.hie == cPaiAtual->hie + 1) {//se a cat é da mesma hierarquia da última cat lida
-				c.catPai = cPaiAtual;
-				pushBackList(cPaiAtual->catFilhos, &c);
-			}
-			else if (c.hie == cPaiAtual->hie + 2) {//se a cat é na verdade filha da última cat lida
-				cPaiAtual = backList(cPaiAtual->catFilhos);
-				c.catPai = cPaiAtual;
-				pushBackList(cPaiAtual->catFilhos, &c);
-			}
-			else {//se a cat é de uma hierarquia menor da última cat lida
-				for (int i = cPaiAtual->hie; i > c.hie; i--)
-					cPaiAtual = cPaiAtual->catPai;
-				cPaiAtual = cPaiAtual->catPai;
-				c.catPai = cPaiAtual;
-				pushBackList(cPaiAtual->catFilhos, &c);
-			}
-
-			//lê a próxima linha
-			fgets(linhaCat, 100, db->aLuof);
+		if (c.hie == cPaiAtual->hie + 1) {//se a cat é da mesma hierarquia da última cat lida
+			c.catPai = cPaiAtual;
+			strcpy(c.caminho, c.catPai->caminho);
+			fSetaCaminhoCategoria(c.caminho, c.nome);
+			pushBackList(cPaiAtual->catFilhos, &c);
 		}
+		else if (c.hie == cPaiAtual->hie + 2) {//se a cat é na verdade filha da última cat lida
+			cPaiAtual = backList(cPaiAtual->catFilhos);
+			c.catPai = cPaiAtual;
+			strcpy(c.caminho, c.catPai->caminho);
+			fSetaCaminhoCategoria(c.caminho, c.nome);
+			pushBackList(cPaiAtual->catFilhos, &c);
+		}
+		else {//se a cat é de uma hierarquia menor da última cat lida
+			for (int i = cPaiAtual->hie; i > c.hie; i--)
+				cPaiAtual = cPaiAtual->catPai;
+			cPaiAtual = cPaiAtual->catPai;
+			c.catPai = cPaiAtual;
+			strcpy(c.caminho, c.catPai->caminho);
+			fSetaCaminhoCategoria(c.caminho, c.nome);
+			pushBackList(cPaiAtual->catFilhos, &c);
+		}
+
 	}
+
+	fclose(aLuof);
 
 }
 
@@ -149,13 +175,17 @@ void fPreencheRaiz(sBanco *db) {
 
 	//usado para armazenar temporariamente os sites
 	sSite siteTemp;
-	char nomeTemp[TAMNOMEFAV];
+	char nomeTemp[TAMNOMEFAV], camRaiz[TAMLINKARQ];
+	FILE *aRaiz;
+
+	fSetaCaminhoArquivo(db, camRaiz, "raiz");
+	aRaiz = fopen(camRaiz, "r");
 
 	db->raiz = criaLista(struct sSite);
 
-	//pega linha por linha do arquivo aLuof(logo após "##\n"), faz a comparação usando a primeira linha de um site, e depois pega as outras três referentes ao mesmo site
-	while (fgets(nomeTemp, TAMNOMEFAV, db->aLuof) != NULL) {
-		siteTemp = fRecuperaFavorito(db->aLuof, nomeTemp);
+	//pega linha por linha do arquivo aRaiz, faz a comparação usando a primeira linha de um site, e depois pega as outras três referentes ao mesmo site
+	while (fgets(nomeTemp, TAMNOMEFAV, aRaiz)) {
+		siteTemp = fRecuperaFavorito(aRaiz, nomeTemp);
 		pushBackList(db->raiz, &siteTemp);
 	}
 

@@ -3,7 +3,10 @@
 void percursoCategorias(sCat *cat, int hie) {
 	for (int i = 0; i < hie; i++)
 		printf("\t");
-	printf("%s\n", cat->nome);
+	printf(ANSI_BOLD_CYA "%s\n" ANSI_COLOR_WHT, cat->nome);
+	for (int i = 0; i < hie; i++)
+		printf("\t");
+	printf("%s\n", cat->caminho);
 	if (!emptyList(cat->catFilhos)) {
 		sIterador it = criaIt(cat->catFilhos);
 		do {
@@ -31,11 +34,10 @@ void printaListaSites(sLista l) {
 }
 
 void printaSite(sSite s) {
-	printf("Nome: %s\n", s.nome);
+	printf(ANSI_BOLD_YEL "Nome: %s\n" ANSI_COLOR_WHT, s.nome);
 	printf("Categoria: %s\n", s.categoria);
 	printf("Link: %s\n", s.link);
-	printf("Texto: %s\n", s.texto);
-	printf("ehCat: %c\n\n", s.ehCat);
+	printf("Texto: %s\n\n", s.texto);
 }
 
 void printaColorido() {
@@ -103,5 +105,20 @@ void printaColorido() {
 	printf("\x1b[1;95m\\x1b[1;95m\n");
 	printf("\x1b[1;96m\\x1b[1;96m\n");
 	printf("\x1b[1;97m\\x1b[1;97m\n\n");
+
+}
+
+void fTeste() {
+
+	sBanco db;
+
+	if (fInicializaDB(&db))
+		return;
+
+	percursoCategorias(db.listaCategorias, 0);
+
+	fLiberaCats(db.listaCategorias);
+	printf("\n");
+	printaListaSites(db.raiz);
 
 }

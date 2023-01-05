@@ -189,18 +189,16 @@ void fIncrementaCamCat(char *caminho, char *nome) {
 	strcat(caminho, nome);
 }
 
-void fSetaCaminhoCategoria(char caminho[], sSite s) {
-	strcpy(caminho, s.categoria);
-	if (strcmp(s.categoria, "luof") == 0)
-		strcpy(caminho, s.nome);
+void fSetaCaminhoCategoria(char caminho[], char nome[]) {
+	if (strcmp(caminho, "/") == 0)
+		strcpy(caminho, nome);
 	else
-		fIncrementaCamCat(caminho, s.nome);
+		fIncrementaCamCat(caminho, nome);
 }
 
 sSite fRecuperaFavorito(FILE *arq, char *nomeT) {
 
 	sSite s;
-	char ehCategoria[3];
 
 	if (nomeT) {
 		strncpy(s.nome, nomeT, strlen(nomeT));
@@ -218,10 +216,8 @@ sSite fRecuperaFavorito(FILE *arq, char *nomeT) {
 	s.link[strlen(s.link)-1] = '\0';
 
 	fgets(s.texto, TAMTEXTO, arq);
+	if (s.texto[strlen(s.texto)-1] == '\n')
 	s.texto[strlen(s.texto)-1] = '\0';
-
-	fgets(ehCategoria, 3, arq);
-	s.ehCat = ehCategoria[0];
 
 	return s;
 
