@@ -38,7 +38,7 @@ typedef struct sSite {
 	char categoria[TAMCAMINHO];
 	char link[TAMLINKARQ];
 	char texto[TAMTEXTO];
-	char ehCat;
+	//char ehCat;
 } sSite;
 
 typedef struct sCat {
@@ -50,12 +50,11 @@ typedef struct sCat {
 } sCat;
 
 typedef struct sBanco {
-	FILE *aLuof;
 	char caminhoDB[TAMLINKARQ];
-	int tamCaminhoDB;
-	sCat *listaCategorias;
-	sLista raiz;
-	sLista listaSites;
+	sCat *arvoreCats;//era chamaddo *listaCategorias;
+	sLista listaFavs;
+	//sLista raiz;
+	//FILE *aLuof;
 } sBanco;
 
 // --- Protótipo das funções ---
@@ -75,25 +74,23 @@ void fMudaCaminhoCategoriaArvore(sBanco *db, sCat *cat, char *caminhoA, char *ca
 
 //dbluof
 int fInicializaDB(sBanco *db);
+void fFinalizaDB_private(sCat *listaCategorias);
 void fFinalizaDB(sBanco *db);
-void fLiberaCats(sCat *listaCategorias);
-void fPreencheListaCat(sBanco *db);
-void fPreencheRaiz(sBanco *db);
-void fEscreveLuof_private(sBanco *db, sLista listaCategorias, int hierarquia);
+void fPreencheArvoreCats(sBanco *db);
+void fEscreveLuof_private(FILE *aLuof, sLista listaCategorias, int hierarquia);
 void fEscreveLuof(sBanco *db);
 
 //dbcat
-int fBuscaCat(sBanco *db, sSite s, sCat **c);
-int fPreencheListaSite(sBanco *db, sCat *c);
-sLista fPreencheListaSiteCmp(sBanco *db, sSite s);
+int fBuscaCat(sBanco *db, char caminho[], sCat **c);
+int fPreencheListaSite(sBanco *db, sCat *c, int cmp);
 int fBuscaFavorito(sBanco *db, sSite *s);
 void fEscreveArquivoCat(sBanco *db, char *nomeArq);
-void fAdicionaFavorito(sBanco *db, sSite s, sCat *c);
-void fRemoveFavorito(sBanco *db, sSite s, sCat *c);
+void fAdicionaFavorito(sBanco *db, sSite s);
+/*void fRemoveFavorito(sBanco *db, sSite s, sCat *c);
 void fModificaFavorito(sBanco *db, sSite s, sSite sNew, sCat *c);
 void fAdicionaCatLuof(sBanco *db, sSite s, sCat *c);
 void fRemoveCatLuof(sBanco *db, sSite s, sCat *c);
-void fRemoveArqCat(sBanco *db, sSite s);
+void fRemoveArqCat(sBanco *db, sSite s);*/
 
 //teste
 void percursoCategorias(sCat *cat, int hie);

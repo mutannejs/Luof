@@ -110,15 +110,129 @@ void printaColorido() {
 
 void fTeste() {
 
+	sSite s;
+	sCat *cat;
 	sBanco db;
 
 	if (fInicializaDB(&db))
 		return;
 
-	percursoCategorias(db.listaCategorias, 0);
-
-	fLiberaCats(db.listaCategorias);
+	percursoCategorias(db.arvoreCats, 0);
+	fEscreveLuof(&db);
 	printf("\n");
-	printaListaSites(db.raiz);
+	if (fBuscaCat(&db, "ufscar", &cat))
+		printf("Categoria ufscar não encontrada.\n");
+	else
+		printf("Cat %s encontrada.\n", cat->nome);
+	if (fBuscaCat(&db, "ufscar/maritacas gamedev", &cat))
+		printf("Categoria ufscar/maritacas gamedev não encontrada.\n");
+	else
+		printf("Cat %s encontrada.\n", cat->nome);
+	if (fBuscaCat(&db, "ufscar/hackoon space", &cat))
+		printf("Categoria ufscar/hackoon space não encontrada.\n");
+	else
+		printf("Cat %s encontrada.\n", cat->nome);
+	if (fBuscaCat(&db, "receitas", &cat))
+		printf("Categoria receitas não encontrada.\n");
+	else
+		printf("Cat %s encontrada.\n", cat->nome);
+	if (fBuscaCat(&db, "receitas/dona dirce", &cat))
+		printf("Categoria receitas/dona dirce não encontrada.\n");
+	else
+		printf("Cat %s encontrada.\n", cat->nome);
+	if (fBuscaCat(&db, "ferramentas", &cat))
+		printf("Categoria ferramentas não encontrada.\n");
+	else
+		printf("Cat %s encontrada.\n", cat->nome);
+	if (fBuscaCat(&db, "ferramentas/programação", &cat))
+		printf("Categoria ferramentas/programação não encontrada.\n");
+	else
+		printf("Cat %s encontrada.\n", cat->nome);
+	if (fBuscaCat(&db, "ferramentas/programação/teste", &cat))
+		printf("Categoria ferramentas/programação/teste não encontrada.\n");
+	else
+		printf("Cat %s encontrada.\n", cat->nome);
+	if (fBuscaCat(&db, "windows 7", &cat))
+		printf("Categoria windows 7 não encontrada.\n");
+	else
+		printf("Cat %s encontrada.\n", cat->nome);
+	if (fBuscaCat(&db, "linux", &cat))
+		printf("Categoria linux não encontrada.\n");
+	else
+		printf("Cat %s encontrada.\n", cat->nome);
+	if (fBuscaCat(&db, "linux/debian", &cat))
+		printf("Categoria linux/debian não encontrada.\n");
+	else
+		printf("Cat %s encontrada.\n", cat->nome);
+	if (fBuscaCat(&db, "programação", &cat))
+		printf("Categoria programação não encontrada.\n");
+	else
+		printf("Cat %s encontrada.\n", cat->nome);
+	if (fBuscaCat(&db, "programação/C", &cat))
+		printf("Categoria programação/C não encontrada.\n");
+	else
+		printf("Cat %s encontrada.\n", cat->nome);
+	if (fBuscaCat(&db, "programa", &cat))
+		printf("Categoria programa não encontrada.\n");
+	else
+		printf("Cat %s encontrada.\n", cat->nome);
+	if (fBuscaCat(&db, "programação/B", &cat))
+		printf("Categoria programação/B não encontrada.\n");
+	else
+		printf("Cat %s encontrada.\n", cat->nome);
+	if (fBuscaCat(&db, "windows 7/teste", &cat))
+		printf("Categoria windows 7/teste não encontrada.\n");
+	else
+		printf("Cat %s encontrada.\n", cat->nome);
+	printf("\n");
+
+	//preenche uma sLista com todos os favoritos da raiz
+	fPreencheListaSite(&db, db.arvoreCats, 1);
+	printaListaSites(db.listaFavs);
+	strcpy(s.nome, "ava");
+	strcpy(s.categoria, "/");
+	if (!fBuscaFavorito(&db, &s))
+		printf("Favorito com nome %s não encontrado.\n", s.nome);
+	else
+		printf("Favorito com nome %s encontrado.\n", s.nome);
+	strcpy(s.nome, "bso");
+	strcpy(s.categoria, "/");
+	if (!fBuscaFavorito(&db, &s))
+		printf("Favorito com nome %s não encontrado.\n", s.nome);
+	else
+		printf("Favorito com nome %s encontrado.\n", s.nome);
+	strcpy(s.nome, "sagui");
+	strcpy(s.categoria, "/");
+	if (!fBuscaFavorito(&db, &s))
+		printf("Favorito com nome %s não encontrado.\n", s.nome);
+	else
+		printf("Favorito com nome %s encontrado.\n", s.nome);
+	strcpy(s.nome, "siga");
+	strcpy(s.categoria, "/");
+	if (!fBuscaFavorito(&db, &s))
+		printf("Favorito com nome %s não encontrado.\n", s.nome);
+	else
+		printf("Favorito com nome %s encontrado.\n", s.nome);
+	strcpy(s.nome, "sig");
+	strcpy(s.categoria, "/");
+	if (!fBuscaFavorito(&db, &s))
+		printf("Favorito com nome %s não encontrado.\n", s.nome);
+	else
+		printf("Favorito com nome %s encontrado.\n", s.nome);
+	strcpy(s.nome, "sigao");
+	strcpy(s.categoria, "/");
+	if (!fBuscaFavorito(&db, &s))
+		printf("Favorito com nome %s não encontrado.\n", s.nome);
+	else
+		printf("Favorito com nome %s encontrado.\n", s.nome);
+	strcpy(s.nome, "siga");
+	strcpy(s.categoria, "teste");
+	if (!fBuscaFavorito(&db, &s))
+		printf("Favorito com nome %s não encontrado.\n", s.nome);
+	else
+		printf("Favorito com nome %s encontrado.\n", s.nome);
+	fEscreveArquivoCat(&db, "raiz");
+
+	fFinalizaDB(&db);
 
 }

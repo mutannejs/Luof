@@ -179,51 +179,12 @@ int fSetaCatNome(sSite *s) {
 
 }
 
-void fSetaCaminhoArquivo(sBanco *db, char *arq, char *nome) {
-	strcpy(arq, db->caminhoDB);
-	strcpy(&arq[db->tamCaminhoDB], nome);
-}
+//void fIncrementaCamCat(char *caminho, char *nome) {
+//	strcat(caminho, "/");
+//	strcat(caminho, nome);
+//}
 
-void fIncrementaCamCat(char *caminho, char *nome) {
-	strcat(caminho, "/");
-	strcat(caminho, nome);
-}
-
-void fSetaCaminhoCategoria(char caminho[], char nome[]) {
-	if (strcmp(caminho, "/") == 0)
-		strcpy(caminho, nome);
-	else
-		fIncrementaCamCat(caminho, nome);
-}
-
-sSite fRecuperaFavorito(FILE *arq, char *nomeT) {
-
-	sSite s;
-
-	if (nomeT) {
-		strncpy(s.nome, nomeT, strlen(nomeT));
-		s.nome[strlen(nomeT)-1] = '\0';
-	}
-	else {
-		fgets(s.nome, TAMCAMINHO, arq);
-		s.nome[strlen(s.nome)-1] = '\0';
-	}
-
-	fgets(s.categoria, TAMCAMINHO, arq);
-	s.categoria[strlen(s.categoria)-1] = '\0';
-
-	fgets(s.link, TAMLINKARQ, arq);
-	s.link[strlen(s.link)-1] = '\0';
-
-	fgets(s.texto, TAMTEXTO, arq);
-	if (s.texto[strlen(s.texto)-1] == '\n')
-	s.texto[strlen(s.texto)-1] = '\0';
-
-	return s;
-
-}
-
-int fSeparaArquivoCategoria(sBanco *db, char categoria[], sCat *cat, char nomeA[]) {
+/*int fSeparaArquivoCategoria(sBanco *db, char categoria[], sCat *cat, char nomeA[]) {
 
 	sSite siteTemp, *siteDoIterador, *siteDoIterador2;
 	sLista listaSitesA, listaSitesN;
@@ -368,4 +329,4 @@ void fMudaCaminhoCategoriaArvore(sBanco *db, sCat *cat, char *caminhoA, char *ca
 		iteraProximo(&it);
 	} while (!inicioIt(&it));
 
-}
+}*/
