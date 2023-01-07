@@ -203,72 +203,6 @@ void fEscreveLuof(sBanco *db) {
 
 }
 
-
-
-
-
-//dbcat
-
-int fPreencheListaSite(sBanco *db, sCat *c, int cmp) {
-
-	sSite siteTemp;
-	char nomeTemp[TAMNOMEFAV], nomeArqCat[TAMLINKARQ];
-	FILE *arqCat;
-
-	//abre o arquivo da categoria
-	fSetaCaminhoArquivo(db, nomeArqCat, c->nome);
-	arqCat = fopen(nomeArqCat, "r");
-
-	//documento não encontrado
-	if (arqCat == NULL) {
-		printf(ANSI_COLOR_RED "\nErro: O arquivo %s não pode ser aberto.\n", nomeArqCat);
-		return 1;
-	}
-
-	db->listaFavs = criaLista(struct sSite);
-
-	//pega linha por linha do arquivo da categoria, faz a comparação usando a primeira linha de um site, e depois pega as outras três referentes ao mesmo site
-	while (fgets(nomeTemp, 100, arqCat) != NULL) {
-		siteTemp = fRecuperaFavorito(arqCat, nomeTemp);
-		//adiciona na lista apenas se pertencer a categoria correta
-		if (cmp == 1 && strcmp(siteTemp.categoria, c->caminho) == 0)
-			pushBackList(db->listaFavs, &siteTemp);
-	}
-
-	fclose(arqCat);
-
-	return 0;
-
-}
-
-sSite fRecuperaFavorito(FILE *arq, char *nomeT) {
-
-	sSite s;
-
-	//verifica se foi passado o nome do site, ou se ele ainda não foi lido
-	if (nomeT) {
-		strncpy(s.nome, nomeT, strlen(nomeT));
-		s.nome[strlen(nomeT)-1] = '\0';
-	}
-	else {
-		fgets(s.nome, TAMCAMINHO, arq);
-		s.nome[strlen(s.nome)-1] = '\0';
-	}
-
-	fgets(s.categoria, TAMCAMINHO, arq);
-	s.categoria[strlen(s.categoria)-1] = '\0';
-
-	fgets(s.link, TAMLINKARQ, arq);
-	s.link[strlen(s.link)-1] = '\0';
-
-	fgets(s.texto, TAMTEXTO, arq);
-	if (s.texto[strlen(s.texto)-1] == '\n')
-	s.texto[strlen(s.texto)-1] = '\0';
-
-	return s;
-
-}
-
 int fBuscaCat(sBanco *db, char caminho[], sCat **c) {
 
 	//se a categoria é a raiz
@@ -315,6 +249,70 @@ int fBuscaCat(sBanco *db, char caminho[], sCat **c) {
 
 }
 
+void fInsereCategoria(sBanco *db, sCat *cPai, sCat c) {
+
+	sCat *catTemp;
+	sIterador it = criaIt(cPai->catFilhos);
+	int encontrouPos = 0;
+	char nomeArqCat[TAMLINKARQ];
+	FILE *arqCat;//usado para criar um novo arquivo caso necessário
+
+	//seta os novos dados da categoria
+	strcpy(c.caminho, cPai->caminho);
+	fSetaCaminhoCategoria(c.caminho, c.nome);
+	c.hie = cPai->hie + 1;
+	c.catPai = cPai;
+	c.catFilhos = criaLista(struct sCat);
+
+	//adiciona a categoria nova na árvore de categorias
+	if (emptyList(cPai->catFilhos)) {//se a lista está vazia apenas insere a categoria no fim da lista
+		pushBackList(cPai->catFilhos, &c);
+	}
+	else {//se a lista não estiver vazia, insere em ordem alfabética
+		//procura a posição que a categoria deve ser inserida (antes d primeira categoria com o nome maior no quesito lexográfico)
+		do {
+			catTemp = (struct sCat*) retornaItera(&it);
+			if (strcmp(catTemp->nome, c.nome) > 0)
+				encontrouPos = 1;
+			else
+				iteraProximo(&it);
+		} while (encontrouPos == 0 && !inicioIt(&it));
+
+		if (encontrouPos == 0)
+			pushBackList(cPai->catFilhos, &c);
+		else
+			insereAntIt(&it, &c);
+	}
+
+	//cria o arquivo referente a categoria caso ainda não exista nenhum arquivo com esse nome
+	fSetaCaminhoArquivo(db, nomeArqCat, c.nome);
+	arqCat = fopen(nomeArqCat, "r");
+	if (!arqCat)//se entrar no if significa que o arquivo não existe, então ele é criado e em ambos os casos fechado
+		arqCat = fopen(nomeArqCat, "w");
+	fclose(arqCat);
+
+}
+
+void fRemoveCategoria(sBanco *db, sCat *cPai, sCat c) {
+
+	sCat *catTemp;
+	sIterador it = criaIt(cPai->catFilhos);
+	int encontrouPos = 0;
+
+	//remove a categoria da árvore de categorias
+	do {
+		catTemp = (struct sCat*) retornaItera(&it);
+		if (strcmp(catTemp->nome, c.nome) == 0) {
+			encontrouPos = 1;
+			removeIt(&it);
+		}
+		else {
+			iteraProximo(&it);
+		}
+	} while (encontrouPos == 0 && !inicioIt(&it));
+
+}
+
 void fEscreveArquivoCat(sBanco *db, char *nomeCat) {
 
 	sSite *siteDoIterador;
@@ -340,58 +338,54 @@ void fEscreveArquivoCat(sBanco *db, char *nomeCat) {
 
 }
 
-int fBuscaFavorito(sBanco *db, sSite *s) {
+void fRemoveArqCat(sBanco *db, sCat *cat) {
 
-	if (emptyList(db->listaFavs))
-		return 0;
-
-	//variaveis para percorrer a lista
-	sIterador it = criaIt(db->listaFavs);
+	//para a categoria que terá seus sites removidos
 	sSite *favorito;
+	sCat *catTemp;
+	sIterador it;
+	int qtdLista;
+	char nomeArqCat[TAMLINKARQ];
 
+	//chama a mesma função para suas subcategorias
+	if (!emptyList(cat->catFilhos)) {
+		it = criaIt(cat->catFilhos);
+		do {
+			catTemp = (struct sCat*) retornaItera(&it);
+			fRemoveArqCat(db, catTemp);
+			iteraProximo(&it);
+		} while (!inicioIt(&it));
+	}
+
+	//cria uma lista com todos os favoritos no arquivo da categoria
+	fPreencheListaSite(db, cat, 0);
+	printaListaSites(db->listaFavs);
+
+	//se a lista estiver vazia exclui o arquivo (com exceção da raiz)
+	if (emptyList(db->listaFavs) && strcmp(cat->nome, "raiz") != 0) {
+		fSetaCaminhoArquivo(db, nomeArqCat, cat->nome);
+		remove(nomeArqCat);
+		return;
+	}
+
+	//remove os sites da categoria na listaFavs
+	it = criaIt(db->listaFavs);
 	do {
+		qtdLista = sizeList(db->listaFavs);
 		favorito = (struct sSite*) retornaItera(&it);
-		//encontrou o favorito
-		if ((strcmp(favorito->nome, s->nome) == 0) && (strcmp(favorito->categoria, s->categoria) == 0)) {
-			//seta os outros valores de s
-			strcpy(s->link, favorito->link);
-			strcpy(s->texto, favorito->texto);
-			//informa que o site foi encontrado
-			return 1;
-		}
-		iteraProximo(&it);
-	} while (!inicioIt(&it));
+		if (strcmp(favorito->categoria, cat->caminho) == 0)
+			removeIt(&it);
+		else
+			iteraProximo(&it);
+	} while (!emptyList(db->listaFavs) && (!inicioIt(&it) || qtdLista != sizeList(db->listaFavs)));
 
-	//não encontrou o site
-	return 0;
-
-}
-
-void fAdicionaFavorito(sBanco *db, sSite s) {
-}
-
-
-
-
-//modulos
-
-void fSetaCaminhoArquivo(sBanco *db, char *arq, char *nome) {
-	strcpy(arq, db->caminhoDB);
-	if (nome) {
-		strcat(arq, nome);
-		strcat(arq, ".luof");
+	//se a lista da categoria ficou vazia remove o arquivo (com exceção da raiz), caso contrário só atualiza o arquivo
+	if (emptyList(db->listaFavs) && strcmp(cat->nome, "raiz") != 0) {
+		fSetaCaminhoArquivo(db, nomeArqCat, cat->nome);
+		remove(nomeArqCat);
 	}
 	else {
-		strcat(arq, "luof");
+		fEscreveArquivoCat(db, cat->nome);
 	}
-}
 
-void fSetaCaminhoCategoria(char caminho[], char nome[]) {
-	if (strcmp(caminho, "/") == 0) {
-		strcpy(caminho, nome);
-	}
-	else {
-		strcat(caminho, "/");
-		strcat(caminho, nome);
-	}
 }

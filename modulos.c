@@ -1,5 +1,26 @@
 #include "luof.h"
 
+void fSetaCaminhoArquivo(sBanco *db, char *arq, char *nome) {
+	strcpy(arq, db->caminhoDB);
+	if (nome) {
+		strcat(arq, nome);
+		strcat(arq, ".luof");
+	}
+	else {
+		strcat(arq, "luof");
+	}
+}
+
+void fSetaCaminhoCategoria(char caminho[], char nome[]) {
+	if (strcmp(caminho, "/") == 0) {
+		strcpy(caminho, nome);
+	}
+	else {
+		strcat(caminho, "/");
+		strcat(caminho, nome);
+	}
+}
+
 int fSetaSiteCategoria(sSite *s) {
 
 	int cont = 0;
@@ -111,7 +132,7 @@ int fSetaSiteTexto(sSite *s) {
 
 }
 
-int fSetaCatCategoria(sSite *s) {
+int fSetaCatCategoria(sCat *cat) {
 
 	int cont = 0;
 	char c;
@@ -123,7 +144,7 @@ int fSetaCatCategoria(sSite *s) {
 	} while (isspace(c));
 
 	do {
-		if (cont == 1 && s->categoria[0] == '/') {
+		if (cont == 1 && cat->caminho[0] == '/') {
 			cont--;
 		}
 		else if (cont == TAMCAMINHO - 1) {
@@ -131,17 +152,19 @@ int fSetaCatCategoria(sSite *s) {
 			printf("Categorias devem ter no máximo %d caracteres.\n", TAMCAMINHO - 1);
 			return 1;
 		}
-		s->categoria[cont] = c;
+		cat->caminho[cont] = c;
 		cont++;
 		c = getchar();
 	} while (c != '\n');
-	s->categoria[cont] = '\0';
+	cat->caminho[cont] = '\0';
+	if (cat->caminho[cont-1] == '/')
+		cat->caminho[cont-1] = '\0';
 
 	return 0;
 
 }
 
-int fSetaCatNome(sSite *s) {
+int fSetaCatNome(sCat *cat) {
 
 	int cont = 0;
 	char c;
@@ -163,13 +186,13 @@ int fSetaCatNome(sSite *s) {
 			printf("Nomes de categorias devem ter no máximo %d caracteres.\n", TAMNOMEFAV - 1);
 			return 1;
 		}
-		s->nome[cont] = c;
+		cat->nome[cont] = c;
 		cont++;
 		c = getchar();
 	} while (c != '\n');
-	s->nome[cont] = '\0';
+	cat->nome[cont] = '\0';
 
-	if (strcmp(s->nome, "luof") == 0) {
+	if (strcmp(cat->nome, "luof") == 0) {
 		printf(ERRO);
 		printf("luof é um nome reservado do sistema e não pode ser usado para nomes de categorias.\n");
 		return 1;

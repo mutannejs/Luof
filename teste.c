@@ -110,20 +110,27 @@ void printaColorido() {
 
 void fTeste() {
 
-	sSite s;
-	sCat *cat;
+	sSite s, sNew;
+	sCat *cat, c;
 	sBanco db;
 
 	if (fInicializaDB(&db))
 		return;
 
 	percursoCategorias(db.arvoreCats, 0);
-	fEscreveLuof(&db);
 	printf("\n");
+	if (fBuscaCat(&db, "/", &cat))
+		printf("Categoria / não encontrada.\n");
+	else
+		printf("Cat %s encontrada.\n", cat->nome);
+	strcpy(c.nome, "jogos");
+	fInsereCategoria(&db, cat, c);
 	if (fBuscaCat(&db, "ufscar", &cat))
 		printf("Categoria ufscar não encontrada.\n");
 	else
 		printf("Cat %s encontrada.\n", cat->nome);
+	strcpy(c.nome, "trabalhos");
+	fInsereCategoria(&db, cat, c);
 	if (fBuscaCat(&db, "ufscar/maritacas gamedev", &cat))
 		printf("Categoria ufscar/maritacas gamedev não encontrada.\n");
 	else
@@ -152,6 +159,8 @@ void fTeste() {
 		printf("Categoria ferramentas/programação/teste não encontrada.\n");
 	else
 		printf("Cat %s encontrada.\n", cat->nome);
+	strcpy(c.nome, "teste2");
+	fInsereCategoria(&db, cat, c);
 	if (fBuscaCat(&db, "windows 7", &cat))
 		printf("Categoria windows 7 não encontrada.\n");
 	else
@@ -185,6 +194,16 @@ void fTeste() {
 	else
 		printf("Cat %s encontrada.\n", cat->nome);
 	printf("\n");
+	strcpy(c.nome, "linux");
+	fRemoveCategoria(&db, db.arvoreCats, c);
+	//if (!fBuscaCat(&db, "testeR", &cat)) {
+	//	printf("Entrou.\n");
+	//	fRemoveArqCat(&db, cat);
+	//	fRemoveCategoria(&db, db.arvoreCats, *cat);
+	//}
+	percursoCategorias(db.arvoreCats, 0);
+	printf("\n");
+	//fEscreveLuof(&db);
 
 	//preenche uma sLista com todos os favoritos da raiz
 	fPreencheListaSite(&db, db.arvoreCats, 1);
@@ -231,7 +250,35 @@ void fTeste() {
 		printf("Favorito com nome %s não encontrado.\n", s.nome);
 	else
 		printf("Favorito com nome %s encontrado.\n", s.nome);
-	fEscreveArquivoCat(&db, "raiz");
+	printf("\n");
+	strcpy(s.nome, "aaa");
+	strcpy(s.categoria, "/");
+	strcpy(s.link, "https://www.aaa.com");
+	strcpy(s.texto, "Teste de site que deve ser inserido no início");
+	fInsereFavorito(&db, s);
+	strcpy(s.nome, "ilovepdf");
+	strcpy(s.categoria, "/");
+	strcpy(s.link, "https://www.ilovepdf.com/pt");
+	strcpy(s.texto, "Website com várias ferramentas de pdf");
+	fInsereFavorito(&db, s);
+	strcpy(s.nome, "zzz");
+	strcpy(s.categoria, "/");
+	strcpy(s.link, "https://www.zzz.com");
+	strcpy(s.texto, "Teste de site que deve ser inserido no fim");
+	fInsereFavorito(&db, s);
+	strcpy(s.nome, "sagui");
+	strcpy(s.categoria, "/");
+	fRemoveFavorito(&db, s);
+	strcpy(s.nome, "bso");
+	strcpy(s.categoria, "/");
+	strcpy(sNew.nome, "BSO");
+	strcpy(sNew.categoria, "/");
+	strcpy(sNew.link, "https://www.bso.ufscar.br/");
+	strcpy(sNew.texto, "Biblioteca campus sorocaba");
+	fModificaFavorito(&db, s, sNew);
+	printaListaSites(db.listaFavs);
+	printf("\n");
+	//fEscreveArquivoCat(&db, "raiz");
 
 	fFinalizaDB(&db);
 

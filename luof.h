@@ -59,18 +59,16 @@ typedef struct sBanco {
 
 // --- Protótipo das funções ---
 //modulos
+void fSetaCaminhoArquivo(sBanco *db, char *arq, char *nome);
+void fSetaCaminhoCategoria(char caminho[], char nome[]);
 int fSetaSiteCategoria(sSite *s);
 int fSetaSiteNome(sSite *s);
 int fSetaSiteLink(sSite *s);
 int fSetaSiteTexto(sSite *s);
-int fSetaCatCategoria(sSite *s);
-int fSetaCatNome(sSite *s);
-void fSetaCaminhoArquivo(sBanco *db, char *arq, char *nome);
-void fIncrementaCamCat(char *caminho, char *nome);
-void fSetaCaminhoCategoria(char caminho[], char nome[]);
-sSite fRecuperaFavorito(FILE *arq, char *nomeT);
-int fSeparaArquivoCategoria(sBanco *db, char categoria[], sCat *cat, char nomeA[]);
-void fMudaCaminhoCategoriaArvore(sBanco *db, sCat *cat, char *caminhoA, char *caminhoN);
+int fSetaCatCategoria(sCat *cat);
+int fSetaCatNome(sCat *cat);
+/*int fSeparaArquivoCategoria(sBanco *db, char categoria[], sCat *cat, char nomeA[]);
+void fMudaCaminhoCategoriaArvore(sBanco *db, sCat *cat, char *caminhoA, char *caminhoN);*/
 
 //dbluof
 int fInicializaDB(sBanco *db);
@@ -79,18 +77,19 @@ void fFinalizaDB(sBanco *db);
 void fPreencheArvoreCats(sBanco *db);
 void fEscreveLuof_private(FILE *aLuof, sLista listaCategorias, int hierarquia);
 void fEscreveLuof(sBanco *db);
+int fBuscaCat(sBanco *db, char caminho[], sCat **c);
+void fInsereCategoria(sBanco *db, sCat *cPai, sCat c);
+void fRemoveCategoria(sBanco *db, sCat *cPai, sCat c);
+void fEscreveArquivoCat(sBanco *db, char *nomeArq);
+void fRemoveArqCat(sBanco *db, sCat *cat);
 
 //dbcat
-int fBuscaCat(sBanco *db, char caminho[], sCat **c);
 int fPreencheListaSite(sBanco *db, sCat *c, int cmp);
+sSite fRecuperaFavorito(FILE *arq, char *nomeT);
 int fBuscaFavorito(sBanco *db, sSite *s);
-void fEscreveArquivoCat(sBanco *db, char *nomeArq);
-void fAdicionaFavorito(sBanco *db, sSite s);
-/*void fRemoveFavorito(sBanco *db, sSite s, sCat *c);
-void fModificaFavorito(sBanco *db, sSite s, sSite sNew, sCat *c);
-void fAdicionaCatLuof(sBanco *db, sSite s, sCat *c);
-void fRemoveCatLuof(sBanco *db, sSite s, sCat *c);
-void fRemoveArqCat(sBanco *db, sSite s);*/
+void fInsereFavorito(sBanco *db, sSite s);
+void fRemoveFavorito(sBanco *db, sSite s);
+void fModificaFavorito(sBanco *db, sSite s, sSite sNew);
 
 //teste
 void percursoCategorias(sCat *cat, int hie);
@@ -99,8 +98,8 @@ void printaSite(sSite s);
 void printaColorido();
 void fTeste();
 
-/*//menu
-void fMenu();
+//menu
+//void fMenu();
 
 //help
 void fHelp_private();
@@ -118,11 +117,12 @@ void fHelp_export();
 void fHelp(char *argv);
 
 //add-remove
-void fAddBookmark();
-void fAddCategory();
-void fRemoveBookmark();
-void fRemoveCategory();
+//void fAddBookmark();
+//void fAddCategory();
+//void fRemoveBookmark();
+//void fRemoveCategory();
 
+/*
 //modify
 void fModifyBookmark();
 void fReposicionaCatArvore(sBanco *db, sCat *categoria, sCat *categoria2, sCat **categoria3, char *nome);
