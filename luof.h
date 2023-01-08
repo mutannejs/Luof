@@ -131,8 +131,8 @@ void fModifyCategory();*/
 
 //list
 void fListCategory(int opcao);
-void fListTree_printaFavorito(sSite s, char linhas[], int hierarquia);
-void fListTree_private(sBanco *db, char linhas[], sSite s, int hierarquia);
+void fListTree_printaLinhas(char linhas[], int hierarquia);
+void fListTree_private(sBanco *db, char linhas[], sCat *cat, int hierarquia, int opcao);
 void fListTree(int opcao);
 
 /*

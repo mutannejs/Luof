@@ -27,13 +27,7 @@ int main(int argc, char *argv[]) {
 	}
 	else if (strcmp(argv[1], "-rc") == 0 || strcmp(argv[1], "--remove-category") == 0) {
 		fRemoveCategory();
-	}
-	/*else if (strcmp(argv[1], "-mb") == 0 || strcmp(argv[1], "--modify-bookmark") == 0) {
-		fModifyBookmark();
-	}
-	else if (strcmp(argv[1], "-mc") == 0 || strcmp(argv[1], "--modify-category") == 0) {
-		fModifyCategory();
-	}
+	}//LIST
 	else if (strcmp(argv[1], "-lc") == 0 || strcmp(argv[1], "--list-category") == 0) {
 		fListCategory(0);
 	}
@@ -41,9 +35,18 @@ int main(int argc, char *argv[]) {
 		fListCategory(1);
 	}
 	else if (strcmp(argv[1], "-lt") == 0 || strcmp(argv[1], "--list-tree") == 0) {
-		fListTree();
+		fListTree(0);
 	}
-	else if (strcmp(argv[1], "--backup") == 0) {
+	else if (strcmp(argv[1], "-lts") == 0 || strcmp(argv[1], "--list-tree-short") == 0) {
+		fListTree(1);
+	}
+	/*else if (strcmp(argv[1], "-mb") == 0 || strcmp(argv[1], "--modify-bookmark") == 0) {
+		fModifyBookmark();
+	}
+	else if (strcmp(argv[1], "-mc") == 0 || strcmp(argv[1], "--modify-category") == 0) {
+		fModifyCategory();
+	}*/
+	/*else if (strcmp(argv[1], "--backup") == 0) {
 		fBackup();
 	}
 	else if (strcmp(argv[1], "--export") == 0) {

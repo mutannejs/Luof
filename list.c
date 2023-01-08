@@ -2,95 +2,70 @@
 
 void fListCategory(int opcao) {
 
-	sSite s, *siteDoIterador;
-	sCat *categoria;
+	sSite *favorito, s;
+	sCat *cat, *catTemp;
 	sBanco db;
 	sIterador it;
-	int cont = 0;
 
 	if (fInicializaDB(&db))
 		return;
 
-	//caso o banco esteja vazio
-	if (emptyList(db.raiz)) {
-		printf(ERRO2);
-		printf("Nada ainda foi inserido.\n");
+	if (fSetaSiteCategoria(&s)) {
 		fFinalizaDB(&db);
 		return;
 	}
-
-	if (fSetaSiteCategoria(&s))
+	if (fBuscaCat(&db, s.categoria, &cat)) {
+		fFinalizaDB(&db);
 		return;
-
-	if (strcmp(s.categoria, "/") == 0) {
-		strcpy(s.categoria, "luof");
-		db.listaSites = db.raiz;
-		categoria = db.listaCategorias;
 	}
-	else {
-		if (fBuscaCat(&db, s, &categoria)) {
-			fFinalizaDB(&db);
-			return;
-		}
-		if (fPreencheListaSite(&db, categoria)) {
-			fFinalizaDB(&db);
-			return;
-		}
-	}
+	fPreencheListaSite(&db, cat, 1);
 
-	if (emptyList(db.listaSites)) {
+	//se a categoria não possui subcategorias nem favoritos
+	if (emptyList(cat->catFilhos) && emptyList(db.listaFavs)) {
 		printf(ERRO);
 		printf("Lista vazia.\n");
 		fFinalizaDB(&db);
 		return;
 	}
 
-	//printa favorito por favorito
-	it = criaIt(db.listaSites);
-	do {
-		siteDoIterador = (struct sSite*) retornaItera(&it);
-		if (strcmp(siteDoIterador->categoria, s.categoria) == 0) {
-
-			if ((siteDoIterador->ehCat == '0' && opcao == 0) || cont == 0)
-				printf("\n");
-			else if (siteDoIterador->ehCat == '0' && cont <= 0) {
-				cont *= -1;
-				cont++;
-				printf("\n");
-			}
-
-			if (siteDoIterador->ehCat == '1') {
-				printf(ANSI_BOLD_WHT "* %s\n", siteDoIterador->nome);
-				cont--;
-			}
-			else if (opcao == 0) {
-				printf(ANSI_BOLD_WHT "Nome  : " ANSI_COLOR_GRA "%s\n", siteDoIterador->nome);
-				printf(ANSI_BOLD_WHT "Link  : " ANSI_COLOR_GRA "%s\n", siteDoIterador->link);
-				printf(ANSI_BOLD_WHT "Texto : " ANSI_COLOR_GRA "%s\n", siteDoIterador->texto);
-				cont++;
-			}
-			else {
-				printf(ANSI_COLOR_GRA "%s\n", siteDoIterador->nome);
-				cont++;
-			}
-
-		}
-		iteraProximo(&it);
-	} while (!inicioIt(&it));
-
-	//se db.listaSites não está vazio, mas não possui favoritos dessa categoria
-	if (cont == 0) {
-		printf(ERRO);
-		printf("Lista vazia.");
+	//printa categoria por categoria
+	if (!emptyList(cat->catFilhos)) {
+		printf("\n");
+		it = criaIt(cat->catFilhos);
+		do {
+			catTemp = (struct sCat*) retornaItera(&it);
+			printf(ANSI_BOLD_WHT "* %s\n", catTemp->nome);
+			iteraProximo(&it);
+		} while (!inicioIt(&it));
 	}
 
-	printf("\n");
+	//printa favorito por favorito
+	if (!emptyList(db.listaFavs)) {
+
+		if (opcao == 1 && !emptyList(cat->catFilhos))
+			printf("\n");
+
+		it = criaIt(db.listaFavs);
+		do {
+			favorito = (struct sSite*) retornaItera(&it);
+			if (opcao == 0) {
+				printf(ANSI_BOLD_WHT "\nNome  : " ANSI_COLOR_GRA "%s\n", favorito->nome);
+				printf(ANSI_BOLD_WHT "Link  : " ANSI_COLOR_GRA "%s\n", favorito->link);
+				printf(ANSI_BOLD_WHT "Texto : " ANSI_COLOR_GRA "%s\n", favorito->texto);
+			}
+			else {
+				printf(ANSI_COLOR_GRA "%s\n", favorito->nome);
+			}
+			iteraProximo(&it);
+		} while (!inicioIt(&it));
+	}
 
 	fFinalizaDB(&db);
 
 }
 
-void fListTree_printaFavorito(sSite s, char linhas[], int hierarquia) {
+void fListTree_printaLinhas(char linhas[], int hierarquia) {
+
 	if (linhas[0] == '1')
 		printf(ANSI_COLOR_GRA "|");
 	else
@@ -103,95 +78,115 @@ void fListTree_printaFavorito(sSite s, char linhas[], int hierarquia) {
 			printf("     ");
 	}
 
-	if (s.ehCat == '1')
-		printf(ANSI_COLOR_GRA "_ " ANSI_BOLD_WHT "* %s\n", s.nome);
-	else
-		printf(ANSI_COLOR_GRA "_ " ANSI_COLOR_WHT "%s\n", s.nome);
 }
 
-void fListTree_private(sBanco *db, char linhas[], sSite s, int hierarquia) {
+void fListTree_private(sBanco *db, char linhas[], sCat *cat, int hierarquia, int opcao) {
 
-	sSite *siteDoIterador;
-	sLista listaFavoritos = NULL;
+	sSite *favorito;
+	sCat *catTemp;
+	sLista listaTemp;
 	sIterador it;
 
 	hierarquia = hierarquia + 1;
 	linhas[hierarquia] = '1';
+	fPreencheListaSite(db, cat, 1);
+	listaTemp = db->listaFavs;
+	db->listaFavs = NULL;
 
-	//preenche a lista de favoritos e guarda em listaFavoritos
-	listaFavoritos = fPreencheListaSiteCmp(db, s);
+	//printa todas as subcategorias
+	if (!emptyList(cat->catFilhos)) {
+		it = criaIt(cat->catFilhos);
+		do {
+			catTemp = (struct sCat*) retornaItera(&it);
 
-	//se a categoria estiver vazia
-	if (emptyList(listaFavoritos)) {
-		freeList(listaFavoritos);
-		return;
+			//printa a categoria
+			fListTree_printaLinhas(linhas, hierarquia);
+			printf(ANSI_COLOR_GRA "_ " ANSI_BOLD_WHT "* %s\n", catTemp->nome);
+			//printa suas subcategorias e favoritos
+			if (fimIt(&it) && emptyList(listaTemp))
+				linhas[hierarquia] = '0';
+			fListTree_private(db, linhas, catTemp, hierarquia, opcao);
+
+			iteraProximo(&it);
+		} while (!inicioIt(&it));
 	}
 
-	//printa os favoritos da categoria
-	it = criaIt(listaFavoritos);
-	do {
-		siteDoIterador = (struct sSite*) retornaItera(&it);
+	//printa favorito por favorito da categoria
+	linhas[hierarquia] = '1';
+	db->listaFavs = listaTemp;
+	if (opcao == 0 && !emptyList(db->listaFavs)) {
+		it = criaIt(db->listaFavs);
+		do {
+			favorito = (struct sSite*) retornaItera(&it);
 
-		//printa a categoria, obedecendo a hierarquia
-		fListTree_printaFavorito(*siteDoIterador, linhas, hierarquia);
+			//printa o favorito
+			fListTree_printaLinhas(linhas, hierarquia);
+			printf(ANSI_COLOR_GRA "_ " ANSI_COLOR_WHT "%s\n", favorito->nome);
 
-		if (fimIt(&it))
-			linhas[hierarquia] = '0';
-		if (siteDoIterador->ehCat == '1')
-			fListTree_private(db, linhas, *siteDoIterador, hierarquia);
-
-		iteraProximo(&it);
-	} while (!inicioIt(&it));
-
+			iteraProximo(&it);
+		} while (!inicioIt(&it));
+	}
+	freeList(db->listaFavs);
 	linhas[hierarquia] = '0';
-	freeList(listaFavoritos);
 
 }
 
-void fListTree() {
+void fListTree(int opcao) {
 
-	sSite *siteDoIterador;
+	sSite *favorito;
+	sCat *catTemp;
 	sBanco db;
+	sLista listaTemp;
 	sIterador it;
 	char linhas[] = "10000000000";
 
 	if (fInicializaDB(&db))
 		return;
 
-	if (emptyList(db.raiz)) {
+	fPreencheListaSite(&db, db.arvoreCats, 0);
+	if (emptyList(db.listaFavs) && emptyList(db.arvoreCats->catFilhos)) {
 		printf(ERRO2);
-		printf("Nada ainda foi inserido.\n");
+		printf("Lista vazia.\n");
 		fFinalizaDB(&db);
 		return;
 	}
 
-	it = criaIt(db.raiz);
-	siteDoIterador = (struct sSite*) retornaItera(&it);
+	fPreencheListaSite(&db, db.arvoreCats, 1);
+	listaTemp = db.listaFavs;
+	db.listaFavs = NULL;
 
-	//printa as categorias da raiz
-	if (siteDoIterador->ehCat == '1') {
+	//printa todas as categorias e seus favoritos
+	if (!emptyList(db.arvoreCats->catFilhos)) {
+		it = criaIt(db.arvoreCats->catFilhos);
 		do {
-			fListTree_printaFavorito(*siteDoIterador, linhas, 0);
-			if (fimIt(&it))
+			catTemp = (struct sCat*) retornaItera(&it);
+
+			//printa a categoria
+			fListTree_printaLinhas(linhas, 0);
+			printf(ANSI_COLOR_GRA "_ " ANSI_BOLD_WHT "* %s\n", catTemp->nome);
+			//printa suas subcategorias e favoritos
+			if (fimIt(&it) && emptyList(listaTemp))
 				strcpy(linhas, "00000000000");
-			fListTree_private(&db, linhas, *siteDoIterador, 0);
+			fListTree_private(&db, linhas, catTemp, 0, opcao);
+
 			iteraProximo(&it);
-			siteDoIterador = (struct sSite*) retornaItera(&it);
-		} while (!inicioIt(&it) && siteDoIterador->ehCat == '1');
+		} while (!inicioIt(&it));
 	}
 
-	strcpy(linhas, "10000000000");
-
-	//printa os sites da raiz
-	if (siteDoIterador->ehCat == '0') {
+	//printa os favoritos da raiz
+	db.listaFavs = listaTemp;
+	if (opcao == 0 && !emptyList(db.listaFavs)) {
+		it = criaIt(db.listaFavs);
 		do {
-			fListTree_printaFavorito(*siteDoIterador, linhas, 0);
-			iteraProximo(&it);
-			siteDoIterador = (struct sSite*) retornaItera(&it);
-		} while (!inicioIt(&it) && siteDoIterador->ehCat == '0');
-	}
+			favorito = (struct sSite*) retornaItera(&it);
 
-	printf("\n");
+			//printa o favorito
+			fListTree_printaLinhas(linhas, 0);
+			printf(ANSI_COLOR_GRA "_ " ANSI_COLOR_WHT "%s\n", favorito->nome);
+
+			iteraProximo(&it);
+		} while (!inicioIt(&it));
+	}
 
 	fFinalizaDB(&db);
 
