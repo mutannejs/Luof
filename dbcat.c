@@ -1,22 +1,20 @@
 #include "luof.h"
 
-int fPreencheListaSite(sBanco *db, sCat *c, int cmp) {
+void fPreencheListaSite(sBanco *db, sCat *c, int cmp) {
 
 	sSite siteTemp;
 	char nomeTemp[TAMNOMEFAV], nomeArqCat[TAMLINKARQ];
 	FILE *arqCat;
+
+	db->listaFavs = criaLista(struct sSite);
 
 	//abre o arquivo da categoria
 	fSetaCaminhoArquivo(db, nomeArqCat, c->nome);
 	arqCat = fopen(nomeArqCat, "r");
 
 	//documento não encontrado
-	if (arqCat == NULL) {
-		printf(ANSI_COLOR_RED "\nErro: O arquivo %s não pode ser aberto.\n", nomeArqCat);
-		return 1;
-	}
-
-	db->listaFavs = criaLista(struct sSite);
+	if (!arqCat)
+		return;
 
 	//pega linha por linha do arquivo da categoria, faz a comparação usando a primeira linha de um site, e depois pega as outras três referentes ao mesmo site
 	while (fgets(nomeTemp, 100, arqCat) != NULL) {
@@ -27,8 +25,6 @@ int fPreencheListaSite(sBanco *db, sCat *c, int cmp) {
 	}
 
 	fclose(arqCat);
-
-	return 0;
 
 }
 
@@ -115,6 +111,9 @@ void fInsereFavorito(sBanco *db, sSite s) {
 }
 
 void fRemoveFavorito(sBanco *db, sSite s) {
+
+	if (emptyList(db->listaFavs))
+		return;
 
 	sSite *favorito;
 	sIterador it = criaIt(db->listaFavs);

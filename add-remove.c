@@ -4,46 +4,34 @@ void fAddBookmark() {
 
 	//variaveis
 	sSite s;
-	sCat *categoria;
+	sCat *cat;
 	sBanco db;
 
 	// inicializa o banco de dados (se existir guarda em aLuof o arquivo com as categorias, se não pergunta se quer cria-lo)
 	if (fInicializaDB(&db))
 		return;
 
-	//prenche o campo ehCat
-	s.ehCat = '0';
-
 	//Pede a categoria
-	if (fSetaSiteCategoria(&s))
+	if (fSetaSiteCategoria(&s)) {
+		fFinalizaDB(&db);
 		return;
-
-	//Se a categoria é a raiz guarda no arquivo raiz
-	if (strcmp(s.categoria, "/") == 0) {
-		strcpy(s.categoria, "luof");
-		db.listaSites = db.raiz;
-
-		//categoria passa a apontar para a categoria raiz
-		categoria = db.listaCategorias;
 	}
-	else {
-		//verifica se a categoria existe e guarda em categoria sua posição na árvore
-		if (fBuscaCat(&db, s, &categoria)) {
-			fFinalizaDB(&db);
-			return;
-		}
-		//cria uma lista de favoritos pertecentes à categoria
-		if (fPreencheListaSite(&db, categoria)) {
-			fFinalizaDB(&db);
-			return;
-		}
+
+	//verifica se a categoria existe e guarda em categoria sua posição na árvore
+	if (fBuscaCat(&db, s.categoria, &cat)) {
+		fFinalizaDB(&db);
+		return;
 	}
+	//cria uma lista de favoritos pertecentes à categoria
+	fPreencheListaSite(&db, cat, 0);
 
 	//pede nome
-	if (fSetaSiteNome(&s))
+	if (fSetaSiteNome(&s)) {
+		fFinalizaDB(&db);
 		return;
+	}
 
-	//verifica se já existe um favorito com esse nome na categoria e se o arquivo pode ser aberto
+	//verifica se já existe um favorito com esse nome na categoria
 	if (fBuscaFavorito(&db, &s)) {
 		printf(ERRO);
 		printf("O favorito já existe.\n");
@@ -52,15 +40,21 @@ void fAddBookmark() {
 	}
 
 	//Pede o link
-	if (fSetaSiteLink(&s))
+	if (fSetaSiteLink(&s)) {
+		fFinalizaDB(&db);
 		return;
+	}
 
 	//Pede o texto
-	if (fSetaSiteTexto(&s))
+	if (fSetaSiteTexto(&s)) {
+		fFinalizaDB(&db);
 		return;
+	}
 
-	//adiciona no banco de dados
-	fAdicionaFavorito(&db, s, categoria);
+	//adiciona o favorito na db->listaFavs
+	fInsereFavorito(&db, s);
+	//atualiza o arquivo
+	fEscreveArquivoCat(&db, cat->nome);
 
 	//fecha os arquivos abertos
 	fFinalizaDB(&db);
@@ -71,53 +65,41 @@ void fAddBookmark() {
 
 void fAddCategory() {
 
-	sSite c;
-	sCat *categoria;
+	sCat *catPai, cat;
 	sBanco db;
 
-	if (fInicializaDB(&db))
+	if (fInicializaDB(&db)) {
+		fFinalizaDB(&db);
 		return;
-
-	//pede a categoria pai
-	if (fSetaCatCategoria(&c))
-		return;
-
-	if (strcmp(c.categoria, "/") == 0) {
-		strcpy(c.categoria, "luof");
-		db.listaSites = db.raiz;
-		categoria = db.listaCategorias;
-	}
-	else {
-		if (fBuscaCat(&db, c, &categoria)) {
-			fFinalizaDB(&db);
-			return;
-		}
-		if (fPreencheListaSite(&db, categoria)) {
-			fFinalizaDB(&db);
-			return;
-		}
 	}
 
-	//pede o nome (da categoria)
-	if (fSetaCatNome(&c))
+	//pede o caminho da categoria pai
+	if (fSetaCatCategoria(&cat)) {
+		fFinalizaDB(&db);
 		return;
+	}
 
-	//preenche os outros campos
-	strcpy(c.link, "@categoria@");
-	strcpy(c.texto, "@categoria@");
-	c.ehCat = '1';
+	if (fBuscaCat(&db, cat.caminho, &catPai)) {
+		fFinalizaDB(&db);
+		return;
+	}
 
-	if (fBuscaFavorito(&db, &c)) {
+	//pede o nome da categoria
+	if (fSetaCatNome(&cat)) {
+		fFinalizaDB(&db);
+		return;
+	}
+
+	//insere na árvore de categorias
+	if (fInsereCategoria(&db, catPai, cat)) {
 		printf(ERRO);
 		printf("A categoria já existe.\n");
 		fFinalizaDB(&db);
 		return;
 	}
+	//atualiza o arquivo luof
+	fEscreveLuof(&db);
 
-	//adiciona na árvore de categorias
-	fAdicionaCatLuof(&db, c, categoria);
-
-	fAdicionaFavorito(&db, c, categoria);
 	fFinalizaDB(&db);
 
 	printf(ANSI_BOLD_WHT "\nCategoria adicionada com sucesso.\n");
@@ -127,50 +109,29 @@ void fAddCategory() {
 void fRemoveBookmark() {
 
 	sSite s;
-	sCat *categoria;
+	sCat *cat;
 	sBanco db;
 
-	if (fInicializaDB(&db))
+	if (fInicializaDB(&db)) {
+		fFinalizaDB(&db);
 		return;
-
-	if (fSetaSiteCategoria(&s))
-		return;
-	
-	if (strcmp(s.categoria, "/") == 0) {
-		//se a lista está vazia não continua a função
-		if (emptyList(db.raiz)) {
-			printf(ERRO);
-			printf("Categoria vazia.\n");
-			fFinalizaDB(&db);
-			return;
-		}
-
-		strcpy(s.categoria, "luof");
-		db.listaSites = db.raiz;
-		categoria = db.listaCategorias;
-	}
-	else {
-		if (fBuscaCat(&db, s, &categoria)) {
-			fFinalizaDB(&db);
-			return;
-		}
-		if (fPreencheListaSite(&db, categoria)) {
-			fFinalizaDB(&db);
-			return;
-		}
-
-		//se a lista está vazia não continua a função
-		if (emptyList(db.listaSites)) {
-			printf(ERRO);
-			printf("Categoria vazia.\n");
-			fFinalizaDB(&db);
-			return;
-		}
 	}
 
-	if (fSetaSiteNome(&s))
+	if (fSetaSiteCategoria(&s)) {
+		fFinalizaDB(&db);
 		return;
-	s.ehCat = '0';
+	}
+
+	if (fBuscaCat(&db, s.categoria, &cat)) {
+		fFinalizaDB(&db);
+		return;
+	}
+	fPreencheListaSite(&db, cat, 0);
+
+	if (fSetaSiteNome(&s)) {
+		fFinalizaDB(&db);
+		return;
+	}
 
 	if (!fBuscaFavorito(&db, &s)) {
 		printf(ERRO);
@@ -179,8 +140,9 @@ void fRemoveBookmark() {
 		return;
 	}
 
-	//remove do banco de dados
-	fRemoveFavorito(&db, s, categoria);
+	//remove de db.listaFavs
+	fRemoveFavorito(&db, s);
+	fEscreveArquivoCat(&db, cat->nome);
 
 	fFinalizaDB(&db);
 
@@ -190,62 +152,40 @@ void fRemoveBookmark() {
 
 void fRemoveCategory() {
 
-	sSite c;
-	sCat *categoria;
+	sCat *cat, c;
 	sBanco db;
 
 	if (fInicializaDB(&db))
 		return;
 
-	if (fSetaCatCategoria(&c))
+	if (fSetaCatCategoria(&c)) {
+		fFinalizaDB(&db);
 		return;
-
-	if (strcmp(c.categoria, "/") == 0) {
-		if (emptyList(db.raiz)) {
-			printf(ERRO);
-			printf("Categoria vazia.\n");
-			fFinalizaDB(&db);
-			return;
-		}
-		strcpy(c.categoria, "luof");
-		db.listaSites = db.raiz;
-		categoria = db.listaCategorias;
-	}
-	else {
-		if (fBuscaCat(&db, c, &categoria)) {
-			fFinalizaDB(&db);
-			return;
-		}
-		if (fPreencheListaSite(&db, categoria)) {
-			fFinalizaDB(&db);
-			return;
-		}
-		if (emptyList(db.listaSites)) {
-			printf(ERRO);
-			printf("Categoria vazia.\n");
-			fFinalizaDB(&db);
-			return;
-		}
 	}
 
-	if (fSetaCatNome(&c))
+	if (fBuscaCat(&db, c.caminho, &cat)) {
+		fFinalizaDB(&db);
 		return;
-	c.ehCat = '1';
-	
-	if (!fBuscaFavorito(&db, &c)) {
+	}
+
+	if (fSetaCatNome(&c)) {
+		fFinalizaDB(&db);
+		return;
+	}
+
+	cat = fBuscaCatFilha(cat, c.nome);
+	if (!cat) {
 		printf(ERRO);
 		printf("A categoria não existe para ser excluida.\n");
 		fFinalizaDB(&db);
 		return;
 	}
 
-	fRemoveFavorito(&db, c, categoria);
-
 	//remove todos os favoritos do arquivo da categoria, com exceção daqueles pertencentes à outra categoria
-	fRemoveArqCat(&db, c);
-
-	//remove da árvore de categorias
-	fRemoveCatLuof(&db, c, categoria);
+	fRemoveArqCat(&db, cat);
+	//remove a categoria da árvore de categorias
+	fRemoveCategoria(&db, cat);
+	fEscreveLuof(&db);
 
 	fFinalizaDB(&db);
 

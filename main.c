@@ -2,7 +2,7 @@
 
 int main(int argc, char *argv[]) {
 
-	fTeste();
+	//fTeste();
 
 	/*if (argc == 1) {
 		fMenu();
@@ -12,6 +12,9 @@ int main(int argc, char *argv[]) {
 			fHelp(argv[2]);
 		else
 			fHelp(NULL);
+	}*/
+	if (argc == 1) {
+		return 0;
 	}
 	else if (strcmp(argv[1], "-ab") == 0 || strcmp(argv[1], "--add-bookmark") == 0) {
 		fAddBookmark();
@@ -25,7 +28,7 @@ int main(int argc, char *argv[]) {
 	else if (strcmp(argv[1], "-rc") == 0 || strcmp(argv[1], "--remove-category") == 0) {
 		fRemoveCategory();
 	}
-	else if (strcmp(argv[1], "-mb") == 0 || strcmp(argv[1], "--modify-bookmark") == 0) {
+	/*else if (strcmp(argv[1], "-mb") == 0 || strcmp(argv[1], "--modify-bookmark") == 0) {
 		fModifyBookmark();
 	}
 	else if (strcmp(argv[1], "-mc") == 0 || strcmp(argv[1], "--modify-category") == 0) {

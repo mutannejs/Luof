@@ -46,6 +46,8 @@ int fSetaSiteCategoria(sSite *s) {
 		c = getchar();
 	} while (c != '\n');
 	s->categoria[cont] = '\0';
+	if (cont > 1 && s->categoria[cont-1] == '/')
+		s->categoria[cont-1] = '\0';
 
 	return 0;
 
@@ -157,7 +159,7 @@ int fSetaCatCategoria(sCat *cat) {
 		c = getchar();
 	} while (c != '\n');
 	cat->caminho[cont] = '\0';
-	if (cat->caminho[cont-1] == '/')
+	if (cont > 1 && cat->caminho[cont-1] == '/')
 		cat->caminho[cont-1] = '\0';
 
 	return 0;
@@ -192,20 +194,9 @@ int fSetaCatNome(sCat *cat) {
 	} while (c != '\n');
 	cat->nome[cont] = '\0';
 
-	if (strcmp(cat->nome, "luof") == 0) {
-		printf(ERRO);
-		printf("luof é um nome reservado do sistema e não pode ser usado para nomes de categorias.\n");
-		return 1;
-	}
-
 	return 0;
 
 }
-
-//void fIncrementaCamCat(char *caminho, char *nome) {
-//	strcat(caminho, "/");
-//	strcat(caminho, nome);
-//}
 
 /*int fSeparaArquivoCategoria(sBanco *db, char categoria[], sCat *cat, char nomeA[]) {
 

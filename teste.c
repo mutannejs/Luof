@@ -117,7 +117,7 @@ void fTeste() {
 	if (fInicializaDB(&db))
 		return;
 
-	percursoCategorias(db.arvoreCats, 0);
+	/*percursoCategorias(db.arvoreCats, 0);
 	printf("\n");
 	if (fBuscaCat(&db, "/", &cat))
 		printf("Categoria / não encontrada.\n");
@@ -278,7 +278,9 @@ void fTeste() {
 	fModificaFavorito(&db, s, sNew);
 	printaListaSites(db.listaFavs);
 	printf("\n");
-	//fEscreveArquivoCat(&db, "raiz");
+	//fEscreveArquivoCat(&db, "raiz");*/
+
+	
 
 	fFinalizaDB(&db);
 

@@ -208,7 +208,7 @@ int fBuscaCat(sBanco *db, char caminho[], sCat **c) {
 	//se a categoria é a raiz
 	if (strcmp(caminho, "/") == 0) {
 		*c = db->arvoreCats;
-		return 1;
+		return 0;
 	}
 
 	//se ainda não tiver sido criado nenhuma categoria
@@ -249,7 +249,28 @@ int fBuscaCat(sBanco *db, char caminho[], sCat **c) {
 
 }
 
-void fInsereCategoria(sBanco *db, sCat *cPai, sCat c) {
+sCat* fBuscaCatFilha(sCat *catPai, char nome[]) {
+
+	if (emptyList(catPai->catFilhos))
+		return NULL;
+
+	sCat *catTemp;
+	sIterador it =criaIt(catPai->catFilhos);
+
+	do {
+		catTemp = (struct sCat*) retornaItera(&it);
+		if (strcmp(catTemp->nome, nome) == 0)//encontrou a categoria
+			return catTemp;
+		else
+			iteraProximo(&it);
+	} while (!inicioIt(&it));
+
+	//não encontrou a categoria
+	return NULL;
+
+}
+
+int fInsereCategoria(sBanco *db, sCat *cPai, sCat c) {
 
 	sCat *catTemp;
 	sIterador it = criaIt(cPai->catFilhos);
@@ -269,10 +290,12 @@ void fInsereCategoria(sBanco *db, sCat *cPai, sCat c) {
 		pushBackList(cPai->catFilhos, &c);
 	}
 	else {//se a lista não estiver vazia, insere em ordem alfabética
-		//procura a posição que a categoria deve ser inserida (antes d primeira categoria com o nome maior no quesito lexográfico)
+		//procura a posição que a categoria deve ser inserida (antes da primeira categoria com o nome maior no quesito lexográfico)
 		do {
 			catTemp = (struct sCat*) retornaItera(&it);
-			if (strcmp(catTemp->nome, c.nome) > 0)
+			if (strcmp(catTemp->nome, c.nome) == 0)//se a cat já existe
+				return 1;
+			else if (strcmp(catTemp->nome, c.nome) > 0)//se encontrou a posicao a ser inserida
 				encontrouPos = 1;
 			else
 				iteraProximo(&it);
@@ -284,32 +307,31 @@ void fInsereCategoria(sBanco *db, sCat *cPai, sCat c) {
 			insereAntIt(&it, &c);
 	}
 
-	//cria o arquivo referente a categoria caso ainda não exista nenhum arquivo com esse nome
-	fSetaCaminhoArquivo(db, nomeArqCat, c.nome);
-	arqCat = fopen(nomeArqCat, "r");
-	if (!arqCat)//se entrar no if significa que o arquivo não existe, então ele é criado e em ambos os casos fechado
-		arqCat = fopen(nomeArqCat, "w");
-	fclose(arqCat);
+	//a categoria foi inserida com sucesso
+	return 0;
 
 }
 
-void fRemoveCategoria(sBanco *db, sCat *cPai, sCat c) {
+void fRemoveCategoria(sBanco *db, sCat *cat) {
 
 	sCat *catTemp;
-	sIterador it = criaIt(cPai->catFilhos);
-	int encontrouPos = 0;
+	sIterador it;
 
 	//remove a categoria da árvore de categorias
+	it = criaIt(cat->catPai->catFilhos);
 	do {
 		catTemp = (struct sCat*) retornaItera(&it);
-		if (strcmp(catTemp->nome, c.nome) == 0) {
-			encontrouPos = 1;
+		if (strcmp(catTemp->nome, cat->nome) == 0) {
+			//remove suas subcategorias da árvore de categorias
+			fFinalizaDB_private(cat);
+			//remove a categoria da catFilhos da catPai
 			removeIt(&it);
+			return;
 		}
 		else {
 			iteraProximo(&it);
 		}
-	} while (encontrouPos == 0 && !inicioIt(&it));
+	} while (!inicioIt(&it));
 
 }
 
@@ -346,6 +368,7 @@ void fRemoveArqCat(sBanco *db, sCat *cat) {
 	sIterador it;
 	int qtdLista;
 	char nomeArqCat[TAMLINKARQ];
+	FILE *arqCat;
 
 	//chama a mesma função para suas subcategorias
 	if (!emptyList(cat->catFilhos)) {
@@ -357,9 +380,14 @@ void fRemoveArqCat(sBanco *db, sCat *cat) {
 		} while (!inicioIt(&it));
 	}
 
+	//verifica se o arquivo existe (se não existir apenas sai)
+	fSetaCaminhoArquivo(db, nomeArqCat, cat->nome);
+	arqCat = fopen(nomeArqCat, "r");
+	if (!arqCat)
+		return;
+
 	//cria uma lista com todos os favoritos no arquivo da categoria
 	fPreencheListaSite(db, cat, 0);
-	printaListaSites(db->listaFavs);
 
 	//se a lista estiver vazia exclui o arquivo (com exceção da raiz)
 	if (emptyList(db->listaFavs) && strcmp(cat->nome, "raiz") != 0) {
