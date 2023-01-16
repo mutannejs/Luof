@@ -40,21 +40,23 @@ int main(int argc, char *argv[]) {
 	else if (strcmp(argv[1], "-lts") == 0 || strcmp(argv[1], "--list-tree-short") == 0) {
 		fListTree(1);
 	}
-	/*else if (strcmp(argv[1], "-mb") == 0 || strcmp(argv[1], "--modify-bookmark") == 0) {
-		fModifyBookmark();
-	}
-	else if (strcmp(argv[1], "-mc") == 0 || strcmp(argv[1], "--modify-category") == 0) {
-		fModifyCategory();
-	}*/
-	/*else if (strcmp(argv[1], "--backup") == 0) {
+	else if (strcmp(argv[1], "--backup") == 0) {
 		fBackup();
 	}
 	else if (strcmp(argv[1], "--export") == 0) {
 		fExport();
 	}
+	else if (strcmp(argv[1], "--free") == 0) {
+		fFree();
+	}
 	else {
-		//printaColorido();
 		printf(ANSI_BOLD_WHT "Função inválida\n");
+	}
+	/*else if (strcmp(argv[1], "-mb") == 0 || strcmp(argv[1], "--modify-bookmark") == 0) {
+		fModifyBookmark();
+	}
+	else if (strcmp(argv[1], "-mc") == 0 || strcmp(argv[1], "--modify-category") == 0) {
+		fModifyCategory();
 	}*/
 
 	return 0;
@@ -126,3 +128,23 @@ int main(int argc, char *argv[]) {
 
 }
 */
+
+void fFree() {
+
+	sBanco db;
+	char vBooleana;
+
+	printf(ANSI_BOLD_WHT  "Você tem certeza que deseja apagar todas categorias e favoritos? [s/n]: " ANSI_COLOR_GRA);
+	scanf(" %c", &vBooleana);
+	if (vBooleana != 's') {
+		printf(ANSI_BOLD_WHT "Saindo...\n");
+		return;
+	}
+
+	if (fInicializaDB(&db))
+		return;
+	fApagarBanco(&db);
+
+	printf(ANSI_BOLD_WHT "Categorias e favoritos apagados.\n");
+
+}

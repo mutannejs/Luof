@@ -1,46 +1,42 @@
 #include "luof.h"
 
-void fExport_private(sBanco *db, FILE *arqExport, sSite s, int hierarquia) {
+void fExport_private(sBanco *db, FILE *arqExport, sCat *cat, int hierarquia) {
 
-	sSite *siteDoIterador;
-	sLista listaFavoritos = NULL;
+	sSite *favorito;
+	sCat *catTemp;
 	sIterador it;
 
 	hierarquia = hierarquia + 1;
 
-	//escreve os dados da categoria
-	for (int i = 0; i < hierarquia; i++)
-		fprintf(arqExport, "\t");
-	fprintf(arqExport, "<DT><H3>%s</H3>\n", s.nome);
-	for (int i = 0; i < hierarquia; i++)
-		fprintf(arqExport, "\t");
-	fprintf(arqExport, "<DL><p>\n");
-
-	listaFavoritos = fPreencheListaSiteCmp(db, s);
-
-	if (emptyList(listaFavoritos)) {
-		freeList(listaFavoritos);
-		return;
-	}
-
-	it = criaIt(listaFavoritos);
-	do {
-		siteDoIterador = (struct sSite*) retornaItera(&it);
-
-		//escreve o favorito no arqivo do export se ele for um favorito, e faz a recursão caso ele seja uma categoria
-		if (siteDoIterador->ehCat == '1')
-			fExport_private(db, arqExport, *siteDoIterador, hierarquia);
-		else {
-			//fExport_printaFavorito(*siteDoIterador, hierarquia);
+	//escreve todas as subcategorias
+	if (!emptyList(cat->catFilhos)) {
+		it = criaIt(cat->catFilhos);
+		do {
+			catTemp = (struct sCat*) retornaItera(&it);
+			//escreve os dados da categoria
 			for (int i = 0; i <= hierarquia; i++)
 				fprintf(arqExport, "\t");
-			fprintf(arqExport, "<DT><A HREF=\"%s\">%s</A>\n", siteDoIterador->link, siteDoIterador->nome);
-		}
+			fprintf(arqExport, "<DT><H3>%s</H3>\n", catTemp->nome);
+			for (int i = 0; i <= hierarquia; i++)
+				fprintf(arqExport, "\t");
+			fprintf(arqExport, "<DL><p>\n");
+			fExport_private(db, arqExport, catTemp, hierarquia);
+			iteraProximo(&it);
+		} while (!inicioIt(&it));
+	}
 
-		iteraProximo(&it);
-	} while (!inicioIt(&it));
-
-	freeList(listaFavoritos);
+	//printa favorito por favorito da categoria
+	fPreencheListaSite(db, cat, 1);
+	if (!emptyList(db->listaFavs)) {
+		it = criaIt(db->listaFavs);
+		do {
+			favorito = (struct sSite*) retornaItera(&it);
+			for (int i = 0; i <= hierarquia; i++)
+				fprintf(arqExport, "\t");
+			fprintf(arqExport, "<DT><A HREF=\"%s\">%s</A>\n", favorito->link, favorito->nome);
+			iteraProximo(&it);
+		} while (!inicioIt(&it));
+	}
 
 	//escreve o final da categoria
 	for (int i = 0; i < hierarquia; i++)
@@ -51,78 +47,31 @@ void fExport_private(sBanco *db, FILE *arqExport, sSite s, int hierarquia) {
 
 void fExport() {
 
-	sSite c;
-	sCat *categoria;
+	sSite s;
+	sCat *cat;
 	sBanco db;
-	sSite *siteDoIterador;
-	sIterador it;
 	char nomeExport[TAMLINKARQ];
 	FILE *arqExport;
 
 	if (fInicializaDB(&db))
 		return;
 
-	if (emptyList(db.raiz)) {
-		printf(ERRO2);
-		printf("Nada ainda foi inserido.\n");
+	if (fSetaSiteCategoria(&s)) {
 		fFinalizaDB(&db);
 		return;
 	}
-
-	if (fSetaSiteCategoria(&c))
+	if (fBuscaCat(&db, s.categoria, &cat)) {
+		fFinalizaDB(&db);
 		return;
-	c.ehCat = '1';
-
-	if (strcmp(c.categoria, "/") == 0) {
-		if (emptyList(db.raiz)) {
-			printf(ERRO);
-			printf("Categoria vazia.\n");
-			fFinalizaDB(&db);
-			return;
-		}
-		strcpy(c.nome, "luof");
-		db.listaSites = db.raiz;
-		categoria = db.listaCategorias;
 	}
-	else {
-		//verifica se a categoria existe e se ela não está vazia
-		if (fBuscaCat(&db, c, &categoria)) {
-			fFinalizaDB(&db);
-			return;
-		}
-		if (fPreencheListaSite(&db, categoria)) {
-			fFinalizaDB(&db);
-			return;
-		}
-		if (emptyList(db.listaSites)) {
-			printf(ERRO);
-			printf("Categoria vazia.\n");
-			fFinalizaDB(&db);
-			return;
-		}
-		//separa a categoria pai e o nome da categoria
-		for (int i = strlen(c.categoria); i >= 0; i--) {
-			if (c.categoria[i] == '/' || i == 0) {
-				strcpy(c.nome, &c.categoria[i]);
-				if (i == 0) {
-					strcpy(c.categoria, "luof");
-					categoria = db.listaCategorias;
-					db.listaSites = db.raiz;
-				}
-				else {
-					c.categoria[i] = '\0';
-					if (fBuscaCat(&db, c, &categoria)) {
-						fFinalizaDB(&db);
-						return;
-					}
-					if (fPreencheListaSite(&db, categoria)) {
-						fFinalizaDB(&db);
-						return;
-					}
-				}
-				i = 0;
-			}
-		}
+	fPreencheListaSite(&db, cat, 1);
+
+	//se a categoria não possui subcategorias nem favoritos
+	if (emptyList(cat->catFilhos) && emptyList(db.listaFavs)) {
+		printf(ERRO);
+		printf("Lista vazia.\n");
+		fFinalizaDB(&db);
+		return;
 	}
 
 	//cria arquivo do export
@@ -153,42 +102,12 @@ void fExport() {
 	);
 
 	//escreve as demais linhas (categoria e seu conteúdo)
-	if (strcmp(c.nome, "luof") == 0) {
-
-		//escreve os dados da categoria
-		fprintf(arqExport, "\t<DT><H3>%s</H3>\n\t<DL><p>\n", c.nome);
-
-		if (emptyList(db.listaSites)) {
-			freeList(db.listaSites);
-			return;
-		}
-
-		it = criaIt(db.listaSites);
-		do {
-			siteDoIterador = (struct sSite*) retornaItera(&it);
-			//escreve o favorito no arqivo do export se ele for um favorito, e faz a recursão caso ele seja uma categoria
-			if (siteDoIterador->ehCat == '1') {
-				fExport_private(&db, arqExport, *siteDoIterador, 1);
-			}
-			else {
-				//fExport_printaFavorito(*siteDoIterador, hierarquia);
-				fprintf(arqExport, "\t<DT><A HREF=\"%s\">%s</A>\n", siteDoIterador->link, siteDoIterador->nome);
-			}
-			iteraProximo(&it);
-		} while (!inicioIt(&it));
-
-		//escreve o final da categoria
-		fprintf(arqExport, "\t</DL><p>\n");
-
-	}
-	else {
-		fExport_private(&db, arqExport, c, 0);
-	}
+	fExport_private(&db, arqExport, cat, -1);
 
 	//escreve a última linha
 	fprintf(arqExport, "</DL>");
 
-	//fecha os arquivos abertos
+	//finaliza as estruturas criadas
 	fFinalizaDB(&db);
 
 	printf(ANSI_BOLD_WHT "\nArquivo %s adicionado no diretório atual.", nomeExport);

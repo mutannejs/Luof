@@ -2,10 +2,9 @@
 
 int fInicializaDB(sBanco *db) {
 
-	char caminho[TAMLINKARQ];
-	char vBooleana;
+	char caminho[TAMLINKARQ], camLuof[TAMLINKARQ], vBooleana;
 	struct stat st;
-	FILE *arquivo;
+	FILE *aLuof, *arquivo;
 
 	//seta a variável caminhoDB com o caminho para o banco de dados
 	/* --- quando caminhoDB estiver com o caminho da home do usuário ---
@@ -68,7 +67,10 @@ int fInicializaDB(sBanco *db) {
 	}
 
 	//preenche uma árvore com todas as categorias
-	fPreencheArvoreCats(db);
+	fSetaCaminhoArquivo(db, camLuof, NULL);
+	aLuof = fopen(camLuof, "r");
+	fPreencheArvoreCats(db, aLuof);
+	fclose(aLuof);
 	//fecha o arquivo e seta listaFavs como NULL
 	fclose(arquivo);
 	db->listaFavs = NULL;
@@ -107,17 +109,11 @@ void fFinalizaDB(sBanco *db) {
 
 }
 
-void fPreencheArvoreCats(sBanco *db) {
+void fPreencheArvoreCats(sBanco *db, FILE *aLuof) {
 
 	sCat c;//a categoria lida terá seus dados guardados aqui
 	sCat *cPaiAtual;//aponta para a categoria que possui a lista onde a categoria lida será inserida
 	char linhaCat[TAMNOMEFAV+1];//é somado 1 pois a linha lida contém o caracter '\n'
-	char camLuof[TAMLINKARQ];//caminho do arquivo luof
-	FILE *aLuof;
-
-	//abre o arquivo onde está armazenada a árvore de categorias
-	fSetaCaminhoArquivo(db, camLuof, NULL);
-	aLuof = fopen(camLuof, "r");
 
 	//seta os dados de db->listaCategorias (a categoria raiz)
 	db->arvoreCats = malloc(sizeof(struct sCat));
@@ -131,7 +127,7 @@ void fPreencheArvoreCats(sBanco *db) {
 	cPaiAtual = db->arvoreCats;
 
 	//lê linha por linha e constroi a árvore de categorias
-	while (fgets(linhaCat, 100, aLuof)) {
+	while (fgets(linhaCat, 100, aLuof) && strcmp(linhaCat, "##\n") != 0) {
 
 		//seta os dados da categoria lida (com excecão de catPai e caminho (este depende do anterior))
 		strcpy(c.nome, &linhaCat[1]);
@@ -163,8 +159,6 @@ void fPreencheArvoreCats(sBanco *db) {
 		}
 
 	}
-
-	fclose(aLuof);
 
 }
 
@@ -415,5 +409,53 @@ void fRemoveArqCat(sBanco *db, sCat *cat) {
 	else {
 		fEscreveArquivoCat(db, cat->nome);
 	}
+
+}
+
+void fApagarBanco_private(sBanco *db, sCat *cat) {
+
+	sCat *catTemp;
+	sIterador it;
+	char nomeArqCat[TAMLINKARQ];
+	FILE *arqCat;
+
+	//remove o arquivo
+	if (strcmp(cat->nome, "raiz") != 0) {
+		fSetaCaminhoArquivo(db, nomeArqCat, cat->nome);
+		arqCat = fopen(nomeArqCat, "r");
+		if (arqCat)
+			fclose(arqCat);
+		remove(nomeArqCat);
+	}
+
+	//chama a mesma função para suas subcategorias
+	if (!emptyList(cat->catFilhos)) {
+		it = criaIt(cat->catFilhos);
+		do {
+			catTemp = (struct sCat*) retornaItera(&it);
+			fApagarBanco_private(db, catTemp);
+			iteraProximo(&it);
+		} while (!inicioIt(&it));
+	}
+
+}
+
+void fApagarBanco(sBanco *db) {
+
+	sCat *cat;
+	sIterador it;
+	char nomeArqCat[TAMLINKARQ];
+	FILE *aLuof, *aRaiz;
+
+	//remove todos os arquivos de categorias
+	fApagarBanco_private(db, db->arvoreCats);
+
+	//limpa o arquivo raiz e luof
+	fSetaCaminhoArquivo(db, nomeArqCat, "raiz");
+	aRaiz = fopen(nomeArqCat, "w");
+	fclose(aRaiz);
+	fSetaCaminhoArquivo(db, nomeArqCat, NULL);
+	aLuof = fopen(nomeArqCat, "w");
+	fclose(aLuof);
 
 }

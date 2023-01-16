@@ -1,50 +1,39 @@
 #include "luof.h"
 
-void fBackup_escreveArvore(FILE *arqCat, sLista listaCategorias, int hierarquia) {
-
-	sCat *cat;
-	sIterador it;
-
-	if (!emptyList(listaCategorias)) {
-		it = criaIt(listaCategorias);
-		do {
-			cat = (struct sCat*) retornaItera(&it);
-			//escreve no arquivo
-			fprintf(arqCat, "%d%s\n", hierarquia, cat->nome);
-			//------------------
-			fBackup_escreveArvore(arqCat, cat->catFilhos, hierarquia+1);
-			iteraProximo(&it);
-		} while (!inicioIt(&it));
-	}
-
-}
-
 void fBackup_preencnheListaCats(sLista listaCats, sCat *cat) {
 
-	sCat *catF;
+	sCat *catTemp;
 	sIterador it;
 	int encontrou = 0;
 
 	//percorre a listaCats, se não houver nenhuma categoria com o mesmo nome de cat, adiciona ela na lista
-	if (!emptyList(listaCats)) {
+	if (emptyList(listaCats)) {
+		pushBackList(listaCats, cat);
+	}
+	else {
 		it = criaIt(listaCats);
 		do {
-			catF = (struct sCat*) retornaItera(&it);
-			if (strcmp(cat->nome, catF->nome) == 0)
+			catTemp = (struct sCat*) retornaItera(&it);
+			if (strcmp(catTemp->nome, cat->nome) == 0)//se a cat já existe
+				encontrou = -1;
+			else if (strcmp(catTemp->nome, cat->nome) > 0)//se encontrou a posicao a ser inserida
 				encontrou = 1;
-			iteraProximo(&it);
+			else
+				iteraProximo(&it);
 		} while (encontrou == 0 && !inicioIt(&it));
-	}
-	if (encontrou == 0) {
-		pushBackList(listaCats, cat);
+
+		if (encontrou == 0)
+			pushBackList(listaCats, cat);
+		else if (encontrou > 0)
+			insereAntIt(&it, cat);
 	}
 
 	//faz a recursão para as categorias filhas de cat
 	if (!emptyList(cat->catFilhos)) {
 		it = criaIt(cat->catFilhos);
 		do {
-			catF = (struct sCat*) retornaItera(&it);
-			fBackup_preencnheListaCats(listaCats, catF);
+			catTemp = (struct sCat*) retornaItera(&it);
+			fBackup_preencnheListaCats(listaCats, catTemp);
 			iteraProximo(&it);
 		} while (!inicioIt(&it));
 	}
@@ -53,23 +42,12 @@ void fBackup_preencnheListaCats(sLista listaCats, sCat *cat) {
 
 char* fBackup_criar(sBanco *db) {
 
-	sSite *siteDoIterador;
-	sCat *cat;
+	sSite *favorito;
+	sCat *catTemp;
 	sLista listaCats;
 	sIterador it, it2;
 	char nomeBackup[TAMLINKARQ], *nomeB;
 	FILE *arqBackup;
-
-	//preenche a listaCats com todas as categorias sem repetir categorias com o mesmo nome
-	listaCats = criaLista(struct sCat);
-	if (!emptyList(db->listaCategorias->catFilhos)) {
-		it = criaIt(db->listaCategorias->catFilhos);
-		do {
-			cat = (struct sCat*) retornaItera(&it);
-			fBackup_preencnheListaCats(listaCats, cat);
-			iteraProximo(&it);
-		} while (!inicioIt(&it));
-	}
 
 	//cria arquivo do backup
 	strcpy(nomeBackup, "luof.bkp");
@@ -84,39 +62,25 @@ char* fBackup_criar(sBanco *db) {
 		return NULL;
 
 	//escreve a árvore de categorias no arquivo
-	fBackup_escreveArvore(arqBackup, db->listaCategorias->catFilhos, 0);
+	fEscreveLuof_private(arqBackup, db->arvoreCats->catFilhos, 0);
 
 	//marca o fim da árvore de categorias
 	fprintf(arqBackup, "##\n");
 
-	//escreve a raiz no arquivo
-	fprintf(arqBackup, "luof/%ld\n", sizeList(db->raiz));
-	if (!emptyList(db->raiz)) {
-		it = criaIt(db->raiz);
-		do {
-			siteDoIterador = (struct sSite*) retornaItera(&it);
-			fprintf(arqBackup, "%s\n%s\n%s\n%s\n%c\n", siteDoIterador->nome, siteDoIterador->categoria, siteDoIterador->link, siteDoIterador->texto, siteDoIterador->ehCat);
-			iteraProximo(&it);
-		} while (!inicioIt(&it));
-	}
-
-	//escreve os demais arquivos
+	//escreve todos os favoritos no arquivo
+	listaCats = criaLista(struct sCat*);
+	fBackup_preencnheListaCats(listaCats, db->arvoreCats);
 	if (!emptyList(listaCats)) {
 		it = criaIt(listaCats);
 		do {
-			cat = (struct sCat*) retornaItera(&it);
-			if (fPreencheListaSite(db, cat)) {
-				fclose(arqBackup);
-				remove(nomeBackup);
-				return NULL;
-			}
-			//escreve os sites do arquivo
-			fprintf(arqBackup, "%s/%ld\n", cat->nome, sizeList(db->listaSites));
-			if (!emptyList(db->listaSites)) {
-				it2 = criaIt(db->listaSites);
+			catTemp = (struct sCat*) retornaItera(&it);
+			fPreencheListaSite(db, catTemp, 0);
+			if (!emptyList(db->listaFavs)) {
+				fprintf(arqBackup, "%s/%ld\n", catTemp->nome, sizeList(db->listaFavs));
+				it2 = criaIt(db->listaFavs);
 				do {
-					siteDoIterador = (struct sSite*) retornaItera(&it2);
-					fprintf(arqBackup, "%s\n%s\n%s\n%s\n%c\n", siteDoIterador->nome, siteDoIterador->categoria, siteDoIterador->link, siteDoIterador->texto, siteDoIterador->ehCat);
+					favorito = (struct sSite*) retornaItera(&it2);
+					fprintf(arqBackup, "%s\n%s\n%s\n%s\n", favorito->nome, favorito->categoria, favorito->link, favorito->texto);
 					iteraProximo(&it2);
 				} while (!inicioIt(&it2));
 			}
@@ -129,35 +93,6 @@ char* fBackup_criar(sBanco *db) {
 	nomeB = malloc(sizeof(char)*strlen(nomeBackup));
 	strcpy(nomeB, nomeBackup);
 	return nomeB;
-
-}
-
-void fBackup_excluirArquivos(sBanco *db) {
-
-	sCat *cat;
-	sLista listaCats;
-	sIterador it;
-	char nomeArqCat[TAMLINKARQ];
-
-	//preenche a listaCats com todas as categorias sem repetir categorias com o mesmo nome
-	listaCats = criaLista(struct sCat);
-	if (!emptyList(db->listaCategorias->catFilhos)) {
-		it = criaIt(db->listaCategorias->catFilhos);
-		do {
-			cat = (struct sCat*) retornaItera(&it);
-			fBackup_preencnheListaCats(listaCats, cat);
-			iteraProximo(&it);
-		} while (!inicioIt(&it));
-	}
-
-	//remove todos os arquivos usando o nome das categorias
-	it = criaIt(listaCats);
-	while (!emptyList(listaCats)) {
-		cat = (struct sCat*) retornaItera(&it);
-		fSetaCaminhoArquivo(db, nomeArqCat, cat->nome);
-		remove(nomeArqCat);
-		removeIt(&it);
-	}
 
 }
 
@@ -182,40 +117,25 @@ void fBackup_restaurar(sBanco *db, FILE *arqBackup) {
 	sSite s;
 	char nomeQtdArq[TAMNOMEFAV+10], nomeArq[TAMNOMEFAV];
 	int qtdSites;
+	FILE *arqCat;
 
-	//recupera a árvore de categorias
-	fLiberaCats(db->listaCategorias);
-	db->aLuof = arqBackup;
-	fPreencheListaCat(db);
-	arqBackup = db->aLuof;
-	db->aLuof = NULL;
-
-	//recupera a raiz
-	freeList(db->raiz);
-	db->raiz = criaLista(struct sSite);
-	fgets(nomeQtdArq, 100, arqBackup);
-	qtdSites = fBackup_separaNomeQuantidade(nomeQtdArq, nomeArq);
-	for (int i = 0; i < qtdSites; i++) {
-		s = fRecuperaFavorito(arqBackup, NULL);
-		pushBackList(db->raiz, &s);
-	}
-
-	//escreve o arquivo luof
+	//recupera a árvore de categorias e escreve o arquivo luof
+	fFinalizaDB(db);
+	fPreencheArvoreCats(db, arqBackup);
 	fEscreveLuof(db);
 
 	//escreve os demais arquivos
-	while(fgets(nomeQtdArq, 100, arqBackup) != NULL) {
+	while(fgets(nomeQtdArq, 100, arqBackup)) {
 
-		if (db->listaSites)
-			freeList(db->listaSites);
+		if (db->listaFavs)
+			freeList(db->listaFavs);
 
-		db->listaSites = criaLista(struct sSite);
+		db->listaFavs = criaLista(struct sSite);
 		qtdSites = fBackup_separaNomeQuantidade(nomeQtdArq, nomeArq);
 
 		for (int i = 0; i < qtdSites; i++) {
-			//fBackup_adicionaSite(arqBackup, db->listaSites);
 			s = fRecuperaFavorito(arqBackup, NULL);
-			pushBackList(db->listaSites, &s);
+			pushBackList(db->listaFavs, &s);
 		}
 
 		fEscreveArquivoCat(db, nomeArq);
@@ -279,7 +199,7 @@ void fBackup() {
 		}
 		else {
 			//apaga os arquivos já existentes no banco
-			fBackup_excluirArquivos(&db);
+			fApagarBanco(&db);
 			//restaura o backup
 			fBackup_restaurar(&db, arqBackup);
 

@@ -74,7 +74,7 @@ void fMudaCaminhoCategoriaArvore(sBanco *db, sCat *cat, char *caminhoA, char *ca
 int fInicializaDB(sBanco *db);
 void fFinalizaDB_private(sCat *listaCategorias);
 void fFinalizaDB(sBanco *db);
-void fPreencheArvoreCats(sBanco *db);
+void fPreencheArvoreCats(sBanco *db, FILE *aLuof);
 void fEscreveLuof_private(FILE *aLuof, sLista listaCategorias, int hierarquia);
 void fEscreveLuof(sBanco *db);
 int fBuscaCat(sBanco *db, char caminho[], sCat **c);
@@ -83,6 +83,8 @@ int fInsereCategoria(sBanco *db, sCat *cPai, sCat c);
 void fRemoveCategoria(sBanco *db, sCat *cat);
 void fEscreveArquivoCat(sBanco *db, char *nomeArq);
 void fRemoveArqCat(sBanco *db, sCat *cat);
+void fApagarBanco_private(sBanco *db, sCat *cat);
+void fApagarBanco(sBanco *db);
 
 //dbcat
 void fPreencheListaSite(sBanco *db, sCat *c, int cmp);
@@ -101,6 +103,7 @@ void fTeste();
 
 //menu
 //void fMenu();
+void fFree();
 
 //help
 /*void fHelp_private();
@@ -135,18 +138,15 @@ void fListTree_printaLinhas(char linhas[], int hierarquia);
 void fListTree_private(sBanco *db, char linhas[], sCat *cat, int hierarquia, int opcao);
 void fListTree(int opcao);
 
-/*
 //backup
-void fBackup_escreveArvore(FILE *arqCat, sLista listaCategorias, int hierarquia);
 void fBackup_preencnheListaCats(sLista listaCats, sCat *cat);
 char* fBackup_criar(sBanco *db);
-void fBackup_excluirArquivos(sBanco *db);
 int fBackup_separaNomeQuantidade(char *nomeQtdArq, char *nomeArq);
 void fBackup_restaurar(sBanco *db, FILE *arqBackup);
 void fBackup();
 
 //import-export
-void fExport_private(sBanco *db, FILE *arqExport, sSite s, int hierarquia);
-void fExport();*/
+void fExport_private(sBanco *db, FILE *arqExport, sCat *cat, int hierarquia);
+void fExport();
 
 #endif
