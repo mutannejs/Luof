@@ -103,7 +103,7 @@ void fListTree_private(sBanco *db, char linhas[], sCat *cat, int hierarquia, int
 			fListTree_printaLinhas(linhas, hierarquia);
 			printf(ANSI_COLOR_GRA "_ " ANSI_BOLD_WHT "* %s\n", catTemp->nome);
 			//printa suas subcategorias e favoritos
-			if (fimIt(&it) && emptyList(listaTemp))
+			if (fimIt(&it) && (emptyList(listaTemp) || opcao == 1))
 				linhas[hierarquia] = '0';
 			fListTree_private(db, linhas, catTemp, hierarquia, opcao);
 
@@ -165,7 +165,7 @@ void fListTree(int opcao) {
 			fListTree_printaLinhas(linhas, 0);
 			printf(ANSI_COLOR_GRA "_ " ANSI_BOLD_WHT "* %s\n", catTemp->nome);
 			//printa suas subcategorias e favoritos
-			if (fimIt(&it) && emptyList(listaTemp))
+			if (fimIt(&it) && (emptyList(listaTemp) || opcao == 1))
 				strcpy(linhas, "00000000000");
 			fListTree_private(&db, linhas, catTemp, 0, opcao);
 
