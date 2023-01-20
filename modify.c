@@ -3,48 +3,28 @@
 void fModifyBookmark() {
 
 	sSite s, sNew;
-	sCat *categoria;
-	sCat *categoria2;
+	sCat *cat, *cat2;
 	sBanco db;
 	int opcao;
 
 	if (fInicializaDB(&db))
 		return;
 
-	if (fSetaSiteCategoria(&s))
+	if (fSetaSiteCategoria(&s)) {
+		fFinalizaDB(&db);
 		return;
-
-	if (strcmp(s.categoria, "/") == 0) {
-		if (emptyList(db.raiz)) {
-			printf(ERRO);
-			printf("Categoria vazia.\n");
-			fFinalizaDB(&db);
-			return;
-		}
-		strcpy(s.categoria, "luof");
-		db.listaSites = db.raiz;
-		categoria = db.listaCategorias;
-	}
-	else {
-		if (fBuscaCat(&db, s, &categoria)) {
-			fFinalizaDB(&db);
-			return;
-		}
-		if (fPreencheListaSite(&db, categoria)) {
-			fFinalizaDB(&db);
-			return;
-		}
-		if (emptyList(db.listaSites)) {
-			printf(ERRO);
-			printf("Categoria vazia.\n");
-			fFinalizaDB(&db);
-			return;
-		}
 	}
 
-	if (fSetaSiteNome(&s))
+	if (fBuscaCat(&db, s.categoria, &cat)) {
+		fFinalizaDB(&db);
 		return;
-	s.ehCat = '0';
+	}
+	fPreencheListaSite(&db, cat, 0);
+
+	if (fSetaSiteNome(&s)) {
+		fFinalizaDB(&db);
+		return;
+	}
 
 	if (!fBuscaFavorito(&db, &s)) {
 		printf(ERRO);
@@ -54,11 +34,8 @@ void fModifyBookmark() {
 	}
 
 	//printa os dados do site para o usuário saber o que modificar
-	printf(ANSI_BOLD_WHT "\nDados antigos:\n");
-	if (strcmp(s.categoria, "luof") == 0)
-		printf(ANSI_BOLD_YEL "Categoria : /\n");
-	else
-		printf("Categoria : %s\n", s.categoria);
+	printf(ANSI_BOLD_WHT "\nDados antigos:\n" ANSI_BOLD_YEL);
+	printf("Categoria : %s\n", s.categoria);
 	printf("Nome      : %s\n", s.nome);
 	printf("Link      : %s\n", s.link);
 	printf("Texto     : %s\n", s.texto);
@@ -74,48 +51,25 @@ void fModifyBookmark() {
 		return;
 	}
 
-	//fecha os arquivos abertos e reabre eles
-	fFinalizaDB(&db);
-	if (fInicializaDB(&db))
-		return;
-
 	//guarda em sNew os dados antigos, para caso algum não seja alterado
 	strcpy(sNew.categoria, s.categoria);
 	strcpy(sNew.nome, s.nome);
 	strcpy(sNew.link, s.link);
 	strcpy(sNew.texto, s.texto);
-	sNew.ehCat = s.ehCat;
-	//seta a categoria antiga (se ainda não foi setada)
-	if (strcmp(s.categoria, "luof") != 0)
-		fBuscaCat(&db, s, &categoria);
-	else
-		categoria = db.listaCategorias;
+	cat2 = cat;
 
 	//Pede os novos dados do site
 	printf(ANSI_BOLD_WHT "\nNovos dados:\n" ANSI_COLOR_GRA);
-
 	//pede a categoria
 	if (opcao == 1 || opcao == 5) {
 		if (fSetaSiteCategoria(&sNew))
 			return;
-		if (strcmp(sNew.categoria, "/") == 0) {
-			strcpy(sNew.categoria, "luof");
-			categoria2 = db.listaCategorias;
-		}
-		else if (fBuscaCat(&db, sNew, &categoria2)) {
+		if (fBuscaCat(&db, sNew.categoria, &cat2)) {
 			fFinalizaDB(&db);
 			return;
 		}
+		fPreencheListaSite(&db, cat2, 0);
 	}
-	else {
-		categoria2 = categoria;
-	}
-
-	//seta db.listaSites
-	if (strcmp(sNew.categoria, "luof") == 0)
-		db.listaSites = db.raiz;
-	else
-		fPreencheListaSite(&db, categoria2);
 
 	//pede o nome
 	if (opcao == 2 || opcao == 5) {
@@ -141,8 +95,8 @@ void fModifyBookmark() {
 
 	//pede o texto
 	if (opcao == 4 || opcao == 5) {
-	if (fSetaSiteTexto(&sNew))
-		return;
+		if (fSetaSiteTexto(&sNew))
+			return;
 	}
 
 	//se nada foi modificado
@@ -152,36 +106,24 @@ void fModifyBookmark() {
 		return;
 	}
 
-	if (strcmp(s.categoria, sNew.categoria) == 0 || strcmp(categoria->nome, categoria2->nome) == 0) {//se as categorias forem iguais ou o arquivo for o mesmo
-
-		//modifica o favorito na listaSites da categoria pai
-		fModificaFavorito(&db, s, sNew, categoria2);
-
+	//adiciona o favorito na categoria nova
+	fInsereFavorito(&db, sNew);
+	if (strcmp(cat->nome, cat2->nome) != 0) {//se o arquivo da categoria for diferente
+		fEscreveArquivoCat(&db, cat2->nome);
+		//seta db.listaFavs com os favoritos da antiga categoria
+		fPreencheListaSite(&db, cat, 0);
 	}
-	else {//as categorias são diferentes
+	//remove o favorito da categoria antiga
+	fRemoveFavorito(&db, s);
+	fEscreveArquivoCat(&db, cat->nome);
 
-		//adiciona o favorito na categoria nova
-		fAdicionaFavorito(&db, sNew, categoria2);
-
-		//seta db.listaSites com a os favoritos da antiga categoria
-		if (strcmp(s.categoria, "luof") == 0)
-			db.listaSites = db.raiz;
-		else
-			fPreencheListaSite(&db, categoria);
-
-		//remove o favorito da categoria antiga
-		fRemoveFavorito(&db, s, categoria);
-
-	}
-
-	//freeList(listaTemp1);
 	fFinalizaDB(&db);
-	
+
 	printf(ANSI_BOLD_WHT "\nFavorito modificado com sucesso.\n");
 
 }
 
-void fReposicionaCatArvore(sBanco *db, sCat *categoria, sCat *categoria2, sCat **categoria3, char *nome) {
+/*void fReposicionaCatArvore(sBanco *db, sCat *categoria, sCat *categoria2, sCat **categoria3, char *nome) {
 
 	sCat *catIt;
 	sIterador it;
@@ -450,3 +392,4 @@ void fModifyCategory() {
 	printf(ANSI_BOLD_WHT "\nFavorito modificado com sucesso.\n");
 
 }
+*/

@@ -126,11 +126,11 @@ void fAddCategory();
 void fRemoveBookmark();
 void fRemoveCategory();
 
-/*
+
 //modify
 void fModifyBookmark();
-void fReposicionaCatArvore(sBanco *db, sCat *categoria, sCat *categoria2, sCat **categoria3, char *nome);
-void fModifyCategory();*/
+//void fReposicionaCatArvore(sBanco *db, sCat *categoria, sCat *categoria2, sCat **categoria3, char *nome);
+//void fModifyCategory();
 
 //list
 void fListCategory(int opcao);
