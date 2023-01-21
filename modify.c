@@ -81,7 +81,7 @@ void fModifyBookmark() {
 	if (strcmp(s.categoria, sNew.categoria) || strcmp(s.nome, sNew.nome)) {
 		if (fBuscaFavorito(&db, &sNew)) {
 			printf(ERRO);
-			printf("Já existe outro favorito com esse nome e categoria, logo a modificação não pode ser concluída.\n");
+			printf("Já existe um favorito chamado %s na categoria %s, logo a modificação não pode ser concluída.\n", sNew.nome, sNew.categoria);
 			fFinalizaDB(&db);
 			return;
 		}
@@ -123,79 +123,202 @@ void fModifyBookmark() {
 
 }
 
-/*void fReposicionaCatArvore(sBanco *db, sCat *categoria, sCat *categoria2, sCat **categoria3, char *nome) {
+/*int fSeparaArquivoCategoria(sBanco *db, char categoria[], sCat *cat, char nomeA[]) {
 
-	sCat *catIt;
-	sIterador it;
-	int encontrou;
+	sSite siteTemp, *siteDoIterador, *siteDoIterador2;
+	sLista listaSitesA, listaSitesN;
+	sIterador it, it2;
+	FILE *arq;
+	char nomeTemp[TAMNOMEFAV], nomeArqCat[TAMLINKARQ];
+	int qtdLista, encontrouPos;
 
-	encontrou = 0;
-	it = criaIt(categoria->catFilhos);
-	do {
-		catIt = (struct sCat*) retornaItera(&it);
-		if (catIt == *categoria3) {
-			pushBackList(categoria2->catFilhos, catIt);
-			removeIt(&it);
-			encontrou = 1;
+	//preenche db->listaSites com os favoritos do arquivo com nome antigo
+	listaSitesA = db->listaSites;
+	strcpy(nomeTemp, cat->nome);
+	strcpy(cat->nome, nomeA);
+	fPreencheListaSite(db, cat);
+	strcpy(cat->nome, nomeTemp);
+
+	//verifica se já existe um arquivo com o novo nome da categoria, se sim preenche uma lista com seus favoritos
+	listaSitesN = criaLista(struct sSite);
+	fSetaCaminhoArquivo(db, nomeArqCat, cat->nome);
+	arq = fopen(nomeArqCat, "r");
+	if (arq) {
+		while (fgets(nomeTemp, 100, arq) != NULL) {
+			siteTemp = fRecuperaFavorito(arq, nomeTemp);
+			pushBackList(listaSitesN, &siteTemp);
 		}
+		fclose(arq);
+	}
+
+	//remove os sites da categoria da db->listaSites (arquivo com nome antigo) e insere no listaSitesN (arquivo com nome novo)
+	it = criaIt(db->listaSites);
+	it2 = criaIt(listaSitesN);
+	if (!emptyList(db->listaSites)) {
+		do {
+			qtdLista = sizeList(db->listaSites);
+			siteDoIterador = (struct sSite*) retornaItera(&it);
+			if (strcmp(siteDoIterador->categoria, categoria) == 0) {
+				//----------------------------
+				if (emptyList(listaSitesN)) {
+					pushBackList(listaSitesN, siteDoIterador);
+				}
+				else if (siteDoIterador->ehCat == '0') {
+					encontrouPos = 0;
+					iteraFim(&it2);
+					do {
+						siteDoIterador2 = (struct sSite*) retornaItera(&it2);
+						if (strcmp(siteDoIterador2->nome, siteDoIterador->nome) < 0 || siteDoIterador2->ehCat == '1')
+							encontrouPos = 1;
+						else
+							iteraAnterior(&it2);
+					} while (encontrouPos == 0 && !fimIt(&it2));
+					siteDoIterador2 = (struct sSite*) frontList(listaSitesN);
+					if (siteDoIterador2->ehCat == '0' && encontrouPos == 0)
+						pushFrontList(listaSitesN, siteDoIterador);
+					else
+						insereProxIt(&it2, siteDoIterador);
+				}
+				else {
+					encontrouPos = 0;
+					iteraInicio(&it2);
+					do {
+						siteDoIterador2 = (struct sSite*) retornaItera(&it2);
+						if (strcmp(siteDoIterador2->nome, siteDoIterador->nome) > 0 || siteDoIterador2->ehCat == '0')
+							encontrouPos = 1;
+						else
+							iteraProximo(&it2);
+					} while (encontrouPos == 0 && !inicioIt(&it2));
+					siteDoIterador2 = (struct sSite*) backList(listaSitesN);
+					if (siteDoIterador2->ehCat == '1' && encontrouPos == 0)
+						pushBackList(listaSitesN, siteDoIterador);
+					else
+						insereAntIt(&it2, siteDoIterador);
+				}
+				//----------------------------
+				removeIt(&it);
+			}
+			else {
+				iteraProximo(&it);
+			}
+		} while (!emptyList(db->listaSites) && (!inicioIt(&it) || qtdLista != sizeList(db->listaSites)));
+	}
+
+	//se a lista da categoria (nome antigo) ficou vazia remove o arquivo antigo, caso contrário só atualiza o arquivo
+	if (emptyList(db->listaSites)) {
+		fSetaCaminhoArquivo(db, nomeArqCat, nomeA);
+		remove(nomeArqCat);
+	}
+	else {
+		 fEscreveArquivoCat(db, nomeA);
+	}
+
+	//escreve o arquivo novo da categoria
+	if (!emptyList(listaSitesN)) {
+		 db->listaSites = listaSitesN;
+		 fEscreveArquivoCat(db, cat->nome);
+	}
+
+	freeList(db->listaSites);
+	db->listaSites = listaSitesA;
+
+	return 0;
+
+}*/
+
+void fModifyCategory_atualizaCaminho(sBanco *db, sCat *cat, char *caminhoA, int criarNA) {
+
+	sSite *favorito;
+	sCat *catTemp;
+	sLista listaNA;
+	sIterador it;
+	char caminhoAntigo[TAMCAMINHO];
+	int qtdLista;
+
+	//preenche a lista dos favoritos da categoria
+	fPreencheListaSite(db, cat, 0);
+	listaNA = db->listaFavs;
+	db->listaFavs = criaLista(struct sSite);
+
+	//corrige a categoria dos favoritos da categoria
+	if (!emptyList(listaNA)) {
+		it = criaIt(listaNA);
+		do {
+			qtdLista = sizeList(listaNA);
+			favorito = (struct sSite*) retornaItera(&it);
+			if (strcmp(favorito->categoria, caminhoA) && criarNA) {
+				fInsereFavorito(db, *favorito);
+				removeIt(&it);
+			}
+			else {
+				strcpy(favorito->categoria, cat->caminho);
+			}
+			iteraProximo(&it);
+		} while ((!emptyList(listaNA) && (!inicioIt(&it) || qtdLista != sizeList(listaNA))));
+	}
+
+	//reescreve o(s) arquivo(s)
+	if (criarNA) {
+		fBuscaCat(db, caminhoA, &catTemp);
+		if (!emptyList(db->listaFavs))
+			fEscreveArquivoCat(db, catTemp->nome);
+		freeList(db->listaFavs);
+		db->listaFavs = listaNA;
+		fEscreveArquivoCat(db, cat->nome);
+	}
+	else {
+		freeList(db->listaFavs);
+		db->listaFavs = listaNA;
+		fEscreveArquivoCat(db, cat->nome);
+	}
+
+	//chama a mesma função para suas categorias
+	if (emptyList(cat->catFilhos))
+		return;
+	it = criaIt(cat->catFilhos);
+	do {
+		catTemp = (struct sCat*) retornaItera(&it);
+		strcpy(caminhoAntigo, caminhoA);
+		strcat(caminhoAntigo, "/");
+		strcat(caminhoAntigo, catTemp->nome);
+		strcpy(catTemp->caminho, cat->caminho);
+		strcat(catTemp->caminho, "/");
+		strcat(catTemp->caminho, catTemp->nome);
+		fModifyCategory_atualizaCaminho(db, catTemp, caminhoAntigo, 0);
 		iteraProximo(&it);
-	} while (encontrou == 0 && !inicioIt(&it));
-	*categoria3 = backList(categoria2->catFilhos);
-	if (nome)
-		strcpy((*categoria3)->nome, nome);
-	fEscreveLuof(db);
+	} while (!inicioIt(&it));
 
 }
 
 void fModifyCategory() {
 
-	sSite c, cNew;
-	sCat *categoria;//a categoria pai antiga
-	sCat *categoria2;//a categoria pai nova
-	sCat *categoria3;//a própria categoria que será modificada
+	sCat *cat, *catNew, c;//a própria categoria que será modificada
+	sCat *catPai;//a categoria pai antiga
+	sCat *catPai2;//a categoria pai nova
 	sBanco db;
-	char vBooleana = 'n', catTemp[TAMCAMINHO], caminhoA[TAMCAMINHO], caminhoN[TAMCAMINHO];
+	char catTemp[TAMCAMINHO], caminhoA[TAMCAMINHO], caminhoN[TAMCAMINHO];
 	int opcao, rBuscaFavorito = 0;
 
 	if (fInicializaDB(&db))
 		return;
 
-	if (fSetaCatCategoria(&c))
+	if (fSetaCatCategoria(&c)) {
+		fFinalizaDB(&db);
 		return;
-
-	if (strcmp(c.categoria, "/") == 0) {
-		if (emptyList(db.raiz)) {
-			printf(ERRO);
-			printf("Categoria pai vazia.\n");
-			fFinalizaDB(&db);
-			return;
-		}
-		strcpy(c.categoria, "luof");
-		db.listaSites = db.raiz;
-		categoria = db.listaCategorias;
-	}
-	else {
-		if (fBuscaCat(&db, c, &categoria)) {
-			fFinalizaDB(&db);
-			return;
-		}
-		if (fPreencheListaSite(&db, categoria)) {
-			fFinalizaDB(&db);
-			return;
-		}
-		if (emptyList(db.listaSites)) {
-			printf(ERRO);
-			printf("Categoria pai vazia.\n");
-			fFinalizaDB(&db);
-			return;
-		}
 	}
 
-	if (fSetaCatNome(&c))
+	if (fBuscaCat(&db, c.caminho, &catPai)) {
+		fFinalizaDB(&db);
 		return;
-	c.ehCat = '1';
+	}
 
-	if (!fBuscaFavorito(&db, &c)) {
+	if (fSetaCatNome(&c)) {
+		fFinalizaDB(&db);
+		return;
+	}
+
+	cat = fBuscaCatFilha(catPai, c.nome);
+	if (!cat) {
 		printf(ERRO);
 		printf("A categoria não existe para ser modificada.\n");
 		fFinalizaDB(&db);
@@ -213,183 +336,69 @@ void fModifyCategory() {
 		return;
 	}
 
-	//fecha os arquivos abertos e reabre eles
-	fFinalizaDB(&db);
-	if (fInicializaDB(&db))
-		return;
-
-	//guarda em sNew os dados antigos, para caso algum não seja alterado
-	strcpy(cNew.categoria, c.categoria);
-	strcpy(cNew.nome, c.nome);
-	strcpy(cNew.link, c.link);
-	strcpy(cNew.texto, c.texto);
-	cNew.ehCat = c.ehCat;
-	//seta a categoria antiga (se ainda não foi setada)
-	if (strcmp(c.categoria, "luof") != 0)
-		fBuscaCat(&db, c, &categoria);
-	else
-		categoria = db.listaCategorias;
-
 	//Pede os novos dados da categoria
 	printf(ANSI_BOLD_WHT "\nNovos dados:\n");
 
 	//pede a categoria pai
 	if (opcao == 1 || opcao == 3) {
-		if (fSetaCatCategoria(&cNew))
+		if (fSetaCatCategoria(&c)) {
+			fFinalizaDB(&db);
 			return;
-		if (strcmp(cNew.categoria, "/") == 0) {
-			strcpy(cNew.categoria, "luof");
-			categoria2 = db.listaCategorias;
 		}
-		else if (fBuscaCat(&db, cNew, &categoria2)) {
+		if (fBuscaCat(&db, c.caminho, &catPai2)) {
 			fFinalizaDB(&db);
 			return;
 		}
 	}
 	else {
-		categoria2 = categoria;
+		catPai2 = catPai;
 	}
 
-	//seta db.listaSites
-	if (strcmp(cNew.categoria, "luof") == 0)
-		db.listaSites = db.raiz;
-	else
-		fPreencheListaSite(&db, categoria2);
-
-	//pede a categoria
+	//pede o nome da categoria
 	if (opcao == 2 || opcao == 3) {
-		if (fSetaCatNome(&cNew))
+		if (fSetaCatNome(&c))
 			return;
 	}
-
-	//caminhoA é o caminho antigo dos favoritos pertencentes a categoria
-	fSetaCaminhoCategoria(caminhoA, c);
-
-	//caminhoN é o caminho novo dos favoritos pertencentes a categoria
-	fSetaCaminhoCategoria(caminhoN, cNew);
-
-	//seta categoria3 como a posição na árvore da categoria que está sendo modificada
-	strcpy(catTemp, c.categoria);
-	if (strcmp(c.categoria, "luof") == 0)
-		strcpy(c.categoria, c.nome);
-	else
-		fIncrementaCamCat(c.categoria, c.nome);
-	fBuscaCat(&db, c, &categoria3);
-	strcpy(c.categoria, catTemp);
+	catNew = fBuscaCatFilha(catPai2, c.nome);
+	if (catNew) {
+		printf(ERRO);
+		printf("Já existe uma categoria com o nome %s em %s, logo a modificação não pode ser concluída.\n", c.nome, c.caminho);
+		fFinalizaDB(&db);
+		return;
+	}
 
 	//verifica se a nova categoria pai não é ou pertence a uma subcategoria da categoria que será modificada
-	if (strlen(caminhoA) <= strlen(cNew.categoria) && strncmp(cNew.categoria, caminhoA, strlen(caminhoA)) == 0) {
+	if (strlen(cat->caminho) <= strlen(c.caminho) && strncmp(c.caminho, cat->caminho, strlen(c.caminho)) == 0) {
 		printf(ERRO);
 		printf("A nova categoria pai não pode ser ou pertencer a uma subcategoria da categoria que será modificada.\n");
 		fFinalizaDB(&db);
 		return;
 	}
 
-	if (strcmp(c.categoria, cNew.categoria) || strcmp(c.nome, cNew.nome)) {
-		rBuscaFavorito = fBuscaFavorito(&db, &cNew);
-		if (rBuscaFavorito) {
-			if (vBooleana != 's') {
-				printf(ERRO);
-				printf("Já existe outro favorito com esse nome e categoria.\n");
-				printf("Saindo...\n");
-				fFinalizaDB(&db);
-				return;
-			}
-		}
-	}
-
 	//se nada foi modificado
-	if (!strcmp(c.nome, cNew.nome) && !strcmp(c.categoria, cNew.categoria) && !strcmp(c.link, cNew.link) && !strcmp(c.texto, cNew.texto)) {
+	if (!strcmp(c.nome, cat->nome) && !strcmp(c.caminho, catPai->caminho)) {
 		printf(ANSI_BOLD_WHT "\nNão foi feito modificações.\n");
 		fFinalizaDB(&db);
 		return;
 	}
 
-	if (strcmp(c.categoria, cNew.categoria) && !strcmp(c.nome, cNew.nome)) {//se só a categoria será modificada
-
-		//se o arquivo das categorias pais (antiga e nova) for o mesmo
-		if (strcmp(categoria->nome, categoria2->nome) == 0) {
-			//modifica o favorito na listaSites da categoria pai
-			fModificaFavorito(&db, c, cNew, categoria2);
-		}
-		else {
-			//adiciona na listaSites da categoria pai nova
-			fAdicionaFavorito(&db, cNew, categoria2);
-
-			//seta db.listaSites com a os favoritos da nova antiga
-			if (strcmp(c.categoria, "luof") == 0)
-				db.listaSites = db.raiz;
-			else
-				fPreencheListaSite(&db, categoria);
-
-			//remove da listaSites da categoria pai antiga
-			fRemoveFavorito(&db, c, categoria);
-		}
-		
-		//muda categoria em todos os favoritos filhos
-		fMudaCaminhoCategoriaArvore(&db, categoria3, caminhoA, caminhoN);
-
-		//coloca a categoria na posição correta na árvore
-		fReposicionaCatArvore(&db, categoria, categoria2, &categoria3, NULL);
-
+	if (strcmp(c.nome, cat->nome) && !strcmp(c.caminho, catPai->caminho)) {//se só o nome da categoria foi modificado
+		strcpy(cat->nome, c.nome);
+		catNew = cat;
 	}
-	else if (!strcmp(c.categoria, cNew.categoria) && strcmp(c.nome, cNew.nome)) {//se só o nome será modificado
-
-		//fAtualizaNomeCatListaSitesPai(&db, categoria2, c, cNew);
-		fModificaFavorito(&db, c, cNew, categoria2);
-
-		//muda nome na árvore
-		strcpy(categoria3->nome, cNew.nome);
-		fEscreveLuof(&db);
-
-		//junta os favoritos das categorias
-		if (fSeparaArquivoCategoria(&db, caminhoA, categoria3, c.nome)) {
-			fFinalizaDB(&db);
-			return;
-		}
-
-		//muda categoria em todos os favoritos filhos
-		fMudaCaminhoCategoriaArvore(&db, categoria3, caminhoA, caminhoN);
-
+	else {
+		fRemoveCategoria(&db, cat);
+		fInsereCategoria(&db, catPai2, c);
+		catNew = fBuscaCatFilha(catPai2, c.nome);
 	}
-	else {//se tudo é modificado
+	if (!strcmp(c.caminho, catPai->caminho))
+		fModifyCategory_atualizaCaminho(&db, catNew, cat->caminho, 0);
+	else
+		fModifyCategory_atualizaCaminho(&db, catNew, cat->caminho, 1);
 
-		//coloca a categoria na posição correta na árvore e atualiza seu nome
-		fReposicionaCatArvore(&db, categoria, categoria2, &categoria3, cNew.nome);
-
-		//se o arquivo das categorias pais (antiga e nova) for o mesmo
-		if (strcmp(categoria->nome, categoria2->nome) == 0) {
-			//modifica o favorito na listaSites da categoria pai
-			fModificaFavorito(&db, c, cNew, categoria2);
-		}
-		else {
-			//adiciona na listaSites da categoria pai nova
-			fAdicionaFavorito(&db, cNew, categoria2);
-
-			//seta db.listaSites com a os favoritos da nova antiga
-			if (strcmp(c.categoria, "luof") == 0)
-				db.listaSites = db.raiz;
-			else
-				fPreencheListaSite(&db, categoria);
-
-			//remove da listaSites da categoria pai antiga
-			fRemoveFavorito(&db, c, categoria);
-		}
-
-		//cria um novo arquivo com o nome correto
-		if (fSeparaArquivoCategoria(&db, caminhoA, categoria3, c.nome)) {
-			fFinalizaDB(&db);
-			return;
-		}
-
-		//muda categoria em todos os favoritos filhos
-		fMudaCaminhoCategoriaArvore(&db, categoria3, caminhoA, caminhoN);
-
-	}
-
+	fEscreveLuof(&db);
 	fFinalizaDB(&db);
 
-	printf(ANSI_BOLD_WHT "\nFavorito modificado com sucesso.\n");
+	printf(ANSI_BOLD_WHT "\nCategoria modificada com sucesso.\n");
 
 }
-*/

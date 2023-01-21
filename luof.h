@@ -38,7 +38,6 @@ typedef struct sSite {
 	char categoria[TAMCAMINHO];
 	char link[TAMLINKARQ];
 	char texto[TAMTEXTO];
-	//char ehCat;
 } sSite;
 
 typedef struct sCat {
@@ -51,10 +50,8 @@ typedef struct sCat {
 
 typedef struct sBanco {
 	char caminhoDB[TAMLINKARQ];
-	sCat *arvoreCats;//era chamaddo *listaCategorias;
+	sCat *arvoreCats;
 	sLista listaFavs;
-	//sLista raiz;
-	//FILE *aLuof;
 } sBanco;
 
 // --- Protótipo das funções ---
@@ -67,8 +64,6 @@ int fSetaSiteLink(sSite *s);
 int fSetaSiteTexto(sSite *s);
 int fSetaCatCategoria(sCat *cat);
 int fSetaCatNome(sCat *cat);
-/*int fSeparaArquivoCategoria(sBanco *db, char categoria[], sCat *cat, char nomeA[]);
-void fMudaCaminhoCategoriaArvore(sBanco *db, sCat *cat, char *caminhoA, char *caminhoN);*/
 
 //dbluof
 int fInicializaDB(sBanco *db);
@@ -129,8 +124,9 @@ void fRemoveCategory();
 
 //modify
 void fModifyBookmark();
-//void fReposicionaCatArvore(sBanco *db, sCat *categoria, sCat *categoria2, sCat **categoria3, char *nome);
-//void fModifyCategory();
+//int fSeparaArquivoCategoria(sBanco *db, char categoria[], sCat *cat, char nomeA[]);
+void fModifyCategory_atualizaCaminho(sBanco *db, sCat *cat, char *caminhoA);
+void fModifyCategory();
 
 //list
 void fListCategory(int opcao);
