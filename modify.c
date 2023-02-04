@@ -233,7 +233,7 @@ void fModifyCategory_atualizaCaminho(sBanco *db, sCat *cat, char *caminhoA, int 
 	sLista listaNA;
 	sIterador it;
 	char caminhoAntigo[TAMCAMINHO];
-	int qtdLista;
+	long qtdLista;
 
 	//preenche a lista dos favoritos da categoria
 	fPreencheListaSite(db, cat, 0);
@@ -246,23 +246,30 @@ void fModifyCategory_atualizaCaminho(sBanco *db, sCat *cat, char *caminhoA, int 
 		do {
 			qtdLista = sizeList(listaNA);
 			favorito = (struct sSite*) retornaItera(&it);
+			printf("%ld %s %s %s.\n", sizeList(listaNA), cat->caminho, caminhoA, favorito->categoria);
+			//caso o favorito verificado não seja da categoria modificada, e deva ser criado um novo arquivo
 			if (strcmp(favorito->categoria, caminhoA) && criarNA) {
 				fInsereFavorito(db, *favorito);
 				removeIt(&it);
 			}
 			else {
-				strcpy(favorito->categoria, cat->caminho);
+				//caso não deva ser criado um novo arquivo e o favorito verificado seja da categoria modificada
+				if (!strcmp(favorito->categoria, caminhoA))
+					strcpy(favorito->categoria, cat->caminho);
+				iteraProximo(&it);
 			}
-			iteraProximo(&it);
 		} while ((!emptyList(listaNA) && (!inicioIt(&it) || qtdLista != sizeList(listaNA))));
 	}
 
 	//reescreve o(s) arquivo(s)
-	if (criarNA) {
-		fBuscaCat(db, caminhoA, &catTemp);
-		if (!emptyList(db->listaFavs))
+	if (criarNA) {//se deve ser criado um novo arquivo (modificado o nome da categoria)
+		//escreve os favoritos das outras categorias que estão no mesmo arquivo
+		if (!emptyList(db->listaFavs)) {
+			fBuscaCat(db, ((sSite*)backList(db->listaFavs))->categoria, &catTemp);
 			fEscreveArquivoCat(db, catTemp->nome);
+		}
 		freeList(db->listaFavs);
+		//escreve os favoritos da categoria modificada
 		db->listaFavs = listaNA;
 		fEscreveArquivoCat(db, cat->nome);
 	}
@@ -284,6 +291,7 @@ void fModifyCategory_atualizaCaminho(sBanco *db, sCat *cat, char *caminhoA, int 
 		strcpy(catTemp->caminho, cat->caminho);
 		strcat(catTemp->caminho, "/");
 		strcat(catTemp->caminho, catTemp->nome);
+		printf("%s %s.", cat->caminho, catTemp->caminho);
 		fModifyCategory_atualizaCaminho(db, catTemp, caminhoAntigo, 0);
 		iteraProximo(&it);
 	} while (!inicioIt(&it));
@@ -382,19 +390,23 @@ void fModifyCategory() {
 		return;
 	}
 
+	strcpy(caminhoA, cat->caminho);
 	if (strcmp(c.nome, cat->nome) && !strcmp(c.caminho, catPai->caminho)) {//se só o nome da categoria foi modificado
 		strcpy(cat->nome, c.nome);
 		catNew = cat;
 	}
 	else {
-		fRemoveCategoria(&db, cat);
 		fInsereCategoria(&db, catPai2, c);
 		catNew = fBuscaCatFilha(catPai2, c.nome);
+		freeList(catNew->catFilhos);
+		catNew->catFilhos = cat->catFilhos;
+		cat->catFilhos = NULL;
+		fRemoveCategoria(&db, cat);
 	}
-	if (!strcmp(c.caminho, catPai->caminho))
-		fModifyCategory_atualizaCaminho(&db, catNew, cat->caminho, 0);
+	if (!strcmp(c.nome, cat->nome))
+		fModifyCategory_atualizaCaminho(&db, catNew, caminhoA, 0);
 	else
-		fModifyCategory_atualizaCaminho(&db, catNew, cat->caminho, 1);
+		fModifyCategory_atualizaCaminho(&db, catNew, caminhoA, 1);
 
 	fEscreveLuof(&db);
 	fFinalizaDB(&db);

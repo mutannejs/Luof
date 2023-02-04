@@ -95,6 +95,8 @@ void* frontList(sLista l) {
 }
 
 int emptyList(sLista l) {
+	if (!l)
+		return -1;
 	if (l->qtd == 0)
 		return 1;
 	else
@@ -106,6 +108,8 @@ long sizeList(sLista l) {
 }
 
 void freeList(sLista l) {
+	if (!l)
+		return;
 	while (popBackList(l));
 	free(l->sentinela);
 }
