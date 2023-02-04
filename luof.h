@@ -125,7 +125,7 @@ void fRemoveCategory();
 //modify
 void fModifyBookmark();
 //int fSeparaArquivoCategoria(sBanco *db, char categoria[], sCat *cat, char nomeA[]);
-void fModifyCategory_atualizaCaminho(sBanco *db, sCat *cat, char *caminhoA, int criarNA);
+void fModifyCategory_atualizaCaminho(sBanco *db, sCat *cat, char *caminhoA, char *nomeA);
 void fModifyCategory();
 
 //list
