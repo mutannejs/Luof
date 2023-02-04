@@ -320,6 +320,8 @@ void fModifyCategory() {
 	//coloca a categoria na posição correta da árvore, ou apenas modifica seu nome
 	if (strcmp(c.nome, cat->nome) && !strcmp(c.caminho, catPai->caminho)) {//se só o nome da categoria foi modificado
 		strcpy(cat->nome, c.nome);
+		strcpy(cat->caminho, cat->catPai->caminho);
+		fSetaCaminhoCategoria(cat->caminho, c.nome);
 		catNew = cat;
 	}
 	else {//se o caminho mudou
