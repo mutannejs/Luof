@@ -96,8 +96,8 @@ void printaSite(sSite s);
 void printaColorido();
 void fTeste();
 
-//menu
-//void fMenu();
+//main
+void fMenu();
 void fFree();
 
 //help
@@ -107,8 +107,8 @@ void fHelp_ab();
 void fHelp_ac();
 void fHelp_rb();
 void fHelp_rc();
-void fHelp_lt();
 void fHelp_lc(int opcao);
+void fHelp_lt(int opcao);
 void fHelp_mb();
 void fHelp_mc();
 void fHelp_backup();

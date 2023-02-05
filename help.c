@@ -88,6 +88,11 @@ void fHelp_private() {
 	"\tUse para ver todas as categorias e favoritos que estão armazenados. Os dados serão"
 	" mostrados em forma de árvore, obedecendo à hierarquia das categorias.\n\n"
 
+	ANSI_BOLD_YEL "\t-lts\tou   --list-tree-short:\n"
+	ANSI_COLOR_WHT
+	"\tUse para ver todas as categorias que estão armazenadas. Os dados serão"
+	" mostrados em forma de árvore, obedecendo à hierarquia das categorias.\n\n"
+
 	ANSI_BOLD_YEL "\t--backup:\n"
 	ANSI_COLOR_WHT
 	"\tUse para criar ou restaurar um backup. Informe a opção desejada, se for [1]criar,"
@@ -280,37 +285,63 @@ void fHelp_lc(int opcao) {
 	}
 }
 
-void fHelp_lt() {
-	printf(
-	ANSI_BOLD_WHT "luof:" ANSI_BOLD_YEL "\t-lt\tou   --list-tree:\n\n"
-	ANSI_COLOR_WHT
-	"\tUse para ver todas as categorias e favoritos que estão armazenados. Os dados serão"
-	" mostrados em forma de árvore, obedecendo à hierarquia das categorias, onde as categorias"
-	" serão mostradas com um apóstrofo (*) antes de seu nome.\n"
-	"\tAlém de mostrar uma visão de tudo que está armazenado, serve principalmente para saber"
-	" o caminho (categoria e/ou nome) de algo específico.\n\n"
-	ANSI_BOLD_WHT "Ex:"
-	ANSI_COLOR_WHT " Caso o comando \"luof -lt\" gerasse a saída:\n"
-	ANSI_BOLD_CYA "|_ * Jogos\n"
-	"|    |_ * steam\n"
-	"|         |_ * Dark Souls\n"
-	"|         |    |_ ds2 sotfs\n"
-	"|         |    |_ dsr\n"
-	"|_ ilovepdf\n"
-	"|_ randoma11y\n\n"
-	ANSI_COLOR_WHT "\tPoderia-se concluir que o caminho do favorito \"dsr\" é \"Jogos/steam/Dark Souls/dsr\","
-	" e caso quisesse-se removê-lo, os dados informados teriam que ser:\n"
-	ANSI_BOLD_CYA "Categoria : " ANSI_COLOR_BLU "Jogos/steam/Dark Souls\n"
-	ANSI_BOLD_CYA "Nome      : " ANSI_COLOR_BLU "dsr\n\n"
-	ANSI_COLOR_WHT "\tDa mesma forma, se se quisesse remover o favorito \"ilovepdf\" ou a categoria \"steam\","
-	" os dados informados teriam que ser:\n"
-	"\tPara o favorito \"ilovepdf\"\n"
-	ANSI_BOLD_CYA "Categoria : " ANSI_COLOR_BLU "/\n"
-	ANSI_BOLD_CYA "Nome      : " ANSI_COLOR_BLU "ilovepdf\n\n"
-	ANSI_COLOR_WHT "\tPara a categoria \"steam\"\n"
-	ANSI_BOLD_CYA "Categoria pai     : " ANSI_COLOR_BLU "Jogos\n"
-	ANSI_BOLD_CYA "Nome da categoria : " ANSI_COLOR_BLU "steam\n\n"
-	);
+void fHelp_lt(int opcao) {
+	if (opcao == 0) {
+		printf(
+		ANSI_BOLD_WHT "luof:" ANSI_BOLD_YEL "\t-lt\tou   --list-tree:\n\n"
+		ANSI_COLOR_WHT
+		"\tUse para ver todas as categorias e favoritos que estão armazenados. Os dados serão"
+		" mostrados em forma de árvore, obedecendo à hierarquia das categorias, onde as categorias"
+		" serão mostradas com um apóstrofo (*) antes de seu nome.\n"
+		"\tAlém de mostrar uma visão de tudo que está armazenado, serve principalmente para saber"
+		" o caminho (categoria e/ou nome) de algo específico.\n\n"
+		ANSI_BOLD_WHT "Ex:"
+		ANSI_COLOR_WHT " Caso o comando \"luof -lt\" gerasse a saída:\n"
+		ANSI_BOLD_CYA "|_ * Jogos\n"
+		"|    |_ * steam\n"
+		"|         |_ * Dark Souls\n"
+		"|         |    |_ ds2 sotfs\n"
+		"|         |    |_ dsr\n"
+		"|_ ilovepdf\n"
+		"|_ randoma11y\n\n"
+		ANSI_COLOR_WHT "\tPoderia-se concluir que o caminho do favorito \"dsr\" é \"Jogos/steam/Dark Souls/dsr\","
+		" e caso quisesse-se removê-lo, os dados informados teriam que ser:\n"
+		ANSI_BOLD_CYA "Categoria : " ANSI_COLOR_BLU "Jogos/steam/Dark Souls\n"
+		ANSI_BOLD_CYA "Nome      : " ANSI_COLOR_BLU "dsr\n\n"
+		ANSI_COLOR_WHT "\tDa mesma forma, se se quisesse remover o favorito \"ilovepdf\" ou a categoria \"steam\","
+		" os dados informados teriam que ser:\n"
+		"\tPara o favorito \"ilovepdf\"\n"
+		ANSI_BOLD_CYA "Categoria : " ANSI_COLOR_BLU "/\n"
+		ANSI_BOLD_CYA "Nome      : " ANSI_COLOR_BLU "ilovepdf\n\n"
+		ANSI_COLOR_WHT "\tPara a categoria \"steam\"\n"
+		ANSI_BOLD_CYA "Categoria pai     : " ANSI_COLOR_BLU "Jogos\n"
+		ANSI_BOLD_CYA "Nome da categoria : " ANSI_COLOR_BLU "steam\n\n"
+		);
+	}
+	else {
+		printf(
+		ANSI_BOLD_WHT "luof:" ANSI_BOLD_YEL "\t-lts\tou   --list-tree-short:\n\n"
+		ANSI_COLOR_WHT
+		"\tUse para ver todas as categorias que estão armazenadas. Os dados serão"
+		" mostrados em forma de árvore, obedecendo à hierarquia das categorias.\n"
+		"\tAlém de mostrar uma visão de todas as categoria do banco, serve principalmente para saber"
+		" o caminho de algo específico.\n\n"
+		ANSI_BOLD_WHT "Ex:"
+		ANSI_COLOR_WHT " Caso o comando \"luof -lts\" gerasse a saída:\n"
+		ANSI_BOLD_CYA "|_ * Jogos\n"
+		"|    |_ * steam\n"
+		"|         |_ * Dark Souls\n"
+		"|_ * séries\n"
+		"     |_ * Netflix\n"
+		"     |_ * TV\n"
+		"          |_ * Comédia\n"
+		"          |_ * Romance\n\n"
+		ANSI_COLOR_WHT "\tCaso quisesse-se listar uma categoria, poderia ser usado como base o resultado dessa"
+		" pesquisa, que diferentemente de -lt mostraria apenas o que de fato interessa, as categorias. Se"
+		" por exemplo, quisesse-se saber os favoritos da categoria \"Dark Souls\", basta entrar com:"
+		" \"Jogos/steam/Dark Souls\" quando requisitado a categoria.\n\n"
+		);
+	}
 }
 
 void fHelp_backup() {
@@ -386,7 +417,10 @@ void fHelp(char *argv) {
 		fHelp_lc(1);
 	}
 	else if (strcmp(argv, "-lt") == 0 || strcmp(argv, "--list-tree") == 0) {
-		fHelp_lt();
+		fHelp_lt(0);
+	}
+	else if (strcmp(argv, "-lts") == 0 || strcmp(argv, "--list-tree-short") == 0) {
+		fHelp_lt(1);
 	}
 	else if (strcmp(argv, "--backup") == 0) {
 		fHelp_backup();

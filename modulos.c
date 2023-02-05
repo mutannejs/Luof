@@ -33,7 +33,7 @@ int fSetaSiteCategoria(sSite *s) {
 	} while (isspace(c));
 
 	do {
-		if (cont == 1 && s->categoria[0] == '/') {
+		if (cont == 1 && s->categoria[0] == '/' && !isspace(c)) {
 			cont--;
 		}
 		else if (cont == TAMCAMINHO - 1) {
@@ -45,9 +45,13 @@ int fSetaSiteCategoria(sSite *s) {
 		cont++;
 		c = getchar();
 	} while (c != '\n');
+
+	while (isspace(s->categoria[cont-1]))
+		cont--;
+	while (cont > 1 && s->categoria[cont-1] == '/')
+		cont--;
+
 	s->categoria[cont] = '\0';
-	if (cont > 1 && s->categoria[cont-1] == '/')
-		s->categoria[cont-1] = '\0';
 
 	return 0;
 
@@ -74,6 +78,10 @@ int fSetaSiteNome(sSite *s) {
 		cont++;
 		c = getchar();
 	} while (c != '\n');
+
+	while (isspace(s->nome[cont-1]))
+		cont--;
+
 	s->nome[cont] = '\0';
 
 	return 0;
@@ -101,6 +109,10 @@ int fSetaSiteLink(sSite *s) {
 		cont++;
 		c = getchar();
 	} while (c != '\n');
+
+	while (isspace(s->link[cont-1]))
+		cont--;
+
 	s->link[cont] = '\0';
 
 	return 0;
@@ -128,6 +140,10 @@ int fSetaSiteTexto(sSite *s) {
 		cont++;
 		c = getchar();
 	} while (c != '\n');
+
+	while (isspace(s->texto[cont-1]))
+		cont--;
+
 	s->texto[cont] = '\0';
 
 	return 0;
@@ -146,7 +162,7 @@ int fSetaCatCategoria(sCat *cat) {
 	} while (isspace(c));
 
 	do {
-		if (cont == 1 && cat->caminho[0] == '/') {
+		if (cont == 1 && cat->caminho[0] == '/' && !isspace(c)) {
 			cont--;
 		}
 		else if (cont == TAMCAMINHO - 1) {
@@ -158,9 +174,13 @@ int fSetaCatCategoria(sCat *cat) {
 		cont++;
 		c = getchar();
 	} while (c != '\n');
+
+	while (isspace(cat->caminho[cont-1]))
+		cont--;
+	while (cont > 1 && cat->caminho[cont-1] == '/')
+		cont--;
+
 	cat->caminho[cont] = '\0';
-	if (cont > 1 && cat->caminho[cont-1] == '/')
-		cat->caminho[cont-1] = '\0';
 
 	return 0;
 
@@ -192,6 +212,10 @@ int fSetaCatNome(sCat *cat) {
 		cont++;
 		c = getchar();
 	} while (c != '\n');
+
+	while (isspace(cat->nome[cont-1]))
+		cont--;
+
 	cat->nome[cont] = '\0';
 
 	return 0;

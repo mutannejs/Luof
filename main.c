@@ -4,11 +4,8 @@ int main(int argc, char *argv[]) {
 
 	//fTeste();
 
-	/*if (argc == 1) {
-		fMenu();
-	}*/
 	if (argc == 1) {
-		return 0;
+		fMenu();
 	}
 	else if (strcmp(argv[1], "-h") == 0 || strcmp(argv[1], "--help") == 0) {
 		if (argc > 2)
@@ -63,7 +60,7 @@ int main(int argc, char *argv[]) {
 
 }
 
-/*void fMenu() {
+void fMenu() {
 
 	sBanco db;
 	int opcao;
@@ -83,18 +80,19 @@ int main(int argc, char *argv[]) {
 	ANSI_BOLD_WHT "7." ANSI_COLOR_WHT "  Listar uma categoria\n"
 	ANSI_BOLD_WHT "8." ANSI_COLOR_WHT "  Listar uma categoria de modo resumido\n"
 	ANSI_BOLD_WHT "9." ANSI_COLOR_WHT "  Ver a árvore de categorias e favoritos\n"
-	ANSI_BOLD_WHT "10." ANSI_COLOR_WHT " Criar ou restaurar um backup\n"
-	ANSI_BOLD_WHT "11." ANSI_COLOR_WHT " Exportar uma categoria\n"
-	ANSI_BOLD_WHT "12." ANSI_COLOR_WHT " Ver um manual de como usar o Luof\n"
-	ANSI_BOLD_WHT "13." ANSI_COLOR_WHT " Sair\n\n"
+	ANSI_BOLD_WHT "10." ANSI_COLOR_WHT " Ver a árvore de categorias\n"
+	ANSI_BOLD_WHT "11." ANSI_COLOR_WHT " Criar ou restaurar um backup\n"
+	ANSI_BOLD_WHT "12." ANSI_COLOR_WHT " Exportar uma categoria\n"
+	ANSI_BOLD_WHT "13." ANSI_COLOR_WHT " Ver um manual de como usar o Luof\n"
+	ANSI_BOLD_WHT "14." ANSI_COLOR_WHT " Sair\n\n"
 	ANSI_BOLD_WHT "Opção: " ANSI_COLOR_GRA
 	);
 
 	do {
 		scanf(" %d", &opcao);
-		if (opcao < 1 || opcao > 13)
+		if (opcao < 1 || opcao > 14)
 			printf(ANSI_BOLD_WHT "\nDigite apenas valores válidos.\nOpção: " ANSI_COLOR_GRA);
-	} while (opcao < 1 || opcao > 13);
+	} while (opcao < 1 || opcao > 14);
 	printf("\n");
 
 	switch (opcao) {
@@ -114,20 +112,21 @@ int main(int argc, char *argv[]) {
 					break;
 		case 8 :	fListCategory(1);
 					break;
-		case 9 :	fListTree();
+		case 9 :	fListTree(0);
 					break;
-		case 10 :	fBackup();
+		case 10:	fListTree(1);
 					break;
-		case 11:	fExport();
+		case 11:	fBackup();
 					break;
-		case 12:	fHelp(NULL);
+		case 12:	fExport();
+					break;
+		case 13:	fHelp(NULL);
 					break;
 		default :	printf(ANSI_BOLD_WHT "Saindo...\n");
 					break;
 	};
 
 }
-*/
 
 void fFree() {
 
