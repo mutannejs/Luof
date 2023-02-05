@@ -101,7 +101,7 @@ void fTeste();
 void fFree();
 
 //help
-/*void fHelp_private();
+void fHelp_private();
 void fHelp_h();
 void fHelp_ab();
 void fHelp_ac();
@@ -113,7 +113,7 @@ void fHelp_mb();
 void fHelp_mc();
 void fHelp_backup();
 void fHelp_export();
-void fHelp(char *argv);*/
+void fHelp(char *argv);
 
 //add-remove
 void fAddBookmark();
@@ -124,7 +124,6 @@ void fRemoveCategory();
 
 //modify
 void fModifyBookmark();
-//int fSeparaArquivoCategoria(sBanco *db, char categoria[], sCat *cat, char nomeA[]);
 void fModifyCategory_atualizaCaminho(sBanco *db, sCat *cat, char *caminhoA, char *nomeA);
 void fModifyCategory();
 

@@ -6,15 +6,15 @@ int main(int argc, char *argv[]) {
 
 	/*if (argc == 1) {
 		fMenu();
+	}*/
+	if (argc == 1) {
+		return 0;
 	}
 	else if (strcmp(argv[1], "-h") == 0 || strcmp(argv[1], "--help") == 0) {
 		if (argc > 2)
 			fHelp(argv[2]);
 		else
 			fHelp(NULL);
-	}*/
-	if (argc == 1) {
-		return 0;
 	}
 	else if (strcmp(argv[1], "-ab") == 0 || strcmp(argv[1], "--add-bookmark") == 0) {
 		fAddBookmark();
