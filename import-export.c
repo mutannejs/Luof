@@ -114,3 +114,179 @@ void fExport() {
 	printf("\nExport criado com sucesso.\n");
 
 }
+
+sSite fImport_setaFavorito(char *linha, char *categoria) {
+
+	sSite s;
+	int fase = 0;
+
+	//seta a categoria e o texto do site
+	strcpy(s.categoria, categoria);
+	strcpy(s.texto, "Favorito importado.");
+
+	//encontra e guarda o nome do favorito
+	for (int i = 0, j = 0; fase < 5; i++) {
+		if (fase == 2) {
+			if (linha[i] == '\"') {
+				s.link[j] = '\0';
+				j = 0;
+				fase++;
+			}
+			else {
+				s.link[j] = linha[i];
+				j++;
+			}
+		}
+		else if (fase == 4) {
+			if (linha[i] == '<') {
+				s.nome[j] = '\0';
+				j = 0;
+				fase++;
+			}
+			else {
+				s.nome[j] = linha[i];
+				j++;
+			}
+		}
+		else if (linha[i] == '>') {
+			fase++;
+		}
+		else if (strncmp(&linha[i], "HREF=\"", 6) == 0) {
+			fase++;
+			i += 5;
+		}
+	}
+
+	return s;
+
+}
+
+void fImport_fav(sBanco *db, FILE *arqImport, sCat *cat) {
+
+	sSite s, *favorito;
+	sLista listaTemp;
+	sIterador it;
+	char linhaArq[TAMFAVSIMP], *linha;
+
+	//cria uma lista para inserir os favoritos temporiariamente
+	listaTemp = criaLista(struct sSite);
+
+	do {
+
+		//lê uma linha e tira seus espaços iniciais
+		fgets(linhaArq, TAMFAVSIMP, arqImport);
+		linha = linhaArq;
+		while (isspace(linha[0]))
+			linha++;
+
+		if (strncmp(linha, "<DT><H", 6) == 0) {//a linha é uma subpasta
+			fImport_cat(db, arqImport, cat, linha);
+		}
+		else if (strncmp(linha, "<DT><A", 6) == 0) {//a linha é um favorito
+			s = fImport_setaFavorito(linha, cat->caminho);
+			pushFrontList(listaTemp, &s);
+		}
+
+	} while (strncmp(linha, "</DL>", 5) != 0);
+
+	//escreve os favoritos da listaTemp na categoria
+	fPreencheListaSite(db, cat, 0);
+	while (!emptyList(listaTemp)) {
+		favorito = backList(listaTemp);
+		if (!fBuscaFavorito(db, favorito))
+			fInsereFavorito(db, *favorito);
+		popBackList(listaTemp);
+	}
+	fEscreveArquivoCat(db, cat->nome);
+	freeList(listaTemp);
+
+}
+
+void fImport_cat(sBanco *db, FILE *arqImport, sCat *cat, char *linha) {
+
+	sCat c, *catFilha;
+
+	//encontra e guarda o nome da categoria
+	// i conta os caracteres da linha
+	// j conta a quantidade de '>'
+	// k conta os caracteres de c.nome
+	for (int i = 0, j = 0, k = 0; j < 3; i++) {
+		if (linha[i] == '>') {
+			j++;
+		}
+		else if (j == 2) {
+			if (linha[i] == '<') {
+				c.nome[k] = '\0';
+				j++;
+			}
+			else {
+				c.nome[k] = linha[i];
+				k++;
+			}
+		}
+	}
+	//lê o pŕoximo <DL><p>
+	fgets(linha, TAMFAVSIMP, arqImport);
+
+	//cria uma categoria, ou seta uma já criada com o mesmo nome. Com base em cat e c.nome
+	catFilha = fBuscaCatFilha(cat, c.nome);
+	if (!catFilha) {
+		fInsereCategoria(db, cat, c);
+		catFilha = fBuscaCatFilha(cat, c.nome);
+	}
+
+	//guarda seus favoritos e subcategorias
+	fImport_fav(db, arqImport, catFilha);
+
+}
+
+void fImport() {
+
+	sCat *cat, c;
+	sBanco db;
+	char caminhoImport[TAMLINKARQ], linhaArq[TAMFAVSIMP];
+	FILE *arqImport;
+
+	if (fInicializaDB(&db))
+		return;
+
+	//pede ao usuário o caminho do backup
+	printf(ANSI_BOLD_WHT "Informe o caminho do arquivo de import: " ANSI_COLOR_GRA);
+	scanf(" %[^\n]", caminhoImport);
+
+	//abre o arquivo
+	arqImport = fopen(caminhoImport, "r");
+
+	//retorna mensagem de erro e encerra
+	if (!arqImport) {
+		printf(ERRO);
+		printf("Erro ao tentar abrir o arquivo de import.\n");
+		printf("Saindo...\n");
+		fFinalizaDB(&db);
+		return;
+	}
+
+	if (fSetaCatCategoria(&c)) {
+		fFinalizaDB(&db);
+		return;
+	}
+	if (fBuscaCat(&db, c.caminho, &cat)) {
+		fFinalizaDB(&db);
+		return;
+	}
+
+	//lê o arquivo até <DL><p>
+	while (fgets(linhaArq, 9, arqImport) != NULL && strncmp(linhaArq, "<DL><p>", 7) != 0) {}
+
+	//chama a recursão para os favoritos do import
+	if (strncmp(linhaArq, "</DL>", 5) != 0) {
+		fImport_fav(&db, arqImport, cat);
+	}
+
+	//fecha os arquivo e retorna sucesso
+	fclose(arqImport);
+	fEscreveLuof(&db);
+	fFinalizaDB(&db);
+	printf(ANSI_BOLD_WHT "\nImport feito com sucesso.\n");
+
+}

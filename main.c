@@ -49,6 +49,9 @@ int main(int argc, char *argv[]) {
 	else if (strcmp(argv[1], "--export") == 0) {
 		fExport();
 	}
+	else if (strcmp(argv[1], "--import") == 0) {
+		fImport();
+	}
 	else if (strcmp(argv[1], "--free") == 0) {
 		fFree();
 	}
@@ -83,16 +86,17 @@ void fMenu() {
 	ANSI_BOLD_WHT "10." ANSI_COLOR_WHT " Ver a árvore de categorias\n"
 	ANSI_BOLD_WHT "11." ANSI_COLOR_WHT " Criar ou restaurar um backup\n"
 	ANSI_BOLD_WHT "12." ANSI_COLOR_WHT " Exportar uma categoria\n"
-	ANSI_BOLD_WHT "13." ANSI_COLOR_WHT " Ver um manual de como usar o Luof\n"
-	ANSI_BOLD_WHT "14." ANSI_COLOR_WHT " Sair\n\n"
+	ANSI_BOLD_WHT "13." ANSI_COLOR_WHT " Importar favoritos\n"
+	ANSI_BOLD_WHT "14." ANSI_COLOR_WHT " Ver um manual de como usar o Luof\n"
+	ANSI_BOLD_WHT "15." ANSI_COLOR_WHT " Sair\n\n"
 	ANSI_BOLD_WHT "Opção: " ANSI_COLOR_GRA
 	);
 
 	do {
 		scanf(" %d", &opcao);
-		if (opcao < 1 || opcao > 14)
+		if (opcao < 1 || opcao > 15)
 			printf(ANSI_BOLD_WHT "\nDigite apenas valores válidos.\nOpção: " ANSI_COLOR_GRA);
-	} while (opcao < 1 || opcao > 14);
+	} while (opcao < 1 || opcao > 15);
 	printf("\n");
 
 	switch (opcao) {
@@ -120,7 +124,9 @@ void fMenu() {
 					break;
 		case 12:	fExport();
 					break;
-		case 13:	fHelp(NULL);
+		case 13:	fImport();
+					break;
+		case 14:	fHelp(NULL);
 					break;
 		default :	printf(ANSI_BOLD_WHT "Saindo...\n");
 					break;

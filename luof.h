@@ -14,6 +14,7 @@
 #define TAMCAMINHO 1000//tamanho caminho da categoria
 #define TAMLINKARQ 2100//tamanho de links e de arquivos
 #define TAMTEXTO 3000//tamanho texto
+#define TAMFAVSIMP 10000//tamanho favoritos importados
 
 #define ANSI_COLOR_RED "\x1b[0;31m"
 #define ANSI_COLOR_GRA "\x1b[0;37m"
@@ -143,5 +144,9 @@ void fBackup();
 //import-export
 void fExport_private(sBanco *db, FILE *arqExport, sCat *cat, int hierarquia);
 void fExport();
+sSite fImport_setaFavorito(char *linha, char *categoria);
+void fImport_fav(sBanco *db, FILE *arqImport, sCat *cat);
+void fImport_cat(sBanco *db, FILE *arqImport, sCat *cat, char *linha);
+void fImport();
 
 #endif
