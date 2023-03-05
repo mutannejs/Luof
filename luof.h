@@ -114,6 +114,7 @@ void fHelp_mb();
 void fHelp_mc();
 void fHelp_backup();
 void fHelp_export();
+void fHelp_import();
 void fHelp(char *argv);
 
 //add-remove

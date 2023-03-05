@@ -103,6 +103,10 @@ void fHelp_private() {
 	ANSI_BOLD_YEL "\t--export:\n"
 	ANSI_COLOR_WHT
 	"\tUse para exportar uma categoria do luof para ser importada em um browser.\n\n"
+
+	ANSI_BOLD_YEL "\t--import:\n"
+	ANSI_COLOR_WHT
+	"\tUse para importar favoritos exportados de outro browser.\n\n"
 	);
 }
 
@@ -376,11 +380,27 @@ void fHelp_export() {
 	" export possui a extensão .html e nome \"bookmarks-luof\", podendo ter um número"
 	" após caso já exista um arquivo de export (este não será perdido) no diretório atual,"
 	" o mesmo no qual será armazenado o novo arquivo de export.\n\n"
-	ANSI_BOLD_WHT "Ex:\n"
+	ANSI_BOLD_WHT "Ex:"
 	ANSI_COLOR_WHT " Caso quisesse-se exportar a categoria \"Jogos\" e não exista nenhum arquivo exportado no diretório atual:\n"
 	ANSI_BOLD_CYA "Categoria : " ANSI_COLOR_BLU "Jogos\n\n"
 	ANSI_BOLD_CYA "Arquivo bookmarks-luof.html adicionado no diretório atual.\n"
 	"Export criado com sucesso.\n\n"
+	);
+}
+
+void fHelp_import() {
+	printf(
+	ANSI_BOLD_WHT "luof:" ANSI_BOLD_YEL "\t--import:\n\n"
+	ANSI_COLOR_WHT
+	"\tUse para importar favoritos exportados de outro browser para dentro de uma"
+	" categoria. É necessário informar o caminho do arquivo gerado pelo browser, e"
+	" a categoria onde os favoritos serão inseridos.\n\n"
+	ANSI_BOLD_WHT "Ex:"
+	ANSI_COLOR_WHT " Caso quisesse-se importar o arquivo \"bookmarks.html\" localizado no"
+	" diretório atual para dentro da categoria \"Jogos\":\n"
+	ANSI_BOLD_CYA "Informe o caminho do arquivo de import: " ANSI_COLOR_BLU "bookmarks.html\n"
+	ANSI_BOLD_CYA "Categoria pai: " ANSI_COLOR_BLU "Jogos\n\n"
+	ANSI_BOLD_CYA "Import feito com sucesso.\n\n"
 	);
 }
 
@@ -427,6 +447,9 @@ void fHelp(char *argv) {
 	}
 	else if (strcmp(argv, "--export") == 0) {
 		fHelp_export();
+	}
+	else if (strcmp(argv, "--import") == 0) {
+		fHelp_import();
 	}
 	else {
 		printf(ERRO2);
