@@ -6,13 +6,17 @@ int fInicializaDB(sBanco *db) {
 	struct stat st;
 	FILE *aLuof, *arquivo;
 
-	//seta a variável caminhoDB com o caminho para o banco de dados
-	/* --- quando caminhoDB estiver com o caminho da home do usuário ---
+	/* --- seta a variável caminhoDB com o caminho para o banco de dados --- */
 	char *login;
 	login = getlogin();
 	sprintf(db->caminhoDB, "/home/%s/.luof/", login);
-	------------------------------------------------------------------*/
-	strcpy(db->caminhoDB, ".luof/");
+
+	/* --- comentar as três linhas a cima (10 a 12) e descomentar a de baixo (19),
+	 * para usar o banco de dados no diretório do executável. Pode ser feito esse esquema
+	 * ao usar o comando 'make compile' para gerar o executável e o banco de dados na
+	 * própria pasta do projeto, assim, não será criado nenhum arquivo em outras pastas.
+	 * --- */
+	//strcpy(db->caminhoDB, ".luof/");
 
 	strcpy(caminho, db->caminhoDB);
 

@@ -9,6 +9,8 @@ create-db:
 	@ chmod u+rxw ~/.luof
 	@ touch ~/.luof/luof
 	@ chmod u+rxw ~/.luof/luof
+	@ touch ~/.luof/raiz.luof
+	@ chmod u+rxw ~/.luof/raiz.luof
 
 move:
 	@ sudo mv luof /usr/bin/
