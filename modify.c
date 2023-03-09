@@ -38,10 +38,10 @@ void fModifyBookmark() {
 	printf("Categoria : %s\n", s.categoria);
 	printf("Nome      : %s\n", s.nome);
 	printf("Link      : %s\n", s.link);
-	printf("Texto     : %s\n", s.texto);
+	printf("Descrição : %s\n", s.texto);
 
 	//pergunta qual atributo será modificado
-	printf(ANSI_BOLD_WHT "\nVocê deseja modificar? [1]categoria [2]nome [3]link [4]texto [5]tudo [6]nada : " ANSI_COLOR_GRA);
+	printf(ANSI_BOLD_WHT "\nVocê deseja modificar? [1]categoria [2]nome [3]link [4]descrição [5]tudo [6]nada : " ANSI_COLOR_GRA);
 	scanf(" %d", &opcao);
 
 	//se o usuário não desejar modificar nada
@@ -131,7 +131,6 @@ void fModifyCategory_atualizaCaminho(sBanco *db, sCat *cat, char *caminhoA, char
 	sIterador it;
 	char caminhoAntigo[TAMCAMINHO], nomeN[TAMNOMEFAV], nomeArqCat[TAMLINKARQ];
 	long qtdLista;
-	FILE *arqCat;
 
 	if (strcmp(cat->nome, nomeA)) {//se o nome da categoria mudou
 
@@ -227,8 +226,8 @@ void fModifyCategory() {
 	sCat *catPai;//a categoria pai antiga
 	sCat *catPai2;//a categoria pai nova
 	sBanco db;
-	char catTemp[TAMCAMINHO], caminhoA[TAMCAMINHO], nomeA[TAMNOMEFAV];
-	int opcao, rBuscaFavorito = 0;
+	char caminhoA[TAMCAMINHO], nomeA[TAMNOMEFAV];
+	int opcao;
 
 	if (fInicializaDB(&db))
 		return;
@@ -325,12 +324,12 @@ void fModifyCategory() {
 		catNew = cat;
 	}
 	else {//se o caminho mudou
-		fInsereCategoria(&db, catPai2, c);
+		fInsereCategoria(catPai2, c);
 		catNew = fBuscaCatFilha(catPai2, c.nome);
 		freeList(catNew->catFilhos);
 		catNew->catFilhos = cat->catFilhos;
 		cat->catFilhos = NULL;
-		fRemoveCategoria(&db, cat);
+		fRemoveCategoria(cat);
 	}
 
 	//atualiza o caminho de suas subcategorias e favoritos

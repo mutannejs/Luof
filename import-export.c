@@ -165,7 +165,6 @@ void fImport_fav(sBanco *db, FILE *arqImport, sCat *cat) {
 
 	sSite s, *favorito;
 	sLista listaTemp;
-	sIterador it;
 	char linhaArq[TAMFAVSIMP], *linha;
 
 	//cria uma lista para inserir os favoritos temporiariamente
@@ -231,7 +230,7 @@ void fImport_cat(sBanco *db, FILE *arqImport, sCat *cat, char *linha) {
 	//cria uma categoria, ou seta uma já criada com o mesmo nome. Com base em cat e c.nome
 	catFilha = fBuscaCatFilha(cat, c.nome);
 	if (!catFilha) {
-		fInsereCategoria(db, cat, c);
+		fInsereCategoria(cat, c);
 		catFilha = fBuscaCatFilha(cat, c.nome);
 	}
 

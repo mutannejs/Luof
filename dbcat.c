@@ -38,7 +38,7 @@ sSite fRecuperaFavorito(FILE *arq, char *nomeT) {
 		s.nome[strlen(nomeT)-1] = '\0';
 	}
 	else {
-		fgets(s.nome, TAMCAMINHO, arq);
+		fgets(s.nome, TAMNOMEFAV, arq);
 		s.nome[strlen(s.nome)-1] = '\0';
 	}
 

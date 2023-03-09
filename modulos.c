@@ -124,7 +124,7 @@ int fSetaSiteTexto(sSite *s) {
 	int cont = 0;
 	char c;
 
-	printf(ANSI_BOLD_WHT "Texto     : " ANSI_COLOR_GRA);
+	printf(ANSI_BOLD_WHT "Descrição : " ANSI_COLOR_GRA);
 
 	do {
 		c = getchar();
@@ -133,7 +133,7 @@ int fSetaSiteTexto(sSite *s) {
 	do {
 		if (cont == TAMTEXTO - 1) {
 			printf(ERRO);
-			printf("Textos devem ter no máximo %d caracteres.\n", TAMTEXTO - 1);
+			printf("Descrições devem ter no máximo %d caracteres.\n", TAMTEXTO - 1);
 			return 1;
 		}
 		s->texto[cont] = c;

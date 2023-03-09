@@ -91,7 +91,7 @@ void fAddCategory() {
 	}
 
 	//insere na árvore de categorias
-	if (fInsereCategoria(&db, catPai, cat)) {
+	if (fInsereCategoria(catPai, cat)) {
 		printf(ERRO);
 		printf("A categoria já existe.\n");
 		fFinalizaDB(&db);
@@ -184,7 +184,7 @@ void fRemoveCategory() {
 	//remove todos os favoritos do arquivo da categoria, com exceção daqueles pertencentes à outra categoria
 	fRemoveArqCat(&db, cat);
 	//remove a categoria da árvore de categorias
-	fRemoveCategoria(&db, cat);
+	fRemoveCategoria(cat);
 	fEscreveLuof(&db);
 
 	fFinalizaDB(&db);

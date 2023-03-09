@@ -44,7 +44,7 @@ void fHelp_private() {
 	ANSI_BOLD_YEL "\t-ab\tou   --add-bookmark:\n"
 	ANSI_COLOR_WHT
 	"\tUse para guardar um favorito. Primeiro informe a categoria na qual se deseja adicionar"
-	" o favorito, depois seu nome, depois o link da página, e, por fim, um comentário sobre.\n\n"
+	" o favorito, depois seu nome, depois o link da página, e, por fim, uma descrição sobre.\n\n"
 
 	ANSI_BOLD_YEL "\t-ac\tou   --add-category:\n"
 	ANSI_COLOR_WHT
@@ -71,8 +71,9 @@ void fHelp_private() {
 	ANSI_COLOR_WHT
 	"\tUse para modificar uma categoria. Primeiramente informe a categoria pai da categoria"
 	" que será modificada, depois seu nome, qual dado dela deseja-se modificar, e por fim"
-	" basta informar o(s) novo(s) dado(s) da categoria.\n\n"
+	" basta informar o(s) novo(s) dado(s) da categoria.\n\n");
 
+	printf(
 	ANSI_BOLD_YEL "\t-lc\tou   --list-category:\n"
 	ANSI_COLOR_WHT
 	"\tUse para ver o nome das categorias e dados dos favoritos que pertencem a categoria"
@@ -107,6 +108,10 @@ void fHelp_private() {
 	ANSI_BOLD_YEL "\t--import:\n"
 	ANSI_COLOR_WHT
 	"\tUse para importar favoritos exportados de outro browser.\n\n"
+
+	ANSI_BOLD_YEL "\t--free:\n"
+	ANSI_COLOR_WHT
+	"\tUse para apagar todas categorias e favoritos do banco.\n\n"
 	);
 }
 
@@ -131,7 +136,7 @@ void fHelp_ab() {
 	ANSI_BOLD_WHT "luof:" ANSI_BOLD_YEL "\t-ab\tou   --add-bookmark:\n\n"
 	ANSI_COLOR_WHT
 	"\tUse para guardar um favorito. Primeiro informe a categoria na qual se deseja adicionar"
-	" o favorito, depois seu nome, depois o link da página, e, por fim, um comentário sobre.\n"
+	" o favorito, depois seu nome, depois o link da página, e, por fim, uma descrição sobre.\n"
 	"\tÉ necessário preencher todos os campos requeridos. Caso tecle enter sem nada informado,"
 	" terá uma quebra de linha na saída do terminal, mas a entrada daquele dado ainda será"
 	" esperada.\n"
@@ -141,7 +146,7 @@ void fHelp_ab() {
 	ANSI_BOLD_CYA "Categoria : " ANSI_COLOR_BLU "Jogos/steam\n"
 	ANSI_BOLD_CYA "Nome      : " ANSI_COLOR_BLU "Dark Souls\n"
 	ANSI_BOLD_CYA "Link      : " ANSI_COLOR_BLU "https://store.steampowered.com/app/570940/DARK_SOULS_REMASTERED/\n"
-	ANSI_BOLD_CYA "Texto     : " ANSI_COLOR_BLU "Página da steam referente ao jogo Dark Souls: Remastered\n\n"
+	ANSI_BOLD_CYA "Descrição : " ANSI_COLOR_BLU "Página da steam referente ao jogo Dark Souls: Remastered\n\n"
 	);
 }
 
@@ -217,13 +222,13 @@ void fHelp_mb() {
 	"Categoria : Jogos/steam\n"
 	"Nome      : Dark Souls\n"
 	"Link      : https://store.steampowered.com/app/570940/DARK_SOULS_REMASTERED/\n"
-	"Texto     : Página da steam referente ao jogo Dark Souls: Remastered\n\n"
-	"Você deseja modificar? [1]categoria [2]nome [3]link [4]texto [5]tudo [6]nada : " ANSI_COLOR_BLU "5\n\n"
+	"Descrição : Página da steam referente ao jogo Dark Souls: Remastered\n\n"
+	"Você deseja modificar? [1]categoria [2]nome [3]link [4]descrição [5]tudo [6]nada : " ANSI_COLOR_BLU "5\n\n"
 	ANSI_BOLD_CYA "Novos dados:\n"
 	ANSI_BOLD_CYA "Categoria : " ANSI_COLOR_BLU "Jogos/steam\n"
 	ANSI_BOLD_CYA "Nome      : " ANSI_COLOR_BLU "Dark Souls II\n"
 	ANSI_BOLD_CYA "Link      : " ANSI_COLOR_BLU "https://store.steampowered.com/app/335300/DARK_SOULS_II_Scholar_of_the_First_Sin/\n"
-	ANSI_BOLD_CYA "Texto     : " ANSI_COLOR_BLU "Página da steam referente ao jogo Dark souls II: Scholar Of The First Sin\n\n"
+	ANSI_BOLD_CYA "Descrição : " ANSI_COLOR_BLU "Página da steam referente ao jogo Dark souls II: Scholar Of The First Sin\n\n"
 	);
 }
 
@@ -259,12 +264,12 @@ void fHelp_lc(int opcao) {
 		ANSI_BOLD_WHT "Ex:\n"
 		ANSI_BOLD_CYA "Categoria : " ANSI_COLOR_BLU "/\n\n" ANSI_BOLD_CYA
 		"* Jogos\n\n"
-		"Nome  : ilovepdf\n"
-		"Link  : https://www.ilovepdf.com/pt\n"
-		"Texto : Site com diversas ferramentas para manipular pdf's\n\n"
-		"Nome  : randoma11y\n"
-		"Link  : https://randoma11y.com/\n"
-		"Texto : Site que combina cores aleatoriamente para uso em páginas web\n\n"
+		"Nome      : ilovepdf\n"
+		"Link      : https://www.ilovepdf.com/pt\n"
+		"Descrição : Site com diversas ferramentas para manipular pdf's\n\n"
+		"Nome      : randoma11y\n"
+		"Link      : https://randoma11y.com/\n"
+		"Texto     : Site que combina cores aleatoriamente para uso em páginas web\n\n"
 		ANSI_BOLD_WHT "Ex:\n"
 		ANSI_BOLD_CYA "Categoria : " ANSI_COLOR_BLU "Jogos\n\n" ANSI_BOLD_CYA
 		"* steam\n\n"
@@ -404,6 +409,18 @@ void fHelp_import() {
 	);
 }
 
+void fHelp_free() {
+	printf(
+	ANSI_BOLD_WHT "luof:" ANSI_BOLD_YEL "\t--free:\n\n"
+	ANSI_COLOR_WHT
+	"\tUse para apagar todas categorias e favoritos armazenados. Não haverá como voltar"
+	" atrás e recuperar tudo que foi excluído, por isso é fortemente recomendado realizar"
+	" um backup antes de continuar com a execução da função.\n"
+	"\tAo usar esse comando será perguntado se há certeza em continuar, se sim, devesse"
+	" teclar 's' e depois enter.\n\n"
+	);
+}
+
 void fHelp(char *argv) {
 
 	if (!argv) {
@@ -450,6 +467,9 @@ void fHelp(char *argv) {
 	}
 	else if (strcmp(argv, "--import") == 0) {
 		fHelp_import();
+	}
+	else if (strcmp(argv, "--free") == 0) {
+		fHelp_free();
 	}
 	else {
 		printf(ERRO2);

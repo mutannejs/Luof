@@ -117,7 +117,6 @@ void fBackup_restaurar(sBanco *db, FILE *arqBackup) {
 	sSite s;
 	char nomeQtdArq[TAMNOMEFAV+10], nomeArq[TAMNOMEFAV];
 	int qtdSites;
-	FILE *arqCat;
 
 	//recupera a árvore de categorias e escreve o arquivo luof
 	fFinalizaDB(db);

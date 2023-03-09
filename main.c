@@ -2,8 +2,6 @@
 
 int main(int argc, char *argv[]) {
 
-	//fTeste();
-
 	if (argc == 1) {
 		fMenu();
 	}

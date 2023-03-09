@@ -75,8 +75,8 @@ void fEscreveLuof_private(FILE *aLuof, sLista listaCategorias, int hierarquia);
 void fEscreveLuof(sBanco *db);
 int fBuscaCat(sBanco *db, char caminho[], sCat **c);
 sCat* fBuscaCatFilha(sCat *catPai, char nome[]);
-int fInsereCategoria(sBanco *db, sCat *cPai, sCat c);
-void fRemoveCategoria(sBanco *db, sCat *cat);
+int fInsereCategoria(sCat *cPai, sCat c);
+void fRemoveCategoria(sCat *cat);
 void fEscreveArquivoCat(sBanco *db, char *nomeArq);
 void fRemoveArqCat(sBanco *db, sCat *cat);
 void fApagarBanco_private(sBanco *db, sCat *cat);
@@ -115,6 +115,7 @@ void fHelp_mc();
 void fHelp_backup();
 void fHelp_export();
 void fHelp_import();
+void fHelp_free();
 void fHelp(char *argv);
 
 //add-remove

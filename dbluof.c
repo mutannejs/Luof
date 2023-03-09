@@ -11,11 +11,12 @@ int fInicializaDB(sBanco *db) {
 	login = getlogin();
 	sprintf(db->caminhoDB, "/home/%s/.luof/", login);
 
-	/* --- comentar as três linhas a cima (10 a 12) e descomentar a de baixo (19),
+	/* --- comentar as três linhas a cima (10 a 12) e descomentar a de baixo (20),
 	 * para usar o banco de dados no diretório do executável. Pode ser feito esse esquema
 	 * ao usar o comando 'make compile' para gerar o executável e o banco de dados na
 	 * própria pasta do projeto, assim, não será criado nenhum arquivo em outras pastas.
-	 * --- */
+	 * Para reverter, basta fazer o inverso.
+	 * Para comentar basta colocar duas barras (//) no início da linha --- */
 	//strcpy(db->caminhoDB, ".luof/");
 
 	strcpy(caminho, db->caminhoDB);
@@ -268,13 +269,11 @@ sCat* fBuscaCatFilha(sCat *catPai, char nome[]) {
 
 }
 
-int fInsereCategoria(sBanco *db, sCat *cPai, sCat c) {
+int fInsereCategoria(sCat *cPai, sCat c) {
 
 	sCat *catTemp;
 	sIterador it = criaIt(cPai->catFilhos);
 	int encontrouPos = 0;
-	char nomeArqCat[TAMLINKARQ];
-	FILE *arqCat;//usado para criar um novo arquivo caso necessário
 
 	//seta os novos dados da categoria
 	strcpy(c.caminho, cPai->caminho);
@@ -310,7 +309,7 @@ int fInsereCategoria(sBanco *db, sCat *cPai, sCat c) {
 
 }
 
-void fRemoveCategoria(sBanco *db, sCat *cat) {
+void fRemoveCategoria(sCat *cat) {
 
 	sCat *catTemp;
 	sIterador it;
@@ -446,8 +445,6 @@ void fApagarBanco_private(sBanco *db, sCat *cat) {
 
 void fApagarBanco(sBanco *db) {
 
-	sCat *cat;
-	sIterador it;
 	char nomeArqCat[TAMLINKARQ];
 	FILE *aLuof, *aRaiz;
 

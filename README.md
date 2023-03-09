@@ -46,17 +46,15 @@ make install
 Ao utilizar o comando acima será requisitado a senha de seu usuário. Este comando compila o
  programa e move o arquivo binário para a basta _/usr/bin_, para que possa executá-lo em
  qualquer diretório dentro do sistema sem a necessidade de informar seu caminho completo,
- além de criar o banco de dados na _home_ do usuário. Caso queira apenas criar um arquivo
- binário no diretório atual, basta rodar o comando:
-```
-make compile
-```
-Esse segundo modo de gerar o executável pode ser utilizado em conjunto com o esquema descrito
- nas linhas 14 a 18 no arquivo _dbluof.c_ para usar o programa dentro apenas da pasta do projeto,
- assim não será criado nenhum arquivo em outros diretórios.
+ além de criar o banco de dados na _home_ do usuário. Caso não queira usar o luof em outros
+ diretórios, deve-se rodar o comando `make compile` em conjunto com o esquema descrito nas
+ linhas 14 a 19 no arquivo _dbluof.c_ (se ele não for executado, ocorrerá erro na execução
+ do programa, o esquema deve ser feito antes de usar o comando make). Desse modo não será
+ criado nenhum arquivo em outros diretórios, nem será requisitado a senha do usuário.
 
-### Usando gcc
-Para compilar o programa usando só o gcc, basta entrar na pasta do projeto e rodar o comando:
+### Sem usar make
+Para compilar o programa sem o makefile, só com o gcc, basta entrar na pasta do projeto
+ e rodar os comandos:
 ```
 gcc -o luof main.c add-remove.c list.c modify.c dbluof.c dbcat.c modulos.c help.c backup.c import-export.c lista-iterador.c teste.c
 ```
@@ -65,6 +63,17 @@ Para poder executá-lo em qualquer diretório dentro do sistema sem a necessidad
 ```
 sudo mv luof /usr/bin
 ```
+Caso não queira usar o luof em outros diretórios, antes de compilar o programa deve ser feito
+ o esquema descrito nas linhas 14 a 19 no arquivo dbluof.c (se ele não for executado,
+ ocorrerá erro na execução do programa). Desse modo não será criado nenhum arquivo em outros
+ diretórios, nem será requisitado a senha do usuário.
+ 
+### Se não foi usado make install
+Na primeira execução do programa será necessário criar um novo banco de dados,  basta teclar
+ 's' seguido de enter para responder que o novo banco deve ser criado. A seguir há uma imagem
+ que descreve este cenário, usando o modo de instalação sem o make, será usado as funções
+ `--import` e `-lt` apenas para melhorar o exemplo:
+![imagem](https://github.com/mutannejs/Luof/blob/master/imagens/img07.png)
 
 ## Desinstalando
 

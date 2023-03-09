@@ -49,9 +49,9 @@ void fListCategory(int opcao) {
 		do {
 			favorito = (struct sSite*) retornaItera(&it);
 			if (opcao == 0) {
-				printf(ANSI_BOLD_WHT "\nNome  : " ANSI_COLOR_GRA "%s\n", favorito->nome);
-				printf(ANSI_BOLD_WHT "Link  : " ANSI_COLOR_GRA "%s\n", favorito->link);
-				printf(ANSI_BOLD_WHT "Texto : " ANSI_COLOR_GRA "%s\n", favorito->texto);
+				printf(ANSI_BOLD_WHT "\nNome      : " ANSI_COLOR_GRA "%s\n", favorito->nome);
+				printf(ANSI_BOLD_WHT "Link      : " ANSI_COLOR_GRA "%s\n", favorito->link);
+				printf(ANSI_BOLD_WHT "Descrição : " ANSI_COLOR_GRA "%s\n", favorito->texto);
 			}
 			else {
 				printf(ANSI_COLOR_GRA "%s\n", favorito->nome);
