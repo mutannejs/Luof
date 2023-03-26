@@ -137,7 +137,8 @@ void fListTree_private(sBanco *db, char linhas[], sCat *cat, int hierarquia, int
 void fListTree(int opcao);
 
 //backup
-void fBackup_preencnheListaCats(sLista listaCats, sCat *cat);
+int contaQtdCats(sCat *cat);
+int fBackup_preencnheListaCats(char **nomes, int *pos, sCat *cat);
 char* fBackup_criar(sBanco *db);
 int fBackup_separaNomeQuantidade(char *nomeQtdArq, char *nomeArq);
 void fBackup_restaurar(sBanco *db, FILE *arqBackup);

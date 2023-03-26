@@ -1,31 +1,42 @@
 #include "luof.h"
 
-void fBackup_preencnheListaCats(sLista listaCats, sCat *cat) {
+int contaQtdCats(sCat *cat) {
+
+	int qtd = 1;
+
+	if (!emptyList(cat->catFilhos)) {
+		sIterador it = criaIt(cat->catFilhos);
+		do {
+			sCat *catF = (struct sCat*) retornaItera(&it);
+			qtd += contaQtdCats(catF);
+			iteraProximo(&it);
+		} while (!inicioIt(&it));
+	}
+
+	return qtd;
+
+}
+
+int fBackup_preencnheListaCats(char **nomes, int *pos, sCat *cat) {
 
 	sCat *catTemp;
 	sIterador it;
 	int encontrou = 0;
 
-	//percorre a listaCats, se não houver nenhuma categoria com o mesmo nome de cat, adiciona ela na lista
-	if (emptyList(listaCats)) {
-		pushBackList(listaCats, cat);
+	//percorre a listaCats, se não houver nenhuma categoria com o mesmo nome de cat, adiciona seu nome na lista
+	if (*pos == 0) {
+		strcpy(nomes[0], cat->nome);
+		*pos += 1;
 	}
 	else {
-		it = criaIt(listaCats);
-		do {
-			catTemp = (struct sCat*) retornaItera(&it);
-			if (strcmp(catTemp->nome, cat->nome) == 0)//se a cat já existe
-				encontrou = -1;
-			else if (strcmp(catTemp->nome, cat->nome) > 0)//se encontrou a posicao a ser inserida
+		for (int i = 0; i < *pos; i++) {
+			if (strcmp(nomes[i], cat->nome) == 0)
 				encontrou = 1;
-			else
-				iteraProximo(&it);
-		} while (encontrou == 0 && !inicioIt(&it));
-
-		if (encontrou == 0)
-			pushBackList(listaCats, cat);
-		else if (encontrou > 0)
-			insereAntIt(&it, cat);
+		}
+		if (!encontrou) {
+			strcpy(nomes[*pos], cat->nome);
+			*pos += 1;
+		}
 	}
 
 	//faz a recursão para as categorias filhas de cat
@@ -33,21 +44,33 @@ void fBackup_preencnheListaCats(sLista listaCats, sCat *cat) {
 		it = criaIt(cat->catFilhos);
 		do {
 			catTemp = (struct sCat*) retornaItera(&it);
-			fBackup_preencnheListaCats(listaCats, catTemp);
+			fBackup_preencnheListaCats(nomes, pos, catTemp);
 			iteraProximo(&it);
 		} while (!inicioIt(&it));
 	}
+
+	return *pos;
 
 }
 
 char* fBackup_criar(sBanco *db) {
 
 	sSite *favorito;
-	sCat *catTemp;
-	sLista listaCats;
-	sIterador it, it2;
+	sCat catTemp;
+	sIterador it;
 	char nomeBackup[TAMLINKARQ], *nomeB;
+	int qtdCats;
 	FILE *arqBackup;
+
+	//cria uma lista com os nomes de todas categorias, sem repetir o nome
+	char **nomes;
+	int qtdNomes = 0;
+	qtdCats = contaQtdCats(db->arvoreCats);
+	nomes = malloc(qtdCats * sizeof(char*));
+	nomes[0] = malloc(qtdCats * TAMNOMEFAV * sizeof(char));
+	for (int i = 1; i < qtdCats; i++)
+		nomes[i] = nomes[0] + (i * TAMNOMEFAV);
+	qtdNomes = fBackup_preencnheListaCats(nomes, &qtdNomes, db->arvoreCats);
 
 	//cria arquivo do backup
 	strcpy(nomeBackup, "luof.bkp");
@@ -68,24 +91,18 @@ char* fBackup_criar(sBanco *db) {
 	fprintf(arqBackup, "##\n");
 
 	//escreve todos os favoritos no arquivo
-	listaCats = criaLista(struct sCat*);
-	fBackup_preencnheListaCats(listaCats, db->arvoreCats);
-	if (!emptyList(listaCats)) {
-		it = criaIt(listaCats);
-		do {
-			catTemp = (struct sCat*) retornaItera(&it);
-			fPreencheListaSite(db, catTemp, 0);
-			if (!emptyList(db->listaFavs)) {
-				fprintf(arqBackup, "%s/%ld\n", catTemp->nome, sizeList(db->listaFavs));
-				it2 = criaIt(db->listaFavs);
-				do {
-					favorito = (struct sSite*) retornaItera(&it2);
-					fprintf(arqBackup, "%s\n%s\n%s\n%s\n", favorito->nome, favorito->categoria, favorito->link, favorito->texto);
-					iteraProximo(&it2);
-				} while (!inicioIt(&it2));
-			}
-			iteraProximo(&it);
-		} while (!inicioIt(&it));
+	for (int i = 0; i < qtdNomes; i++) {
+		strcpy(catTemp.nome, nomes[i]);
+		fPreencheListaSite(db, &catTemp, 0);
+		if (!emptyList(db->listaFavs)) {
+			fprintf(arqBackup, "%s/%ld\n", catTemp.nome, sizeList(db->listaFavs));
+			it = criaIt(db->listaFavs);
+			do {
+				favorito = (struct sSite*) retornaItera(&it);
+				fprintf(arqBackup, "%s\n%s\n%s\n%s\n", favorito->nome, favorito->categoria, favorito->link, favorito->texto);
+				iteraProximo(&it);
+			} while (!inicioIt(&it));
+		}
 	}
 
 	//fecha o arquivo e retorna seu nome

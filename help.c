@@ -17,6 +17,9 @@ void fHelp_private() {
 	"\tPara usar o Luof, basta digitar na linha de comandos \"luof\" seguido do comando que se"
 	" deseja utilizar, por extenso (com dois traços: -- ) ou abreviado (com um traço: - ), ou"
 	" não informar nenhum comando para ver um menu das opções disponíveis.\n"
+	"\tUsar os caracteres < e > em nomes de favoritos ou em nomes de categorias pode gerar um"
+	" mal funcionamento de algumas operações, por tanto, não é recomendado usar esses dois"
+	" caracteres nos casos mencionados.\n"
 	ANSI_BOLD_WHT "\tExs: " ANSI_COLOR_BLU "luof -ab\n"
 	"\t     luof --list-category\n"
 	ANSI_COLOR_WHT
