@@ -131,7 +131,7 @@ void fModifyCategory_atualizaCaminho(sBanco *db, sCat *cat, char *caminhoA, char
 void fModifyCategory();
 
 //list
-void fListCategory(int opcao);
+void fListCategory(int opcao, int argc, char *argv[]);
 void fListTree_printaLinhas(char linhas[], int hierarquia);
 void fListTree_private(sBanco *db, char linhas[], sCat *cat, int hierarquia, int opcao);
 void fListTree(int opcao);

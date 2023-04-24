@@ -1,6 +1,6 @@
 #include "luof.h"
 
-void fListCategory(int opcao) {
+void fListCategory(int opcao, int argc, char *argv[]) {
 
 	sSite *favorito, s;
 	sCat *cat, *catTemp;
@@ -10,7 +10,20 @@ void fListCategory(int opcao) {
 	if (fInicializaDB(&db))
 		return;
 
-	if (fSetaSiteCategoria(&s)) {
+	if (argc > 2) {//se foi passado argumentos
+		//seta o argumento em s.categoria
+		strcpy(s.categoria, argv[2]);
+		for (int i = 3; i < argc; i++) {
+			strcat(s.categoria, " ");
+			strcat(s.categoria, argv[i]);
+		}
+		//retira as / a mais no início e no fim
+		while (s.categoria[0] == '/')
+			strcpy(s.categoria, &s.categoria[1]);
+		while (s.categoria[strlen(s.categoria)-1] == '/')
+				s.categoria[strlen(s.categoria)-1] = '\0';
+	}//se não foi passado argumentos
+	else if (fSetaSiteCategoria(&s)) {
 		fFinalizaDB(&db);
 		return;
 	}

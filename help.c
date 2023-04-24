@@ -80,12 +80,12 @@ void fHelp_private() {
 	ANSI_BOLD_YEL "\t-lc\tou   --list-category:\n"
 	ANSI_COLOR_WHT
 	"\tUse para ver o nome das categorias e dados dos favoritos que pertencem a categoria"
-	" informada.\n\n"
+	" informada. O nome da categoria também pode ser passado na linha de comandos.\n\n"
 
 	ANSI_BOLD_YEL "\t-lcs\tou   --list-category-short:\n"
 	ANSI_COLOR_WHT
 	"\tUse para ver apenas os nomes das categorias e favoritos que pertencem a categoria"
-	" informada.\n\n"
+	" informada. O nome da categoria também pode ser passado na linha de comandos.\n\n"
 
 	ANSI_BOLD_YEL "\t-lt\tou   --list-tree:\n"
 	ANSI_COLOR_WHT
@@ -263,7 +263,8 @@ void fHelp_lc(int opcao) {
 		ANSI_COLOR_WHT
 		"\tUse para ver o nome das categorias e dados dos favoritos que pertencem a categoria"
 		" informada. As subcategorias serão mostradas com um apóstrofo (*) antes de seu"
-		" nome, e os favoritos terão seu nome, link e texto mostrados.\n\n"
+		" nome, e os favoritos terão seu nome, link e texto mostrados."
+		" O nome da categoria também pode ser passado na linha de comandos.\n\n"
 		ANSI_BOLD_WHT "Ex:\n"
 		ANSI_BOLD_CYA "Categoria : " ANSI_COLOR_BLU "/\n\n" ANSI_BOLD_CYA
 		"* Jogos\n\n"
@@ -284,7 +285,8 @@ void fHelp_lc(int opcao) {
 		ANSI_COLOR_WHT
 		"\tUse para ver o nome das categorias e nome dos favoritos que pertencem a categoria"
 		" informada. Onde as categorias serão mostradas com um apóstrofo (*) antes de seu"
-		" nome, e os favoritos terão apenas seu nome mostrado.\n\n"
+		" nome, e os favoritos terão apenas seu nome mostrado."
+		" O nome da categoria também pode ser passado na linha de comandos.\n\n"
 		ANSI_BOLD_WHT "Ex:\n"
 		ANSI_BOLD_CYA "Categoria : " ANSI_COLOR_BLU "/\n\n" ANSI_BOLD_CYA
 		"* Jogos\n\n"

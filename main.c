@@ -30,10 +30,10 @@ int main(int argc, char *argv[]) {
 		fModifyCategory();
 	}
 	else if (strcmp(argv[1], "-lc") == 0 || strcmp(argv[1], "--list-category") == 0) {
-		fListCategory(0);
+		fListCategory(0, argc, argv);
 	}
 	else if (strcmp(argv[1], "-lcs") == 0 || strcmp(argv[1], "--list-category-short") == 0) {
-		fListCategory(1);
+		fListCategory(1, argc, argv);
 	}
 	else if (strcmp(argv[1], "-lt") == 0 || strcmp(argv[1], "--list-tree") == 0) {
 		fListTree(0);
@@ -110,9 +110,9 @@ void fMenu() {
 					break;
 		case 6 :	fModifyCategory();
 					break;
-		case 7 :	fListCategory(0);
+		case 7 :	fListCategory(0, 2, NULL);
 					break;
-		case 8 :	fListCategory(1);
+		case 8 :	fListCategory(1, 2, NULL);
 					break;
 		case 9 :	fListTree(0);
 					break;

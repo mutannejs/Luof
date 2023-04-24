@@ -8,6 +8,12 @@ Este projeto foi criado com a intenção de ser outro meio de guardar links de p
  em diferentes navegadores em um lugar só, independente da quantidade, deixando apenas os
  mais importantes e recorrentes no Favoritos do browser usado.
 
+## Atualizações
+* 24/04/2023:
+	* Agora a categoria a ser visulizada pode ser passada direto na linha de comandos do
+ terminal com os comandos -lc e -lcs.
+	* Atualizações criado.
+
 ## Pré-requisitos e recursos utilizados
 
 Em geral foi utilizado a Linguagem C para desenvolver este projeto, possuindo também um

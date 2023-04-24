@@ -1,0 +1,6 @@
+Atualizações
+
+24/04/2023:
+	. Agora a categoria a ser visulizada pode ser passada direto na linha
+de comandos do terminal com os comandos -lc e -lcs.
+	. Atualizações criado.
