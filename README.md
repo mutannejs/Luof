@@ -10,9 +10,12 @@ Este projeto foi criado com a intenção de ser outro meio de guardar links de p
 
 ## Atualizações
 * 24/04/2023:
+	* make reinstall adicionado.
 	* Agora a categoria a ser visulizada pode ser passada direto na linha de comandos do
  terminal com os comandos -lc e -lcs.
 	* Atualizações criado.
+
+Para mais detalhes ver updates.txt
 
 ## Pré-requisitos e recursos utilizados
 

@@ -1,6 +1,9 @@
-Atualizações
+/* ----------------------------- Atualizações ----------------------------- */
 
 24/04/2023:
+	. make reinstall criado. Usado para apenas atualizar o árquivo binário
+do luof e continuar com o banco de dados inalterado.
 	. Agora a categoria a ser visulizada pode ser passada direto na linha
 de comandos do terminal com os comandos -lc e -lcs.
+		Ex: luof -lc Jogos
 	. Atualizações criado.
