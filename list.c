@@ -55,7 +55,7 @@ void fListCategory(int opcao, int argc, char *argv[]) {
 	//printa favorito por favorito
 	if (!emptyList(db.listaFavs)) {
 
-		if (opcao == 1 && !emptyList(cat->catFilhos))
+		if (opcao == 1)
 			printf("\n");
 
 		it = criaIt(db.listaFavs);
