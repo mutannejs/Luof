@@ -2,16 +2,19 @@
 
 int main(int argc, char *argv[]) {
 
+	sCom com;
 	void (*funcao)(sCom com) = NULL;
 
 	if (argc == 1) {
 		fMenu();
 	}
 	else {
-		sCom com = fSetaArgumentos(&funcao, argc, argv);
+		com = fSetaArgumentos(&funcao, argc, argv);
 		if (funcao)
 			funcao(com);
 	}
+
+	return 0;
 
 	/*else if (strcmp(argv[1], "-h") == 0 || strcmp(argv[1], "--help") == 0) {
 		if (argc > 2)
@@ -64,8 +67,6 @@ int main(int argc, char *argv[]) {
 	else {
 		printf(ANSI_BOLD_WHT "Função inválida\n");
 	}*/
-
-	return 0;
 
 }
 
@@ -149,11 +150,13 @@ void fFree(sCom com) {
 	sBanco db;
 	char vBooleana;
 
-	printf(ANSI_BOLD_WHT  "Você tem certeza que deseja apagar todas categorias e favoritos? [s/n]: " ANSI_COLOR_GRA);
-	scanf(" %c", &vBooleana);
-	if (vBooleana != 's') {
-		printf(ANSI_BOLD_WHT "Saindo...\n");
-		return;
+	if (strcmp(com.flag, "-s") != 0) {
+		printf(ANSI_BOLD_WHT  "Você tem certeza que deseja apagar todas categorias e favoritos? [s/n]: " ANSI_COLOR_GRA);
+		scanf(" %c", &vBooleana);
+		if (vBooleana != 's') {
+			printf(ANSI_BOLD_WHT "Saindo...\n");
+			return;
+		}
 	}
 
 	if (fInicializaDB(&db))

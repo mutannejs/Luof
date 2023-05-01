@@ -3,79 +3,113 @@
 sCom fSetaArgumentos(void (**funcao)(sCom com), int argc, char *argv[]) {
 
 	sCom com;
+	int args[2] = {0,0};//args[0] se foi passado flag, args[1] se foi passado caminho
+
 	com.flag[0] = '\0';
 	com.caminho[0] = '\0';
 
 	if (strcmp(argv[1], "-h") == 0 || strcmp(argv[1], "--help") == 0) {
 		*funcao = fHelp;
-		if (argc > 2)
-			strcpy(com.flag, argv[2]);
+		if (argc > 2)//foi passada uma flag
+			args[0] = 1;
+			//strcpy(com.flag, argv[2]);
 	}
 	else if (strcmp(argv[1], "-ab") == 0 || strcmp(argv[1], "--add-bookmark") == 0) {
 		*funcao = fAddBookmark;
+		if (argc > 2)//foi passado um caminho
+			args[1] = 1;
 	}
 	else if (strcmp(argv[1], "-ac") == 0 || strcmp(argv[1], "--add-category") == 0) {
 		*funcao = fAddCategory;
+		if (argc > 2)//foi passado um caminho
+			args[1] = 1;
 	}
 	else if (strcmp(argv[1], "-rb") == 0 || strcmp(argv[1], "--remove-bookmark") == 0) {
 		*funcao = fRemoveBookmark;
+		if (argc > 2)//foi passado um caminho
+			args[1] = 1;
 	}
 	else if (strcmp(argv[1], "-rc") == 0 || strcmp(argv[1], "--remove-category") == 0) {
 		*funcao = fRemoveCategory;
+		if (argc > 2)//foi passado um caminho
+			args[1] = 1;
 	}
 	else if (strcmp(argv[1], "-mb") == 0 || strcmp(argv[1], "--modify-bookmark") == 0) {
 		*funcao = fModifyBookmark;
+		if (argc > 2)//foi passado um caminho
+			args[1] = 1;
 	}
 	else if (strcmp(argv[1], "-mc") == 0 || strcmp(argv[1], "--modify-category") == 0) {
 		*funcao = fModifyCategory;
+		if (argc > 2)//foi passado um caminho
+			args[1] = 1;
 	}
 	else if (strcmp(argv[1], "-lc") == 0 || strcmp(argv[1], "--list-category") == 0) {
 		*funcao = fListCategory;
-		if (argc > 2 && argv[2][0] == '-') {//seta a flag
-			if (strcmp(argv[2], "-s") == 0 || strcmp(argv[2], "--short") == 0)
-				strcpy(com.flag, "-s");
-			if (argc > 3)//seta o caminho
-				fSetaCaminho(&com, 3, argc, argv);
-		}
-		else if (argc > 2)//seta o caminho
-			fSetaCaminho(&com, 2, argc, argv);
+		if (argc > 2 && argv[2][0] == '-')//foi passado uma flag
+			args[0] = 1;
+		if ((argc > 2 && argv[2][0] != '-') || argc > 3)//foi passado um caminho
+			args[1] = 1;
 	}
 	else if (strcmp(argv[1], "-lcs") == 0 || strcmp(argv[1], "--list-category-short") == 0) {
 		*funcao = fListCategory;
-		strcpy(com.flag, "-s");
-		if (argc > 2)
-			fSetaCaminho(&com, 2, argc, argv);
+		strcpy(com.flag, "-s");//seta a flag
+		if (argc > 2)//foi passado um caminho
+			args[1] = 1;
 	}
 	else if (strcmp(argv[1], "-lt") == 0 || strcmp(argv[1], "--list-tree") == 0) {
 		*funcao = fListTree;
-		if (argc > 2 && (strcmp(argv[2], "-s") == 0 || strcmp(argv[2], "--short") == 0)) {
-			strcpy(com.flag, "-s");
-			if (argc > 3)//seta o caminho
-				fSetaCaminho(&com, 3, argc, argv);
-		}
-		else if (argc > 2)//seta o caminho
-			fSetaCaminho(&com, 2, argc, argv);
+		if (argc > 2 && argv[2][0] == '-')//foi passado uma flag
+			args[0] = 1;
+		if ((argc > 2 && argv[2][0] != '-') || argc > 3)//foi passado um caminho
+			args[1] = 1;
 	}
 	else if (strcmp(argv[1], "-lts") == 0 || strcmp(argv[1], "--list-tree-short") == 0) {
 		*funcao = fListTree;
-		strcpy(com.flag, "-s");
-		if (argc > 2)
-			fSetaCaminho(&com, 2, argc, argv);
+		strcpy(com.flag, "-s");//seta a flag
+		if (argc > 2)//foi passado um caminho
+			args[1] = 1;
 	}
 	else if (strcmp(argv[1], "--backup") == 0) {
 		*funcao = fBackup;
+		if (argc > 2 && argv[2][0] == '-')//foi passado uma flag
+			args[0] = 1;
+		if ((argc > 2 && argv[2][0] != '-') || argc > 3)//foi passado um caminho
+			args[1] = 1;
 	}
 	else if (strcmp(argv[1], "--export") == 0) {
 		*funcao = fExport;
+		if (argc > 2 && argv[2][0] == '-')//foi passado uma flag
+			args[0] = 1;
+		if ((argc > 2 && argv[2][0] != '-') || argc > 3)//foi passado um caminho
+			args[1] = 1;
 	}
 	else if (strcmp(argv[1], "--import") == 0) {
 		*funcao = fImport;
+		if (argc > 2 && argv[2][0] == '-')//foi passado uma flag
+			args[0] = 1;
+		if ((argc > 2 && argv[2][0] != '-') || argc > 3)//foi passado um caminho
+			args[1] = 1;
 	}
 	else if (strcmp(argv[1], "--free") == 0) {
 		*funcao = fFree;
+		if (argc > 2)//foi passado uma flag
+			args[0] = 1;
 	}
 	else {
 		printf(ANSI_BOLD_WHT "Função inválida\n");
+	}
+
+	//seta qual a flag passada e qual o caminho (se foram passados)
+	if (args[0] && args[1]) {
+		strcpy(com.flag, argv[2]);
+		fSetaCaminho(&com, 3, argc, argv);
+	}
+	else if (args[0] && !args[1]) {
+		strcpy(com.flag, argv[2]);
+	}
+	else if (!args[0] && args[1]) {
+		fSetaCaminho(&com, 2, argc, argv);
 	}
 
 	return com;
