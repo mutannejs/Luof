@@ -45,7 +45,7 @@ void fExport_private(sBanco *db, FILE *arqExport, sCat *cat, int hierarquia) {
 
 }
 
-void fExport() {
+void fExport(sCom com) {
 
 	sSite s;
 	sCat *cat;
@@ -239,7 +239,7 @@ void fImport_cat(sBanco *db, FILE *arqImport, sCat *cat, char *linha) {
 
 }
 
-void fImport() {
+void fImport(sCom com) {
 
 	sCat *cat, c;
 	sBanco db;

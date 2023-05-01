@@ -426,59 +426,59 @@ void fHelp_free() {
 	);
 }
 
-void fHelp(char *argv) {
+void fHelp(sCom com) {
 
-	if (!argv) {
+	if (com.flag[0] == '\0') {
 		fHelp_private();
 	}
-	else if (strcmp(argv, "-h") == 0 || strcmp(argv, "--help") == 0) {
+	else if (strcmp(com.flag, "-h") == 0 || strcmp(com.flag, "--help") == 0) {
 		fHelp_h();
 	}
-	else if (strcmp(argv, "-ab") == 0 || strcmp(argv, "--add-bookmark") == 0) {
+	else if (strcmp(com.flag, "-ab") == 0 || strcmp(com.flag, "--add-bookmark") == 0) {
 		fHelp_ab();
 	}
-	else if (strcmp(argv, "-ac") == 0 || strcmp(argv, "--add-category") == 0) {
+	else if (strcmp(com.flag, "-ac") == 0 || strcmp(com.flag, "--add-category") == 0) {
 		fHelp_ac();
 	}
-	else if (strcmp(argv, "-rb") == 0 || strcmp(argv, "--remove-bookmark") == 0) {
+	else if (strcmp(com.flag, "-rb") == 0 || strcmp(com.flag, "--remove-bookmark") == 0) {
 		fHelp_rb();
 	}
-	else if (strcmp(argv, "-rc") == 0 || strcmp(argv, "--remove-category") == 0) {
+	else if (strcmp(com.flag, "-rc") == 0 || strcmp(com.flag, "--remove-category") == 0) {
 		fHelp_rc();
 	}
-	else if (strcmp(argv, "-mb") == 0 || strcmp(argv, "--modify-bookmark") == 0) {
+	else if (strcmp(com.flag, "-mb") == 0 || strcmp(com.flag, "--modify-bookmark") == 0) {
 		fHelp_mb();
 	}
-	else if (strcmp(argv, "-mc") == 0 || strcmp(argv, "--modify-category") == 0) {
+	else if (strcmp(com.flag, "-mc") == 0 || strcmp(com.flag, "--modify-category") == 0) {
 		fHelp_mc();
 	}
-	else if (strcmp(argv, "-lc") == 0 || strcmp(argv, "--list-category") == 0) {
+	else if (strcmp(com.flag, "-lc") == 0 || strcmp(com.flag, "--list-category") == 0) {
 		fHelp_lc(0);
 	}
-	else if (strcmp(argv, "-lcs") == 0 || strcmp(argv, "--list-category-short") == 0) {
+	else if (strcmp(com.flag, "-lcs") == 0 || strcmp(com.flag, "--list-category-short") == 0) {
 		fHelp_lc(1);
 	}
-	else if (strcmp(argv, "-lt") == 0 || strcmp(argv, "--list-tree") == 0) {
+	else if (strcmp(com.flag, "-lt") == 0 || strcmp(com.flag, "--list-tree") == 0) {
 		fHelp_lt(0);
 	}
-	else if (strcmp(argv, "-lts") == 0 || strcmp(argv, "--list-tree-short") == 0) {
+	else if (strcmp(com.flag, "-lts") == 0 || strcmp(com.flag, "--list-tree-short") == 0) {
 		fHelp_lt(1);
 	}
-	else if (strcmp(argv, "--backup") == 0) {
+	else if (strcmp(com.flag, "--backup") == 0) {
 		fHelp_backup();
 	}
-	else if (strcmp(argv, "--export") == 0) {
+	else if (strcmp(com.flag, "--export") == 0) {
 		fHelp_export();
 	}
-	else if (strcmp(argv, "--import") == 0) {
+	else if (strcmp(com.flag, "--import") == 0) {
 		fHelp_import();
 	}
-	else if (strcmp(argv, "--free") == 0) {
+	else if (strcmp(com.flag, "--free") == 0) {
 		fHelp_free();
 	}
 	else {
 		printf(ERRO2);
-		printf("%s não é um comando de luof. Use \"luof --help\" para ver comandos válidos.\n", argv);
+		printf("%s não é um comando de luof. Use \"luof --help\" para ver comandos válidos.\n", com.flag);
 	}
 
 }

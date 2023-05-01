@@ -1,6 +1,6 @@
 #include "luof.h"
 
-void fModifyBookmark() {
+void fModifyBookmark(sCom com) {
 
 	sSite s, sNew;
 	sCat *cat, *cat2;
@@ -220,7 +220,7 @@ void fModifyCategory_atualizaCaminho(sBanco *db, sCat *cat, char *caminhoA, char
 
 }
 
-void fModifyCategory() {
+void fModifyCategory(sCom com) {
 
 	sCat *cat, *catNew, c;//a própria categoria que será modificada
 	sCat *catPai;//a categoria pai antiga

@@ -49,6 +49,11 @@ typedef struct sCat {
 	sLista catFilhos;
 } sCat;
 
+typedef struct sComando {
+	char flag[25];
+	char caminho[TAMCAMINHO + TAMNOMEFAV];
+} sCom;
+
 typedef struct sBanco {
 	char caminhoDB[TAMLINKARQ];
 	sCat *arvoreCats;
@@ -57,6 +62,8 @@ typedef struct sBanco {
 
 // --- Protótipo das funções ---
 //modulos
+sCom fSetaArgumentos(void (**funcao)(sCom com), int argc, char *argv[]);
+void fSetaCaminho(sCom *com, int ini, int fim, char *argv[]);
 void fSetaCaminhoArquivo(sBanco *db, char *arq, char *nome);
 void fSetaCaminhoCategoria(char caminho[], char nome[]);
 int fSetaSiteCategoria(sSite *s);
@@ -99,7 +106,7 @@ void fTeste();
 
 //main
 void fMenu();
-void fFree();
+void fFree(sCom com);
 
 //help
 void fHelp_private();
@@ -116,25 +123,25 @@ void fHelp_backup();
 void fHelp_export();
 void fHelp_import();
 void fHelp_free();
-void fHelp(char *argv);
+void fHelp(sCom com);
 
 //add-remove
-void fAddBookmark();
-void fAddCategory();
-void fRemoveBookmark();
-void fRemoveCategory();
+void fAddBookmark(sCom com);
+void fAddCategory(sCom com);
+void fRemoveBookmark(sCom com);
+void fRemoveCategory(sCom com);
 
 
 //modify
-void fModifyBookmark();
+void fModifyBookmark(sCom com);
 void fModifyCategory_atualizaCaminho(sBanco *db, sCat *cat, char *caminhoA, char *nomeA);
-void fModifyCategory();
+void fModifyCategory(sCom com);
 
 //list
-void fListCategory(int opcao, int argc, char *argv[]);
+void fListCategory(sCom com);
 void fListTree_printaLinhas(char linhas[], int hierarquia);
 void fListTree_private(sBanco *db, char linhas[], sCat *cat, int hierarquia, int opcao);
-void fListTree(int opcao);
+void fListTree(sCom com);
 
 //backup
 int contaQtdCats(sCat *cat);
@@ -142,14 +149,14 @@ int fBackup_preencnheListaCats(char **nomes, int *pos, sCat *cat);
 char* fBackup_criar(sBanco *db);
 int fBackup_separaNomeQuantidade(char *nomeQtdArq, char *nomeArq);
 void fBackup_restaurar(sBanco *db, FILE *arqBackup);
-void fBackup();
+void fBackup(sCom com);
 
 //import-export
 void fExport_private(sBanco *db, FILE *arqExport, sCat *cat, int hierarquia);
-void fExport();
+void fExport(sCom com);
 sSite fImport_setaFavorito(char *linha, char *categoria);
 void fImport_fav(sBanco *db, FILE *arqImport, sCat *cat);
 void fImport_cat(sBanco *db, FILE *arqImport, sCat *cat, char *linha);
-void fImport();
+void fImport(sCom com);
 
 #endif

@@ -160,7 +160,7 @@ void fBackup_restaurar(sBanco *db, FILE *arqBackup) {
 
 }
 
-void fBackup() {
+void fBackup(sCom com) {
 
 	char *nomeBackup, caminhoBackup[TAMLINKARQ];
 	int opcao;

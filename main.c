@@ -2,10 +2,18 @@
 
 int main(int argc, char *argv[]) {
 
+	void (*funcao)(sCom com) = NULL;
+
 	if (argc == 1) {
 		fMenu();
 	}
-	else if (strcmp(argv[1], "-h") == 0 || strcmp(argv[1], "--help") == 0) {
+	else {
+		sCom com = fSetaArgumentos(&funcao, argc, argv);
+		if (funcao)
+			funcao(com);
+	}
+
+	/*else if (strcmp(argv[1], "-h") == 0 || strcmp(argv[1], "--help") == 0) {
 		if (argc > 2)
 			fHelp(argv[2]);
 		else
@@ -55,7 +63,7 @@ int main(int argc, char *argv[]) {
 	}
 	else {
 		printf(ANSI_BOLD_WHT "Função inválida\n");
-	}
+	}*/
 
 	return 0;
 
@@ -63,8 +71,12 @@ int main(int argc, char *argv[]) {
 
 void fMenu() {
 
+	sCom com;
 	sBanco db;
 	int opcao;
+
+	com.flag[0] = '\0';
+	com.caminho[0] = '\0';
 
 	if (fInicializaDB(&db))
 		return;
@@ -98,33 +110,33 @@ void fMenu() {
 	printf("\n");
 
 	switch (opcao) {
-		case 1 :	fAddBookmark();
+		case 1 :	fAddBookmark(com);
 					break;
-		case 2 :	fRemoveBookmark();
+		case 2 :	fRemoveBookmark(com);
 					break;
-		case 3 :	fModifyBookmark();
+		case 3 :	fModifyBookmark(com);
 					break;
-		case 4 :	fAddCategory();
+		case 4 :	fAddCategory(com);
 					break;
-		case 5 :	fRemoveCategory();
+		case 5 :	fRemoveCategory(com);
 					break;
-		case 6 :	fModifyCategory();
+		case 6 :	fModifyCategory(com);
 					break;
-		case 7 :	fListCategory(0, 2, NULL);
+		case 7 :	fListCategory(com);
 					break;
-		case 8 :	fListCategory(1, 2, NULL);
+		case 8 :	fListCategory(com);
 					break;
-		case 9 :	fListTree(0);
+		case 9 :	fListTree(com);
 					break;
-		case 10:	fListTree(1);
+		case 10:	fListTree(com);
 					break;
-		case 11:	fBackup();
+		case 11:	fBackup(com);
 					break;
-		case 12:	fExport();
+		case 12:	fExport(com);
 					break;
-		case 13:	fImport();
+		case 13:	fImport(com);
 					break;
-		case 14:	fHelp(NULL);
+		case 14:	fHelp(com);
 					break;
 		default :	printf(ANSI_BOLD_WHT "Saindo...\n");
 					break;
@@ -132,7 +144,7 @@ void fMenu() {
 
 }
 
-void fFree() {
+void fFree(sCom com) {
 
 	sBanco db;
 	char vBooleana;

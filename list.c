@@ -1,6 +1,6 @@
 #include "luof.h"
 
-void fListCategory(int opcao, int argc, char *argv[]) {
+void fListCategory(sCom com) {
 
 	sSite *favorito, s;
 	sCat *cat, *catTemp;
@@ -10,20 +10,10 @@ void fListCategory(int opcao, int argc, char *argv[]) {
 	if (fInicializaDB(&db))
 		return;
 
-	if (argc > 2) {//se foi passado argumentos
-		//seta o argumento em s.categoria
-		strcpy(s.categoria, argv[2]);
-		for (int i = 3; i < argc; i++) {
-			strcat(s.categoria, " ");
-			strcat(s.categoria, argv[i]);
-		}
-		//retira as / a mais no início e no fim
-		while (s.categoria[0] == '/')
-			strcpy(s.categoria, &s.categoria[1]);
-		while (s.categoria[strlen(s.categoria)-1] == '/')
-				s.categoria[strlen(s.categoria)-1] = '\0';
-	}//se não foi passado argumentos
-	else if (fSetaSiteCategoria(&s)) {
+	if (com.caminho[0] != '\0') {//se foi passado argumentos
+		strcpy(s.categoria, com.caminho);
+	}
+	else if (fSetaSiteCategoria(&s)) {//se não foi passado argumentos
 		fFinalizaDB(&db);
 		return;
 	}
@@ -55,13 +45,13 @@ void fListCategory(int opcao, int argc, char *argv[]) {
 	//printa favorito por favorito
 	if (!emptyList(db.listaFavs)) {
 
-		if (opcao == 1)
+		if (strcmp(com.flag, "-s") == 0)
 			printf("\n");
 
 		it = criaIt(db.listaFavs);
 		do {
 			favorito = (struct sSite*) retornaItera(&it);
-			if (opcao == 0) {
+			if (strcmp(com.flag, "-s") != 0) {
 				printf(ANSI_BOLD_WHT "\nNome      : " ANSI_COLOR_GRA "%s\n", favorito->nome);
 				printf(ANSI_BOLD_WHT "Link      : " ANSI_COLOR_GRA "%s\n", favorito->link);
 				printf(ANSI_BOLD_WHT "Descrição : " ANSI_COLOR_GRA "%s\n", favorito->texto);
@@ -144,7 +134,7 @@ void fListTree_private(sBanco *db, char linhas[], sCat *cat, int hierarquia, int
 
 }
 
-void fListTree(int opcao) {
+void fListTree(sCom com) {
 
 	sSite *favorito;
 	sCat *catTemp;
@@ -152,6 +142,12 @@ void fListTree(int opcao) {
 	sLista listaTemp;
 	sIterador it;
 	char linhas[] = "10000000000";
+	int opcao;
+
+	if (strcmp(com.flag, "-s") == 0)
+		opcao = 1;
+	else
+		opcao = 0;
 
 	if (fInicializaDB(&db))
 		return;

@@ -1,6 +1,6 @@
 #include "luof.h"
 
-void fAddBookmark() {
+void fAddBookmark(sCom com) {
 
 	//variaveis
 	sSite s;
@@ -63,7 +63,7 @@ void fAddBookmark() {
 
 }
 
-void fAddCategory() {
+void fAddCategory(sCom com) {
 
 	sCat *catPai, cat;
 	sBanco db;
@@ -106,7 +106,7 @@ void fAddCategory() {
 
 }
 
-void fRemoveBookmark() {
+void fRemoveBookmark(sCom com) {
 
 	sSite s;
 	sCat *cat;
@@ -150,7 +150,7 @@ void fRemoveBookmark() {
 
 }
 
-void fRemoveCategory() {
+void fRemoveCategory(sCom com) {
 
 	sCat *cat, c;
 	sBanco db;
