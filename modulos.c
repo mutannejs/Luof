@@ -118,17 +118,21 @@ sCom fSetaArgumentos(void (**funcao)(sCom com), int argc, char *argv[]) {
 
 void fSetaCaminho(sCom *com, int ini, int fim, char *argv[]) {
 
+	int cont = 0;
+
+	while (argv[ini][cont] == '/')
+		cont++;
+	strcpy(com->caminho, &argv[ini][cont]);
+
 	//seta o argumento em s.categoria
-	strcpy(com->caminho, argv[ini]);
 	for (int i = ini+1; i < fim; i++) {
 		strcat(com->caminho, " ");
 		strcat(com->caminho, argv[i]);
 	}
+
 	//retira as / a mais no início e no fim
-	while (com->caminho[0] == '/')
-		strcpy(com->caminho, &com->caminho[1]);
 	while (com->caminho[strlen(com->caminho)-1] == '/')
-			com->caminho[strlen(com->caminho)-1] = '\0';
+		com->caminho[strlen(com->caminho)-1] = '\0';
 
 }
 
