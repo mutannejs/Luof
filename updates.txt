@@ -1,5 +1,9 @@
 /* ----------------------------- Atualizações ----------------------------- */
 
+02/05/2023:
+	. Pode-se passar as opções -s e --short no comando -lc para listar a
+categoria de modo resumido (igual a -lcs).
+
 24/04/2023:
 	. make reinstall criado. Usado para apenas atualizar o árquivo binário
 do luof e continuar com o banco de dados inalterado.

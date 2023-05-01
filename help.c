@@ -265,6 +265,10 @@ void fHelp_lc(int opcao) {
 		" informada. As subcategorias serão mostradas com um apóstrofo (*) antes de seu"
 		" nome, e os favoritos terão seu nome, link e texto mostrados."
 		" O nome da categoria também pode ser passado na linha de comandos.\n\n"
+		"\tHá também a possibilidade de passar os seguintes argumentos no comando (deve ser"
+		" escrito logo após \"-lc\" ou \"--list-category\"):\n"
+		"\t-s ou --short: mostra a saída de forma resumida, mostrando apenas o nome dos"
+		" favoritos.\n\n"
 		ANSI_BOLD_WHT "Ex:\n"
 		ANSI_BOLD_CYA "Categoria : " ANSI_COLOR_BLU "/\n\n" ANSI_BOLD_CYA
 		"* Jogos\n\n"
