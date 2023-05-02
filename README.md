@@ -10,8 +10,7 @@ Este projeto foi criado com a intenção de ser outro meio de guardar links de p
 
 ## Atualizações
 * 02/05/2023:
-	* Pode-se passar as opções -s e --short no comando -lc para listar a
- categoria de modo resumido (igual a -lcs).
+	* Agora pode-se passar argumentos na linha de comando.
 * 24/04/2023:
 	* make reinstall adicionado.
 	* Agora a categoria a ser visulizada pode ser passada direto na linha de comandos do
