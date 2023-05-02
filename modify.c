@@ -7,10 +7,13 @@ void fModifyBookmark(sCom com) {
 	sBanco db;
 	int opcao;
 
+	if (fAnalisaCaminhoSite(&s, com))
+		return;
+
 	if (fInicializaDB(&db))
 		return;
 
-	if (fSetaSiteCategoria(&s)) {
+	if (com.caminho[0] == '\0' && fSetaSiteCategoria(&s)) {
 		fFinalizaDB(&db);
 		return;
 	}
@@ -21,7 +24,7 @@ void fModifyBookmark(sCom com) {
 	}
 	fPreencheListaSite(&db, cat, 0);
 
-	if (fSetaSiteNome(&s)) {
+	if (com.caminho[0] == '\0' && fSetaSiteNome(&s)) {
 		fFinalizaDB(&db);
 		return;
 	}
@@ -229,10 +232,13 @@ void fModifyCategory(sCom com) {
 	char caminhoA[TAMCAMINHO], nomeA[TAMNOMEFAV];
 	int opcao;
 
+	if (fAnalisaCaminhoCat(&c, com))
+		return;
+
 	if (fInicializaDB(&db))
 		return;
 
-	if (fSetaCatCategoria(&c)) {
+	if (com.caminho[0] == '\0' && fSetaCatCategoria(&c)) {
 		fFinalizaDB(&db);
 		return;
 	}
@@ -242,7 +248,7 @@ void fModifyCategory(sCom com) {
 		return;
 	}
 
-	if (fSetaCatNome(&c)) {
+	if (com.caminho[0] == '\0' && fSetaCatNome(&c)) {
 		fFinalizaDB(&db);
 		return;
 	}

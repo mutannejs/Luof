@@ -150,7 +150,7 @@ void fFree(sCom com) {
 	sBanco db;
 	char vBooleana;
 
-	if (strcmp(com.flag, "-s") != 0) {
+	if (strcmp(com.flag, "-y") != 0) {
 		printf(ANSI_BOLD_WHT  "Você tem certeza que deseja apagar todas categorias e favoritos? [s/n]: " ANSI_COLOR_GRA);
 		scanf(" %c", &vBooleana);
 		if (vBooleana != 's') {

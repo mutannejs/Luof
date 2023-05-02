@@ -170,9 +170,18 @@ void fBackup(sCom com) {
 	if (fInicializaDB(&db))
 		return;
 
-	//pergunta ao usuário o que ele deseja fazer
-	printf(ANSI_BOLD_WHT "Você deseja criar ou restaurar um backup? [1]criar [2]restaurar [3]sair : " ANSI_COLOR_GRA);
-	scanf(" %d", &opcao);
+	//pergunta ao usuário o que ele deseja fazer (se não foi passado como argumento)
+	if (strcmp(com.flag, "-c") == 0 || strcmp(com.flag, "--create") == 0) {
+		opcao = 1;
+	}
+	else if (strcmp(com.flag, "-r") == 0 || strcmp(com.flag, "--restore") == 0) {
+		opcao = 2;
+	}
+	else {
+		com.caminho[0] = '\0';
+		printf(ANSI_BOLD_WHT "Você deseja criar ou restaurar um backup? [1]criar [2]restaurar [3]sair : " ANSI_COLOR_GRA);
+		scanf(" %d", &opcao);
+	}
 
 	//se o usuário não desejar fazer nada
 	if (opcao < 1 || opcao > 2) {
@@ -200,9 +209,14 @@ void fBackup(sCom com) {
 	}
 	else {
 
-		//pede ao usuário o caminho do backup
-		printf(ANSI_BOLD_WHT "Informe o caminho do arquivo de backup: " ANSI_COLOR_GRA);
-		scanf(" %[^\n]", caminhoBackup);
+		//pede ao usuário o caminho do backup (se não foi passado como argumento)
+		if (com.caminho[0] == '\0') {
+			printf(ANSI_BOLD_WHT "Informe o caminho do arquivo de backup: " ANSI_COLOR_GRA);
+			scanf(" %[^\n]", caminhoBackup);
+		}
+		else {
+			strcpy(caminhoBackup, com.caminho);
+		}
 
 		//abre o arquivo
 		arqBackup = fopen(caminhoBackup, "r");

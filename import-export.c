@@ -56,7 +56,10 @@ void fExport(sCom com) {
 	if (fInicializaDB(&db))
 		return;
 
-	if (fSetaSiteCategoria(&s)) {
+	if (com.caminho[0] != '\0') {//se a categoria foi passada como argumento
+		strcpy(s.categoria, com.caminho);
+	}
+	else if (fSetaSiteCategoria(&s)) {
 		fFinalizaDB(&db);
 		return;
 	}
@@ -249,9 +252,14 @@ void fImport(sCom com) {
 	if (fInicializaDB(&db))
 		return;
 
-	//pede ao usuário o caminho do backup
-	printf(ANSI_BOLD_WHT "Informe o caminho do arquivo de import: " ANSI_COLOR_GRA);
-	scanf(" %[^\n]", caminhoImport);
+	//pede ao usuário o caminho do backup (se não foi passado como argumento)
+	if (com.flag[0] == '\0') {
+		printf(ANSI_BOLD_WHT "Informe o caminho do arquivo de import: " ANSI_COLOR_GRA);
+		scanf(" %[^\n]", caminhoImport);
+	}
+	else {
+		strcpy(caminhoImport, com.flag);
+	}
 
 	//abre o arquivo
 	arqImport = fopen(caminhoImport, "r");
@@ -265,7 +273,10 @@ void fImport(sCom com) {
 		return;
 	}
 
-	if (fSetaCatCategoria(&c)) {
+	if (com.caminho[0] != '\0') {//se a categoria foi passada como argumento
+		strcpy(c.caminho, com.caminho);
+	}
+	else if (fSetaCatCategoria(&c)) {
 		fFinalizaDB(&db);
 		return;
 	}

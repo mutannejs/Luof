@@ -78,16 +78,14 @@ sCom fSetaArgumentos(void (**funcao)(sCom com), int argc, char *argv[]) {
 	}
 	else if (strcmp(argv[1], "--export") == 0) {
 		*funcao = fExport;
-		if (argc > 2 && argv[2][0] == '-')//foi passado uma flag
-			args[0] = 1;
-		if ((argc > 2 && argv[2][0] != '-') || argc > 3)//foi passado um caminho
+		if (argc > 2)//foi passado um caminho
 			args[1] = 1;
 	}
 	else if (strcmp(argv[1], "--import") == 0) {
 		*funcao = fImport;
-		if (argc > 2 && argv[2][0] == '-')//foi passado uma flag
+		if (argc > 2)//foi passado uma flag (nome arquivo)
 			args[0] = 1;
-		if ((argc > 2 && argv[2][0] != '-') || argc > 3)//foi passado um caminho
+		if (argc > 3)//foi passado um caminho (categoria)
 			args[1] = 1;
 	}
 	else if (strcmp(argv[1], "--free") == 0) {
@@ -151,6 +149,52 @@ int fSetaCaminho(sCom *com, int ini, int fim, char *argv[]) {
 
 	return 0;
 
+}
+
+int fAnalisaCaminhoSite(sSite *s, sCom com) {
+	if (com.caminho[0] != '\0') {//se o caminho foi passado seta a categoria e o favorito
+		for (int i = strlen(com.caminho); i > -1; i--) {
+			if (com.caminho[i] == '/') {
+				strncpy(s->categoria, com.caminho, i);
+				s->categoria[i] = '\0';
+				strcpy(s->nome, &com.caminho[i+1]);
+				i = -1;
+			}
+			else if (i == 0) {
+				strcpy(s->categoria, "/");
+				strcpy(s->nome, com.caminho);
+			}
+		}
+		if (strlen(s->nome) >= TAMNOMEFAV) {
+			printf(ERRO);
+			printf("Nomes de favoritos devem ter no máximo %d caracteres.\n", TAMNOMEFAV - 1);
+			return 1;
+		}
+	}
+	return 0;
+}
+
+int fAnalisaCaminhoCat(sCat *cat, sCom com) {
+	if (com.caminho[0] != '\0') {//se o caminho foi passado seta a categoria pai e a nova categoria
+		for (int i = strlen(com.caminho); i > -1; i--) {
+			if (com.caminho[i] == '/') {
+				strncpy(cat->caminho, com.caminho, i);
+				cat->caminho[i] = '\0';
+				strcpy(cat->nome, &com.caminho[i+1]);
+				i = -1;
+			}
+			else if (i == 0) {
+				strcpy(cat->caminho, "/");
+				strcpy(cat->nome, com.caminho);
+			}
+		}
+		if (strlen(cat->nome) >= TAMNOMEFAV) {
+			printf(ERRO);
+			printf("Categorias devem ter no máximo %d caracteres.\n", TAMNOMEFAV - 1);
+			return 1;
+		}
+	}
+	return 0;
 }
 
 void fSetaCaminhoArquivo(sBanco *db, char *arq, char *nome) {

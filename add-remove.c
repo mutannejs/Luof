@@ -1,49 +1,5 @@
 #include "luof.h"
 
-int fAnalisaCaminhoSite(sSite *s, sCom com) {
-	if (com.caminho[0] != '\0') {//se o caminho foi passado seta a categoria e o favorito
-		for (int i = strlen(com.caminho); i > -1; i--) {
-			if (com.caminho[i] == '/') {
-				strncpy(s->categoria, com.caminho, i);
-				strcpy(s->nome, &com.caminho[i+1]);
-				i = -1;
-			}
-			else if (i == 0) {
-				strcpy(s->categoria, "/");
-				strcpy(s->nome, com.caminho);
-			}
-		}
-		if (strlen(s->nome) >= TAMNOMEFAV) {
-			printf(ERRO);
-			printf("Nomes de favoritos devem ter no máximo %d caracteres.\n", TAMNOMEFAV - 1);
-			return 1;
-		}
-	}
-	return 0;
-}
-
-int fAnalisaCaminhoCat(sCat *cat, sCom com) {
-	if (com.caminho[0] != '\0') {//se o caminho foi passado seta a categoria pai e a nova categoria
-		for (int i = strlen(com.caminho); i > -1; i--) {
-			if (com.caminho[i] == '/') {
-				strncpy(cat->caminho, com.caminho, i);
-				strcpy(cat->nome, &com.caminho[i+1]);
-				i = -1;
-			}
-			else if (i == 0) {
-				strcpy(cat->caminho, "/");
-				strcpy(cat->nome, com.caminho);
-			}
-		}
-		if (strlen(cat->nome) >= TAMNOMEFAV) {
-			printf(ERRO);
-			printf("Categorias devem ter no máximo %d caracteres.\n", TAMNOMEFAV - 1);
-			return 1;
-		}
-	}
-	return 0;
-}
-
 void fAddBookmark(sCom com) {
 
 	//variaveis
