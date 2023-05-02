@@ -63,7 +63,7 @@ typedef struct sBanco {
 // --- Protótipo das funções ---
 //modulos
 sCom fSetaArgumentos(void (**funcao)(sCom com), int argc, char *argv[]);
-void fSetaCaminho(sCom *com, int ini, int fim, char *argv[]);
+int fSetaCaminho(sCom *com, int ini, int fim, char *argv[]);
 void fSetaCaminhoArquivo(sBanco *db, char *arq, char *nome);
 void fSetaCaminhoCategoria(char caminho[], char nome[]);
 int fSetaSiteCategoria(sSite *s);
@@ -126,6 +126,8 @@ void fHelp_free();
 void fHelp(sCom com);
 
 //add-remove
+int fAnalisaCaminhoSite(sSite *s, sCom com);
+int fAnalisaCaminhoCat(sCat *cat, sCom com);
 void fAddBookmark(sCom com);
 void fAddCategory(sCom com);
 void fRemoveBookmark(sCom com);

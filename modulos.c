@@ -12,7 +12,6 @@ sCom fSetaArgumentos(void (**funcao)(sCom com), int argc, char *argv[]) {
 		*funcao = fHelp;
 		if (argc > 2)//foi passada uma flag
 			args[0] = 1;
-			//strcpy(com.flag, argv[2]);
 	}
 	else if (strcmp(argv[1], "-ab") == 0 || strcmp(argv[1], "--add-bookmark") == 0) {
 		*funcao = fAddBookmark;
@@ -103,25 +102,40 @@ sCom fSetaArgumentos(void (**funcao)(sCom com), int argc, char *argv[]) {
 	//seta qual a flag passada e qual o caminho (se foram passados)
 	if (args[0] && args[1]) {
 		strcpy(com.flag, argv[2]);
-		fSetaCaminho(&com, 3, argc, argv);
+		if (fSetaCaminho(&com, 3, argc, argv))
+			*funcao = NULL;
 	}
 	else if (args[0] && !args[1]) {
 		strcpy(com.flag, argv[2]);
 	}
 	else if (!args[0] && args[1]) {
-		fSetaCaminho(&com, 2, argc, argv);
+		if (fSetaCaminho(&com, 2, argc, argv))
+			*funcao = NULL;
 	}
 
 	return com;
 
 }
 
-void fSetaCaminho(sCom *com, int ini, int fim, char *argv[]) {
+int fSetaCaminho(sCom *com, int ini, int fim, char *argv[]) {
 
 	int cont = 0;
 
-	while (argv[ini][cont] == '/')
-		cont++;
+	//verifica se o caminho passado não é maior que o máximo aceito
+	for (int i = ini, j = 0; i < fim; i++) {
+		j += strlen(argv[i]);
+		if (j >= (TAMCAMINHO + TAMNOMEFAV)) {
+			printf(ERRO);
+			printf("O caminho tem mais caracteres do que o máximo permitido.\n");
+			return 1;
+		}
+	}
+
+	//tira as / no início caso ela não seja o único caractere
+	if (strcmp(argv[ini], "/") != 0) {
+		while (argv[ini][cont] == '/')
+			cont++;
+	}
 	strcpy(com->caminho, &argv[ini][cont]);
 
 	//seta o argumento em s.categoria
@@ -130,9 +144,12 @@ void fSetaCaminho(sCom *com, int ini, int fim, char *argv[]) {
 		strcat(com->caminho, argv[i]);
 	}
 
-	//retira as / a mais no início e no fim
+	//retira as / a mais no início e no fim caso ela não seja o único caractere
+	if (strcmp(com->caminho, "/") != 0 )
 	while (com->caminho[strlen(com->caminho)-1] == '/')
 		com->caminho[strlen(com->caminho)-1] = '\0';
+
+	return 0;
 
 }
 

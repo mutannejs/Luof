@@ -1,5 +1,49 @@
 #include "luof.h"
 
+int fAnalisaCaminhoSite(sSite *s, sCom com) {
+	if (com.caminho[0] != '\0') {//se o caminho foi passado seta a categoria e o favorito
+		for (int i = strlen(com.caminho); i > -1; i--) {
+			if (com.caminho[i] == '/') {
+				strncpy(s->categoria, com.caminho, i);
+				strcpy(s->nome, &com.caminho[i+1]);
+				i = -1;
+			}
+			else if (i == 0) {
+				strcpy(s->categoria, "/");
+				strcpy(s->nome, com.caminho);
+			}
+		}
+		if (strlen(s->nome) >= TAMNOMEFAV) {
+			printf(ERRO);
+			printf("Nomes de favoritos devem ter no máximo %d caracteres.\n", TAMNOMEFAV - 1);
+			return 1;
+		}
+	}
+	return 0;
+}
+
+int fAnalisaCaminhoCat(sCat *cat, sCom com) {
+	if (com.caminho[0] != '\0') {//se o caminho foi passado seta a categoria pai e a nova categoria
+		for (int i = strlen(com.caminho); i > -1; i--) {
+			if (com.caminho[i] == '/') {
+				strncpy(cat->caminho, com.caminho, i);
+				strcpy(cat->nome, &com.caminho[i+1]);
+				i = -1;
+			}
+			else if (i == 0) {
+				strcpy(cat->caminho, "/");
+				strcpy(cat->nome, com.caminho);
+			}
+		}
+		if (strlen(cat->nome) >= TAMNOMEFAV) {
+			printf(ERRO);
+			printf("Categorias devem ter no máximo %d caracteres.\n", TAMNOMEFAV - 1);
+			return 1;
+		}
+	}
+	return 0;
+}
+
 void fAddBookmark(sCom com) {
 
 	//variaveis
@@ -7,24 +51,9 @@ void fAddBookmark(sCom com) {
 	sCat *cat;
 	sBanco db;
 
-	if (com.caminho[0] != '\0') {//se o caminho foi passado seta a categoria e o favorito
-		for (int i = strlen(com.caminho); i > -1; i--) {
-			if (com.caminho[i] == '/') {
-				strncpy(s.categoria, com.caminho, i);
-				strcpy(s.nome, &com.caminho[i+1]);
-				i = -1;
-			}
-			else if (i == 0) {
-				strcpy(s.categoria, "/");
-				strcpy(s.nome, com.caminho);
-			}
-		}
-		if (strlen(s.nome) >= TAMNOMEFAV) {
-			printf(ERRO);
-			printf("Nomes de favoritos devem ter no máximo %d caracteres.\n", TAMNOMEFAV - 1);
-			return;
-		}
-	}
+	//se o caminho foi passado seta a categoria e o favorito
+	if (fAnalisaCaminhoSite(&s, com))
+		return;
 
 	// inicializa o banco de dados (se existir guarda em aLuof o arquivo com as categorias, se não pergunta se quer cria-lo)
 	if (fInicializaDB(&db))
@@ -87,24 +116,9 @@ void fAddCategory(sCom com) {
 	sCat *catPai, cat;
 	sBanco db;
 
-	if (com.caminho[0] != '\0') {//se o caminho foi passado seta a categoria pai e a nova categoria
-		for (int i = strlen(com.caminho); i > -1; i--) {
-			if (com.caminho[i] == '/') {
-				strncpy(cat.caminho, com.caminho, i);
-				strcpy(cat.nome, &com.caminho[i+1]);
-				i = -1;
-			}
-			else if (i == 0) {
-				strcpy(cat.caminho, "/");
-				strcpy(cat.nome, com.caminho);
-			}
-		}
-		if (strlen(cat.caminho) >= TAMNOMEFAV) {
-			printf(ERRO);
-			printf("Categorias devem ter no máximo %d caracteres.\n", TAMNOMEFAV - 1);
-			return;
-		}
-	}
+	//se o caminho foi passado seta a categoria pai e a nova categoria
+	if (fAnalisaCaminhoCat(&cat, com))
+		return;
 
 	if (fInicializaDB(&db)) {
 		fFinalizaDB(&db);
@@ -150,12 +164,15 @@ void fRemoveBookmark(sCom com) {
 	sCat *cat;
 	sBanco db;
 
+	if (fAnalisaCaminhoSite(&s, com))
+		return;
+
 	if (fInicializaDB(&db)) {
 		fFinalizaDB(&db);
 		return;
 	}
 
-	if (fSetaSiteCategoria(&s)) {
+	if (com.caminho[0] == '\0' && fSetaSiteCategoria(&s)) {
 		fFinalizaDB(&db);
 		return;
 	}
@@ -166,7 +183,7 @@ void fRemoveBookmark(sCom com) {
 	}
 	fPreencheListaSite(&db, cat, 0);
 
-	if (fSetaSiteNome(&s)) {
+	if (com.caminho[0] == '\0' && fSetaSiteNome(&s)) {
 		fFinalizaDB(&db);
 		return;
 	}
@@ -193,10 +210,13 @@ void fRemoveCategory(sCom com) {
 	sCat *cat, c;
 	sBanco db;
 
+	if (fAnalisaCaminhoCat(&c, com))
+		return;
+
 	if (fInicializaDB(&db))
 		return;
 
-	if (fSetaCatCategoria(&c)) {
+	if (com.caminho[0] == '\0' && fSetaCatCategoria(&c)) {
 		fFinalizaDB(&db);
 		return;
 	}
@@ -206,7 +226,7 @@ void fRemoveCategory(sCom com) {
 		return;
 	}
 
-	if (fSetaCatNome(&c)) {
+	if (com.caminho[0] == '\0' && fSetaCatNome(&c)) {
 		fFinalizaDB(&db);
 		return;
 	}
