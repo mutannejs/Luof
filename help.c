@@ -16,13 +16,17 @@ void fHelp_private() {
 	" deste programa:\n"
 	"\tPara usar o Luof, basta digitar na linha de comandos \"luof\" seguido do comando que se"
 	" deseja utilizar, por extenso (com dois traços: -- ) ou abreviado (com um traço: - ), ou"
-	" não informar nenhum comando para ver um menu das opções disponíveis.\n"
+	" não informar nenhum comando para ver um menu das opções disponíveis. A maioria dos"
+	" comandos permite receber um ou mais argumentos após seu nome na linha de comando, para"
+	" saber quais argumentos podem ser passados para aquele comando deve-se verificar seu modo"
+	" de uso com o comando --help.\n"
+	ANSI_BOLD_WHT "\tExs: " ANSI_COLOR_BLU "luof -ab\n"
+	"\t     luof --list-tree\n"
+	"\t     luof -lc -s Filmes\n"
+	ANSI_COLOR_WHT
 	"\tUsar os caracteres < e > em nomes de favoritos ou em nomes de categorias pode gerar um"
 	" mal funcionamento de algumas operações, por tanto, não é recomendado usar esses dois"
 	" caracteres nos casos mencionados.\n"
-	ANSI_BOLD_WHT "\tExs: " ANSI_COLOR_BLU "luof -ab\n"
-	"\t     luof --list-category\n"
-	ANSI_COLOR_WHT
 	"\tUma categoria é por exemplo como uma pasta no favoritos de um browser, e da mesma forma"
 	" que pode existir pastas dentro de pastas, pode existir categorias dentro de categorias."
 	" Quando um favorito não está dentro de nenhuma categoria, ou uma categoria não possui"
@@ -80,12 +84,12 @@ void fHelp_private() {
 	ANSI_BOLD_YEL "\t-lc\tou   --list-category:\n"
 	ANSI_COLOR_WHT
 	"\tUse para ver o nome das categorias e dados dos favoritos que pertencem a categoria"
-	" informada. O nome da categoria também pode ser passado na linha de comandos.\n\n"
+	" informada.\n\n"
 
 	ANSI_BOLD_YEL "\t-lcs\tou   --list-category-short:\n"
 	ANSI_COLOR_WHT
 	"\tUse para ver apenas os nomes das categorias e favoritos que pertencem a categoria"
-	" informada. O nome da categoria também pode ser passado na linha de comandos.\n\n"
+	" informada.\n\n"
 
 	ANSI_BOLD_YEL "\t-lt\tou   --list-tree:\n"
 	ANSI_COLOR_WHT
@@ -145,9 +149,15 @@ void fHelp_ab() {
 	" esperada.\n"
 	"\tNo geral, todos os campos aceitam um número grande de caracteres, com exceção do nome"
 	" que aceita no máximo 99.\n\n"
-	ANSI_BOLD_WHT "Ex:\n"
+	ANSI_BOLD_WHT "Args :" ANSI_COLOR_WHT "\tEssa função permite passar na linha de comando o"
+	" caminho do favorito a ser adicionado, ou seja, a categoria junto com seu nome.\n\n"
+	ANSI_BOLD_WHT "Exemplos :\n"
+	"> " ANSI_COLOR_WHT "luof --add-bookmark\n"
 	ANSI_BOLD_CYA "Categoria : " ANSI_COLOR_BLU "Jogos/steam\n"
 	ANSI_BOLD_CYA "Nome      : " ANSI_COLOR_BLU "Dark Souls\n"
+	ANSI_BOLD_CYA "Link      : " ANSI_COLOR_BLU "https://store.steampowered.com/app/570940/DARK_SOULS_REMASTERED/\n"
+	ANSI_BOLD_CYA "Descrição : " ANSI_COLOR_BLU "Página da steam referente ao jogo Dark Souls: Remastered\n\n"
+	ANSI_BOLD_WHT "> " ANSI_COLOR_WHT "luof -ab Jogos/steam/Dark Souls\n"
 	ANSI_BOLD_CYA "Link      : " ANSI_COLOR_BLU "https://store.steampowered.com/app/570940/DARK_SOULS_REMASTERED/\n"
 	ANSI_BOLD_CYA "Descrição : " ANSI_COLOR_BLU "Página da steam referente ao jogo Dark Souls: Remastered\n\n"
 	);
@@ -166,9 +176,13 @@ void fHelp_ac() {
 	" também não pode ser igual à palavra \"luof\".\n"
 	"\tUma categoria pode no máximo alcançar 9 níveis de subcategoria (considerando que a raiz"
 	" está na ).\n\n"
-	ANSI_BOLD_WHT "Ex:\n"
+	ANSI_BOLD_WHT "Args :" ANSI_COLOR_WHT "\tEssa função permite passar na linha de comando o"
+	" caminho da categoria a ser adicionada, ou seja, a categoria pai junto com seu nome.\n\n"
+	ANSI_BOLD_WHT "Exemplos :\n"
+	"> " ANSI_COLOR_WHT "luof --add-category\n"
 	ANSI_BOLD_CYA "Categoria pai     : " ANSI_COLOR_BLU "/\n"
 	ANSI_BOLD_CYA "Nome da categoria : " ANSI_COLOR_BLU "Jogos\n\n"
+	ANSI_BOLD_WHT "> " ANSI_COLOR_WHT "luof -ac Jogos\n\n"
 	);
 }
 
