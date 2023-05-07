@@ -347,135 +347,152 @@ void fHelp_mc() {
 	);
 }
 
-void fHelp_lc(int opcao) {
-	if (opcao == 0) {
-		printf(
-		ANSI_BOLD_WHT "luof:" ANSI_BOLD_YEL "\t-lc\tou   --list-category:\n\n"
+void fHelp_lc() {
+	printf(
+	ANSI_BOLD_WHT "luof:" ANSI_BOLD_YEL "\t-lc\tou   --list-category:\n\n"
 
-		ANSI_COLOR_WHT
-		"\tUse para ver o nome das categorias e dados dos favoritos que pertencem a categoria"
-		" informada. As subcategorias serão mostradas com um apóstrofo (*) antes de seu"
-		" nome, e os favoritos terão seu nome, link e texto mostrados.\n\n"
+	ANSI_COLOR_WHT
+	"\tUse para ver o nome das categorias e dados dos favoritos que pertencem a categoria"
+	" informada. As subcategorias serão mostradas com um apóstrofo (*) antes de seu"
+	" nome, e os favoritos terão seu nome, link e texto mostrados.\n\n"
 
-		ANSI_BOLD_WHT "Args :"
-		ANSI_COLOR_WHT "\tEssa função permite passar na linha de comando:\n"
-		"\t-s ou --short para não exibir os dados dos favoritos, apenas seus nomes.\n"
-		"\tO caminho da categoria a ser visualizada: ou seja, a categoria pai junto com seu nome.\n"
-		"\t(Caso passado os dois argumentos, o caminho da categoria deve ser passada por"
-		" último)\n\n"
+	ANSI_BOLD_WHT "Args :"
+	ANSI_COLOR_WHT "\tEssa função permite passar na linha de comando:\n"
+	"\t-s ou --short para não exibir os dados dos favoritos, apenas seus nomes.\n"
+	"\tO caminho da categoria a ser visualizada: ou seja, a categoria pai junto com seu nome.\n"
+	"\t(Caso passado os dois argumentos, o caminho da categoria deve ser passada por"
+	" último)\n\n"
 
-		ANSI_BOLD_WHT "Exemplos:\n"
-		"> " ANSI_COLOR_WHT "luof --list-category\n"
-		ANSI_BOLD_CYA "Categoria : " ANSI_COLOR_BLU "/\n\n" ANSI_BOLD_CYA
-		"* Jogos\n\n"
-		"Nome      : ilovepdf\n"
-		"Link      : https://www.ilovepdf.com/pt\n"
-		"Descrição : Site com diversas ferramentas para manipular pdf's\n\n"
-		"Nome      : randoma11y\n"
-		"Link      : https://randoma11y.com/\n"
-		"Texto     : Site que combina cores aleatoriamente para uso em páginas web\n\n"
+	ANSI_BOLD_WHT "Exemplos:\n"
+	"> " ANSI_COLOR_WHT "luof --list-category\n"
+	ANSI_BOLD_CYA "Categoria : " ANSI_COLOR_BLU "/\n\n" ANSI_BOLD_CYA
+	"* Jogos\n\n"
+	"Nome      : ilovepdf\n"
+	"Link      : https://www.ilovepdf.com/pt\n"
+	"Descrição : Site com diversas ferramentas para manipular pdf's\n\n"
+	"Nome      : randoma11y\n"
+	"Link      : https://randoma11y.com/\n"
+	"Texto     : Site que combina cores aleatoriamente para uso em páginas web\n\n"
 
-		ANSI_BOLD_WHT "> " ANSI_COLOR_WHT "luof -lc\n"
-		ANSI_BOLD_CYA "Categoria : " ANSI_COLOR_BLU "Jogos\n\n" ANSI_BOLD_CYA
-		"* steam\n\n"
+	ANSI_BOLD_WHT "> " ANSI_COLOR_WHT "luof -lc\n"
+	ANSI_BOLD_CYA "Categoria : " ANSI_COLOR_BLU "Jogos\n\n" ANSI_BOLD_CYA
+	"* steam\n\n"
 
-		ANSI_BOLD_WHT "> " ANSI_COLOR_WHT "luof -lc -s /\n\n"
-		ANSI_BOLD_CYA
-		"* Jogos\n"
-		"ilovepdf\n"
-		"randoma11y\n\n"
-		);
-	}
-	else {
-		printf(
-		ANSI_BOLD_WHT "luof:" ANSI_BOLD_YEL "\t-lcs\tou   --list-category-short:\n\n"
-
-		ANSI_COLOR_WHT
-		"\tUse para ver o nome das categorias e nome dos favoritos que pertencem a categoria"
-		" informada. Onde as categorias serão mostradas com um apóstrofo (*) antes de seu"
-		" nome, e os favoritos terão apenas seu nome mostrado."
-		" O nome da categoria também pode ser passado na linha de comandos.\n\n"
-
-		ANSI_BOLD_WHT "Args :" ANSI_COLOR_WHT "\tEssa função permite passar na linha de comando o"
-		" caminho da categoria a ser visualizada, ou seja, a categoria pai junto com seu nome.\n\n"
-
-		ANSI_BOLD_WHT "Exemplos:\n"
-		"> " ANSI_COLOR_WHT "luof -lcs\n"
-		ANSI_BOLD_CYA "\nCategoria : " ANSI_COLOR_BLU "/\n\n" ANSI_BOLD_CYA
-		"* Jogos\n\n"
-		"ilovepdf\n"
-		"randoma11y\n\n"
-
-		ANSI_BOLD_WHT "> " ANSI_COLOR_WHT "luof -lcs /\n\n"
-		ANSI_BOLD_CYA "* Jogos\n\n"
-		"ilovepdf\n"
-		"randoma11y\n\n"
-		);
-	}
+	ANSI_BOLD_WHT "> " ANSI_COLOR_WHT "luof -lc -s /\n\n"
+	ANSI_BOLD_CYA
+	"* Jogos\n"
+	"ilovepdf\n"
+	"randoma11y\n\n"
+	);
 }
 
-void fHelp_lt(int opcao) {
-	if (opcao == 0) {
-		printf(
-		ANSI_BOLD_WHT "luof:" ANSI_BOLD_YEL "\t-lt\tou   --list-tree:\n\n"
-		ANSI_COLOR_WHT
-		"\tUse para ver todas as categorias e favoritos que estão armazenados. Os dados serão"
-		" mostrados em forma de árvore, obedecendo à hierarquia das categorias, onde as categorias"
-		" serão mostradas com um apóstrofo (*) antes de seu nome.\n"
-		"\tAlém de mostrar uma visão de tudo que está armazenado, serve principalmente para saber"
-		" o caminho (categoria e/ou nome) de algo específico.\n\n"
-		ANSI_BOLD_WHT "Ex:"
-		ANSI_COLOR_WHT " Caso o comando \"luof -lt\" gerasse a saída:\n"
-		ANSI_BOLD_CYA "|_ * Jogos\n"
-		"|    |_ * steam\n"
-		"|         |_ * Dark Souls\n"
-		"|         |    |_ ds2 sotfs\n"
-		"|         |    |_ dsr\n"
-		"|_ ilovepdf\n"
-		"|_ randoma11y\n\n"
-		ANSI_COLOR_WHT "\tPoderia-se concluir que o caminho do favorito \"dsr\" é \"Jogos/steam/Dark Souls/dsr\","
-		" e caso quisesse-se removê-lo, os dados informados teriam que ser:\n"
-		ANSI_BOLD_CYA "Categoria : " ANSI_COLOR_BLU "Jogos/steam/Dark Souls\n"
-		ANSI_BOLD_CYA "Nome      : " ANSI_COLOR_BLU "dsr\n\n"
-		ANSI_COLOR_WHT "\tDa mesma forma, se se quisesse remover o favorito \"ilovepdf\" ou a categoria \"steam\","
-		" os dados informados teriam que ser:\n"
-		"\tPara o favorito \"ilovepdf\"\n"
-		ANSI_BOLD_CYA "Categoria : " ANSI_COLOR_BLU "/\n"
-		ANSI_BOLD_CYA "Nome      : " ANSI_COLOR_BLU "ilovepdf\n\n"
-		ANSI_COLOR_WHT "\tPara a categoria \"steam\"\n"
-		ANSI_BOLD_CYA "Categoria pai     : " ANSI_COLOR_BLU "Jogos\n"
-		ANSI_BOLD_CYA "Nome da categoria : " ANSI_COLOR_BLU "steam\n\n"
-		);
-	}
-	else {
-		printf(
-		ANSI_BOLD_WHT "luof:" ANSI_BOLD_YEL "\t-lts\tou   --list-tree-short:\n\n"
-		ANSI_COLOR_WHT
-		"\tUse para ver todas as categorias que estão armazenadas. Os dados serão"
-		" mostrados em forma de árvore, obedecendo à hierarquia das categorias.\n"
-		"\tAlém de mostrar uma visão de todas as categoria do banco, serve principalmente para saber"
-		" o caminho de algo específico.\n\n"
-		ANSI_BOLD_WHT "Ex:"
-		ANSI_COLOR_WHT " Caso o comando \"luof -lts\" gerasse a saída:\n"
-		ANSI_BOLD_CYA "|_ * Jogos\n"
-		"|    |_ * steam\n"
-		"|         |_ * Dark Souls\n"
-		"|_ * séries\n"
-		"     |_ * Netflix\n"
-		"     |_ * TV\n"
-		"          |_ * Comédia\n"
-		"          |_ * Romance\n\n"
-		ANSI_COLOR_WHT "\tCaso quisesse-se listar uma categoria, poderia ser usado como base o resultado dessa"
-		" pesquisa, que diferentemente de -lt mostraria apenas o que de fato interessa, as categorias. Se"
-		" por exemplo, quisesse-se saber os favoritos da categoria \"Dark Souls\", basta entrar com:"
-		" \"Jogos/steam/Dark Souls\" quando requisitado a categoria.\n\n"
-		);
-	}
+void fHelp_lcs() {
+	printf(
+	ANSI_BOLD_WHT "luof:" ANSI_BOLD_YEL "\t-lcs\tou   --list-category-short:\n\n"
+
+	ANSI_COLOR_WHT
+	"\tUse para ver o nome das categorias e nome dos favoritos que pertencem a categoria"
+	" informada. Onde as categorias serão mostradas com um apóstrofo (*) antes de seu"
+	" nome, e os favoritos terão apenas seu nome mostrado."
+	" O nome da categoria também pode ser passado na linha de comandos.\n\n"
+
+	ANSI_BOLD_WHT "Args :" ANSI_COLOR_WHT "\tEssa função permite passar na linha de comando o"
+	" caminho da categoria a ser visualizada, ou seja, a categoria pai junto com seu nome.\n\n"
+
+	ANSI_BOLD_WHT "Exemplos:\n"
+	"> " ANSI_COLOR_WHT "luof -lcs\n"
+	ANSI_BOLD_CYA "\nCategoria : " ANSI_COLOR_BLU "/\n\n" ANSI_BOLD_CYA
+	"* Jogos\n\n"
+	"ilovepdf\n"
+	"randoma11y\n\n"
+
+	ANSI_BOLD_WHT "> " ANSI_COLOR_WHT "luof -lcs /\n\n"
+	ANSI_BOLD_CYA "* Jogos\n\n"
+	"ilovepdf\n"
+	"randoma11y\n\n"
+	);
+}
+
+void fHelp_lt() {
+	printf(
+	ANSI_BOLD_WHT "luof:" ANSI_BOLD_YEL "\t-lt\tou   --list-tree:\n\n"
+
+	ANSI_COLOR_WHT
+	"\tUse para ver todas as categorias e favoritos que estão armazenados. Os dados serão"
+	" mostrados em forma de árvore, obedecendo à hierarquia das categorias, onde as categorias"
+	" serão mostradas com um apóstrofo (*) antes de seu nome.\n"
+	"\tAlém de mostrar uma visão de tudo que está armazenado, serve principalmente para saber"
+	" o caminho (categoria e/ou nome) de algo específico.\n\n"
+
+	ANSI_BOLD_WHT "Args :"
+	ANSI_COLOR_WHT "\tEssa função permite passar na linha de comando:\n"
+	"\t-s ou --short para não exibir os favoritos, apenas categorias.\n\n"
+//	"\tO caminho da categoria a ser visualizada: ou seja, a categoria pai junto com seu nome.\n"
+//	"\t(Caso passado os dois argumentos, o caminho da categoria deve ser passada por"
+//	" último)\n\n"
+
+	ANSI_BOLD_WHT "Exemplos:\n"
+	ANSI_COLOR_WHT "> " ANSI_COLOR_WHT "luof --list-tree\n"
+	ANSI_BOLD_CYA "|_ * Jogos\n"
+	"|    |_ * steam\n"
+	"|         |_ * Dark Souls\n"
+	"|         |    |_ ds2 sotfs\n"
+	"|         |    |_ dsr\n"
+	"|_ ilovepdf\n"
+	"|_ randoma11y\n\n"
+	ANSI_COLOR_WHT "> " ANSI_COLOR_WHT "luof -lt -s\n"
+	ANSI_BOLD_CYA "|_ * Jogos\n"
+	"     |_ * steam\n"
+	"          |_ * Dark Souls\n\n"
+
+	ANSI_COLOR_WHT "\tPoderia-se concluir que o caminho do favorito \"dsr\" é \"Jogos/steam/Dark Souls/dsr\","
+	" e caso quisesse-se removê-lo, os dados informados teriam que ser:\n"
+	ANSI_BOLD_CYA "Categoria : " ANSI_COLOR_BLU "Jogos/steam/Dark Souls\n"
+	ANSI_BOLD_CYA "Nome      : " ANSI_COLOR_BLU "dsr\n\n"
+
+	ANSI_COLOR_WHT "\tDa mesma forma, se se quisesse remover o favorito \"ilovepdf\" ou a categoria \"steam\","
+	" os dados informados teriam que ser:\n"
+	"\tPara o favorito \"ilovepdf\"\n"
+	ANSI_BOLD_CYA "Categoria : " ANSI_COLOR_BLU "/\n"
+	ANSI_BOLD_CYA "Nome      : " ANSI_COLOR_BLU "ilovepdf\n\n"
+	ANSI_COLOR_WHT "\tPara a categoria \"steam\"\n"
+	ANSI_BOLD_CYA "Categoria pai     : " ANSI_COLOR_BLU "Jogos\n"
+	ANSI_BOLD_CYA "Nome da categoria : " ANSI_COLOR_BLU "steam\n\n"
+	);
+}
+
+void fHelp_lts() {
+	printf(
+	ANSI_BOLD_WHT "luof:" ANSI_BOLD_YEL "\t-lts\tou   --list-tree-short:\n\n"
+
+	ANSI_COLOR_WHT
+	"\tUse para ver todas as categorias que estão armazenadas. Os dados serão"
+	" mostrados em forma de árvore, obedecendo à hierarquia das categorias.\n"
+	"\tAlém de mostrar uma visão de todas as categoria do banco, serve principalmente para saber"
+	" o caminho de algo específico.\n\n"
+
+	ANSI_BOLD_WHT "Exemplos:"
+	ANSI_BOLD_WHT "> " ANSI_COLOR_WHT "luof -lts\n"
+	ANSI_BOLD_CYA "|_ * Jogos\n"
+	"|    |_ * steam\n"
+	"|         |_ * Dark Souls\n"
+	"|_ * séries\n"
+	"     |_ * Netflix\n"
+	"     |_ * TV\n"
+	"          |_ * Comédia\n"
+	"          |_ * Romance\n\n"
+
+	ANSI_COLOR_WHT "\tCaso quisesse-se listar uma categoria, poderia ser usado como base o resultado dessa"
+	" pesquisa, que diferentemente de -lt mostraria apenas o que de fato interessa, as categorias. Se"
+	" por exemplo, quisesse-se saber os favoritos da categoria \"Dark Souls\", basta entrar com:"
+	" \"Jogos/steam/Dark Souls\" quando requisitado a categoria.\n\n"
+	);
 }
 
 void fHelp_backup() {
 	printf(
 	ANSI_BOLD_WHT "luof:" ANSI_BOLD_YEL "\t--backup:\n\n"
+
 	ANSI_COLOR_WHT
 	"\tUse para criar ou restaurar um backup. Informe a opção desejada; se a opção for"
 	" [1]criar, o arquivo de backup (o arquivo possui o nome luof.bkp) será adicionado"
@@ -483,15 +500,23 @@ void fHelp_backup() {
 	" perdido. Caso a opção seja [2]restaurar, será necessário informar o caminho do arquivo"
 	" de backup que se deseja restaurar, lembrando que ao restaurar um backup todos os"
 	" dados atuais do banco serão perdidos.\n\n"
-	ANSI_BOLD_WHT "Ex:"
-	ANSI_COLOR_WHT " Caso quisesse-se criar um backup, porém na pasta atual já exista o arquivo luof.bkp:\n"
+
+	ANSI_BOLD_WHT "Args :"
+	ANSI_COLOR_WHT "\tEssa função permite passar na linha de comando:\n"
+	"\t-c ou --create para criar um backup.\n"
+	"\t-r ou --restore para restaurar um backup.\n"
+	"\tCaso tenha sido passado o argumento -r -ou --restore pode-se passar o caminho do"
+	" arquivo de backup que será usado, ele deve ser o último argumento passado.\n\n"
+
+	ANSI_BOLD_WHT "Exemplos:\n"
+	ANSI_COLOR_WHT "\tCaso quisesse-se criar um backup, porém na pasta atual já exista o arquivo luof.bkp:\n\n"
+	ANSI_BOLD_WHT "> " ANSI_COLOR_WHT "luof --backup\n"
 	ANSI_BOLD_CYA "Você deseja criar um backup novo ou restaurar um antigo? [1]criar [2]restaurar [3]sair : " ANSI_COLOR_BLU "1\n\n"
 	ANSI_BOLD_CYA "Arquivo luof-1.bkp adicionado no diretório atual.\n"
 	"Backup criado com sucesso.\n\n"
-	ANSI_BOLD_WHT "Ex:"
-	ANSI_COLOR_WHT " Caso quisesse-se restaurar um backup com o caminho \"/home/usuario/Downloads/luof-5.bkp\":\n"
-	ANSI_BOLD_CYA "Você deseja criar um backup novo ou restaurar um antigo? [1]criar [2]restaurar [3]sair : " ANSI_COLOR_BLU "2\n\n"
-	ANSI_BOLD_CYA "Informe o caminho do arquivo de backup: " ANSI_COLOR_BLU "/home/usuario/Downloads/luof-5.bkp\n"
+
+	ANSI_COLOR_WHT "\tCaso quisesse-se restaurar um backup com o caminho \"/home/usuario/Downloads/luof-5.bkp\":\n\n"
+	ANSI_BOLD_WHT "> " ANSI_COLOR_WHT "luof --backup -r /home/usuario/Downloads/luof-5.bkp\n\n"
 	ANSI_BOLD_CYA "Backup restaurado com sucesso.\n\n"
 	);
 }
@@ -499,16 +524,27 @@ void fHelp_backup() {
 void fHelp_export() {
 	printf(
 	ANSI_BOLD_WHT "luof:" ANSI_BOLD_YEL "\t--export:\n\n"
+
 	ANSI_COLOR_WHT
 	"\tUse para exportar uma categoria do luof para ser importada em um browser."
 	" É necessário apenas informar o caminho da categoria desejada. o arquivo de"
 	" export possui a extensão .html e nome \"bookmarks-luof\", podendo ter um número"
 	" após caso já exista um arquivo de export (este não será perdido) no diretório atual,"
 	" o mesmo no qual será armazenado o novo arquivo de export.\n\n"
-	ANSI_BOLD_WHT "Ex:"
-	ANSI_COLOR_WHT " Caso quisesse-se exportar a categoria \"Jogos\" e não exista nenhum arquivo exportado no diretório atual:\n"
+
+	ANSI_BOLD_WHT "Args :" ANSI_COLOR_WHT "\tEssa função permite passar na linha de comando o"
+	" caminho da categoria a ser exportada, ou seja, a categoria pai junto com seu nome.\n\n"
+
+	ANSI_BOLD_WHT "Exemplos:\n"
+	ANSI_COLOR_WHT "\tCaso quisesse-se exportar a categoria \"Jogos\" e não exista nenhum arquivo exportado no diretório atual:\n\n"
+	ANSI_BOLD_WHT "> " ANSI_COLOR_WHT "luof --export\n"
 	ANSI_BOLD_CYA "Categoria : " ANSI_COLOR_BLU "Jogos\n\n"
 	ANSI_BOLD_CYA "Arquivo bookmarks-luof.html adicionado no diretório atual.\n"
+	"Export criado com sucesso.\n\n"
+
+	ANSI_COLOR_WHT "\tCaso quisesse-se exportar a categoria \"Jogos\" e já exista um arquivo exportado no diretório atual chamado \"bookmarks-luof.html\":\n\n"
+	ANSI_BOLD_WHT "> " ANSI_COLOR_WHT "luof --export Jogos\n"
+	ANSI_BOLD_CYA "Arquivo bookmarks-luof-1.html adicionado no diretório atual.\n"
 	"Export criado com sucesso.\n\n"
 	);
 }
@@ -516,21 +552,38 @@ void fHelp_export() {
 void fHelp_import() {
 	printf(
 	ANSI_BOLD_WHT "luof:" ANSI_BOLD_YEL "\t--import:\n\n"
+
 	ANSI_COLOR_WHT
 	"\tUse para importar favoritos exportados de outro browser para dentro de uma"
 	" categoria. É necessário informar o caminho do arquivo gerado pelo browser, e"
 	" a categoria onde os favoritos serão inseridos.\n\n"
-	ANSI_BOLD_WHT "Ex:"
-	ANSI_COLOR_WHT " Caso quisesse-se importar o arquivo \"bookmarks.html\" localizado no"
-	" diretório atual para dentro da categoria \"Jogos\":\n"
+
+	ANSI_BOLD_WHT "Args :"
+	ANSI_COLOR_WHT "\tEssa função permite passar na linha de comando:\n"
+	"\tO caminho do arquivo que será importado.\n"
+	"\tSe passado o arquivo a ser importado pode-se passar a categoria na qual os favoritos"
+	" serão adicionados, esse deve ser o último argumento passado.\n\n"
+
+	ANSI_BOLD_WHT "Exemplos:\n"
+	ANSI_COLOR_WHT "\tCaso quisesse-se importar o arquivo \"bookmarks.html\" localizado no"
+	" diretório atual para dentro da categoria \"Jogos\":\n\n"
+	ANSI_BOLD_WHT "> " ANSI_COLOR_WHT "luof --import\n"
 	ANSI_BOLD_CYA "Informe o caminho do arquivo de import: " ANSI_COLOR_BLU "bookmarks.html\n"
 	ANSI_BOLD_CYA "Categoria pai: " ANSI_COLOR_BLU "Jogos\n\n"
+	ANSI_BOLD_CYA "Import feito com sucesso.\n\n"
+
+	ANSI_BOLD_WHT "> " ANSI_COLOR_WHT "luof --import bookmarks.html\n"
+	ANSI_BOLD_CYA "Categoria pai: " ANSI_COLOR_BLU "Jogos\n\n"
+	ANSI_BOLD_CYA "Import feito com sucesso.\n\n"
+
+	ANSI_BOLD_WHT "> " ANSI_COLOR_WHT "luof --import bookmarks.html Jogos\n\n"
 	ANSI_BOLD_CYA "Import feito com sucesso.\n\n"
 	);
 }
 
 void fHelp_free() {
 	printf(
+
 	ANSI_BOLD_WHT "luof:" ANSI_BOLD_YEL "\t--free:\n\n"
 	ANSI_COLOR_WHT
 	"\tUse para apagar todas categorias e favoritos armazenados. Não haverá como voltar"
@@ -538,6 +591,9 @@ void fHelp_free() {
 	" um backup antes de continuar com a execução da função.\n"
 	"\tAo usar esse comando será perguntado se há certeza em continuar, se sim, devesse"
 	" teclar 's' e depois enter.\n\n"
+
+	ANSI_BOLD_WHT "Args :" ANSI_COLOR_WHT "\tEssa função permite passar na linha de comando"
+	" o argumento -y, informando que o usuário tem certeza que deseja usa-lo.\n\n"
 	);
 }
 
@@ -568,16 +624,16 @@ void fHelp(sCom com) {
 		fHelp_mc();
 	}
 	else if (strcmp(com.flag, "-lc") == 0 || strcmp(com.flag, "--list-category") == 0) {
-		fHelp_lc(0);
+		fHelp_lc();
 	}
 	else if (strcmp(com.flag, "-lcs") == 0 || strcmp(com.flag, "--list-category-short") == 0) {
-		fHelp_lc(1);
+		fHelp_lcs();
 	}
 	else if (strcmp(com.flag, "-lt") == 0 || strcmp(com.flag, "--list-tree") == 0) {
-		fHelp_lt(0);
+		fHelp_lt();
 	}
 	else if (strcmp(com.flag, "-lts") == 0 || strcmp(com.flag, "--list-tree-short") == 0) {
-		fHelp_lt(1);
+		fHelp_lts();
 	}
 	else if (strcmp(com.flag, "--backup") == 0) {
 		fHelp_backup();
