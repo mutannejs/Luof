@@ -1,5 +1,9 @@
 /* ----------------------------- Atualizações ----------------------------- */
 
+07/05/2023
+	. O help foi completamente atualizado com a nova possiblidade de usar
+argumentos na linha de comando.
+
 02/05/2023:
 	. Agora pode-se passar argumentos na linha de comando.
 
