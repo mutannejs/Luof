@@ -125,79 +125,110 @@ void fHelp_private() {
 void fHelp_h() {
 	printf(
 	ANSI_BOLD_WHT "luof:" ANSI_BOLD_YEL "\t-h\tou   --help:\n\n"
+
 	ANSI_COLOR_WHT
 	"\tUse para ver um menu contendo uma breve descrição do programa Luof e os comandos que"
 	" este possui, e uma breve descrição de como usá-los. Para uma descrição mais detalhada"
 	" pode-se usar o comando --help (ou -h) seguido do comando que se deseja saber mais.\n\n"
-	ANSI_BOLD_WHT "Exs:" ANSI_COLOR_BLU "\tluof -h\n"
-	"\tluof --help\n"
-	"\tluof -h -ab\n"
-	"\tluof -h --add-bookmark\n"
-	"\tluof --help -rc\n"
-	"\tluof --help --remove-category\n\n"
+
+	"\tO comando help tem saídas em diferentes cores.\n"
+	"\tSaídas em:\n"
+	ANSI_BOLD_YEL  "\tamarelo    " ANSI_COLOR_WHT ": o comando em sua forma por extenso e simplificada.\n"
+	ANSI_BOLD_CYA  "\tazul claro " ANSI_COLOR_WHT ": saídas no terminal feitas pelo luof.\n"
+	ANSI_COLOR_BLU "\tazul escuro" ANSI_COLOR_WHT ": entradas do usuário feitas dentro do luof.\n\n"
+	ANSI_COLOR_WHT "\tNos exemplos há linhas com o caractere " ANSI_BOLD_WHT ">" ANSI_COLOR_WHT
+	" seguido por um comando, essa linha representa a entrada feita no teminal pelo usuário"
+	" para executar um comando do luof.\n\n"
+
+	ANSI_BOLD_WHT "Exemplos:\n"
+	ANSI_BOLD_WHT "> " ANSI_COLOR_WHT "luof -h\n"
+	ANSI_BOLD_WHT "> " ANSI_COLOR_WHT "luof --help\n"
+	ANSI_BOLD_WHT "> " ANSI_COLOR_WHT "luof -h -ab\n"
+	ANSI_BOLD_WHT "> " ANSI_COLOR_WHT "luof -h --add-bookmark\n"
+	ANSI_BOLD_WHT "> " ANSI_COLOR_WHT "luof --help -rc\n"
+	ANSI_BOLD_WHT "> " ANSI_COLOR_WHT "luof --help --remove-category\n\n"
 	);
 }
 
 void fHelp_ab() {
 	printf(
 	ANSI_BOLD_WHT "luof:" ANSI_BOLD_YEL "\t-ab\tou   --add-bookmark:\n\n"
+
 	ANSI_COLOR_WHT
 	"\tUse para guardar um favorito. Primeiro informe a categoria na qual se deseja adicionar"
 	" o favorito, depois seu nome, depois o link da página, e, por fim, uma descrição sobre.\n"
 	"\tÉ necessário preencher todos os campos requeridos. Caso tecle enter sem nada informado,"
 	" terá uma quebra de linha na saída do terminal, mas a entrada daquele dado ainda será"
-	" esperada.\n"
-	"\tNo geral, todos os campos aceitam um número grande de caracteres, com exceção do nome"
-	" que aceita no máximo 99.\n\n"
+	" esperada. No geral, todos os campos aceitam um número grande de caracteres, com exceção"
+	" do nome que aceita no máximo 99.\n\n"
+
 	ANSI_BOLD_WHT "Args :" ANSI_COLOR_WHT "\tEssa função permite passar na linha de comando o"
 	" caminho do favorito a ser adicionado, ou seja, a categoria junto com seu nome.\n\n"
+
 	ANSI_BOLD_WHT "Exemplos :\n"
 	"> " ANSI_COLOR_WHT "luof --add-bookmark\n"
 	ANSI_BOLD_CYA "Categoria : " ANSI_COLOR_BLU "Jogos/steam\n"
 	ANSI_BOLD_CYA "Nome      : " ANSI_COLOR_BLU "Dark Souls\n"
 	ANSI_BOLD_CYA "Link      : " ANSI_COLOR_BLU "https://store.steampowered.com/app/570940/DARK_SOULS_REMASTERED/\n"
-	ANSI_BOLD_CYA "Descrição : " ANSI_COLOR_BLU "Página da steam referente ao jogo Dark Souls: Remastered\n\n"
+	ANSI_BOLD_CYA "Descrição : " ANSI_COLOR_BLU "Página da steam referente ao jogo Dark Souls: Remastered\n"
+	ANSI_BOLD_CYA "Favorito adicionado com sucesso.\n\n"
+
 	ANSI_BOLD_WHT "> " ANSI_COLOR_WHT "luof -ab Jogos/steam/Dark Souls\n"
 	ANSI_BOLD_CYA "Link      : " ANSI_COLOR_BLU "https://store.steampowered.com/app/570940/DARK_SOULS_REMASTERED/\n"
-	ANSI_BOLD_CYA "Descrição : " ANSI_COLOR_BLU "Página da steam referente ao jogo Dark Souls: Remastered\n\n"
+	ANSI_BOLD_CYA "Descrição : " ANSI_COLOR_BLU "Página da steam referente ao jogo Dark Souls: Remastered\n"
+	ANSI_BOLD_CYA "Favorito adicionado com sucesso.\n\n"
 	);
 }
 
 void fHelp_ac() {
 	printf(
 	ANSI_BOLD_WHT "luof: " ANSI_BOLD_YEL "\t-ac\tou   --add-category:\n\n"
+
 	ANSI_COLOR_WHT
 	"\tUse para adicionar uma categoria. Primeiro informe a categoria pai da categoria que será"
 	" adicionada, e depois o nome dela.\n"
 	"\tÉ necessário preencher todos os campos requeridos. Caso tecle enter sem nada informado,"
 	" terá uma quebra de linha na saída do terminal, mas a entrada daquele dado ainda será"
-	" esperada.\n"
-	"\tO nome da categoria aceita no máximo 99 caracteres, não pode conter o caractere \"/\", e"
-	" também não pode ser igual à palavra \"luof\".\n"
-	"\tUma categoria pode no máximo alcançar 9 níveis de subcategoria (considerando que a raiz"
-	" está na ).\n\n"
+	" esperada. O nome da categoria aceita no máximo 99 caracteres e não pode conter o caractere"
+	" \"/\". Uma categoria pode no máximo alcançar 10 níveis de subcategoria (considerando que"
+	" a raiz está na 0).\n\n"
+
 	ANSI_BOLD_WHT "Args :" ANSI_COLOR_WHT "\tEssa função permite passar na linha de comando o"
 	" caminho da categoria a ser adicionada, ou seja, a categoria pai junto com seu nome.\n\n"
+
 	ANSI_BOLD_WHT "Exemplos :\n"
 	"> " ANSI_COLOR_WHT "luof --add-category\n"
 	ANSI_BOLD_CYA "Categoria pai     : " ANSI_COLOR_BLU "/\n"
-	ANSI_BOLD_CYA "Nome da categoria : " ANSI_COLOR_BLU "Jogos\n\n"
-	ANSI_BOLD_WHT "> " ANSI_COLOR_WHT "luof -ac Jogos\n\n"
+	ANSI_BOLD_CYA "Nome da categoria : " ANSI_COLOR_BLU "Jogos\n"
+	ANSI_BOLD_CYA "Categoria adicionada com sucesso.\n\n"
+
+	ANSI_BOLD_WHT "> " ANSI_COLOR_WHT "luof -ac Jogos\n"
+	ANSI_BOLD_CYA "Categoria adicionada com sucesso.\n\n"
 	);
 }
 
 void fHelp_rb() {
 	printf(
 	ANSI_BOLD_WHT "luof:" ANSI_BOLD_YEL "\t-rb\tou   --remove-bookmark:\n\n"
+
 	ANSI_COLOR_WHT
 	"\tUse para remover um favorito. Primeiro informe a categoria a qual o favorito pertence,"
 	" depois informe o nome dele.\n"
 	"\tÉ necessário preencher todos os campos requeridos. Caso tecle enter sem nada informado,"
 	" terá uma quebra de linha na saída do terminal, mas a entrada daquele dado ainda será"
 	" esperada.\n\n"
-	ANSI_BOLD_WHT "Ex:\n"
+
+	ANSI_BOLD_WHT "Args :" ANSI_COLOR_WHT "\tEssa função permite passar na linha de comando o"
+	" caminho do favorito a ser removido, ou seja, a categoria junto com seu nome.\n\n"
+
+	ANSI_BOLD_WHT "Exemplos:\n"
+	"> " ANSI_COLOR_WHT "luof --remove-bookmark\n"
 	ANSI_BOLD_CYA "Categoria : " ANSI_COLOR_BLU "Jogos/steam\n"
-	ANSI_BOLD_CYA "Nome      : " ANSI_COLOR_BLU "Dark Souls\n\n"
+	ANSI_BOLD_CYA "Nome      : " ANSI_COLOR_BLU "Dark Souls\n"
+	ANSI_BOLD_CYA "Favorito removido com sucesso.\n\n"
+
+	ANSI_BOLD_WHT "> " ANSI_COLOR_WHT "luof -rb Jogos/steam/Dark Souls\n"
+	ANSI_BOLD_CYA "Favorito removido com sucesso.\n\n"
 	);
 }
 
