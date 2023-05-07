@@ -170,12 +170,12 @@ void fHelp_ab() {
 	ANSI_BOLD_CYA "Categoria : " ANSI_COLOR_BLU "Jogos/steam\n"
 	ANSI_BOLD_CYA "Nome      : " ANSI_COLOR_BLU "Dark Souls\n"
 	ANSI_BOLD_CYA "Link      : " ANSI_COLOR_BLU "https://store.steampowered.com/app/570940/DARK_SOULS_REMASTERED/\n"
-	ANSI_BOLD_CYA "Descrição : " ANSI_COLOR_BLU "Página da steam referente ao jogo Dark Souls: Remastered\n"
+	ANSI_BOLD_CYA "Descrição : " ANSI_COLOR_BLU "Página da steam referente ao jogo Dark Souls: Remastered\n\n"
 	ANSI_BOLD_CYA "Favorito adicionado com sucesso.\n\n"
 
 	ANSI_BOLD_WHT "> " ANSI_COLOR_WHT "luof -ab Jogos/steam/Dark Souls\n"
 	ANSI_BOLD_CYA "Link      : " ANSI_COLOR_BLU "https://store.steampowered.com/app/570940/DARK_SOULS_REMASTERED/\n"
-	ANSI_BOLD_CYA "Descrição : " ANSI_COLOR_BLU "Página da steam referente ao jogo Dark Souls: Remastered\n"
+	ANSI_BOLD_CYA "Descrição : " ANSI_COLOR_BLU "Página da steam referente ao jogo Dark Souls: Remastered\n\n"
 	ANSI_BOLD_CYA "Favorito adicionado com sucesso.\n\n"
 	);
 }
@@ -199,11 +199,11 @@ void fHelp_ac() {
 	ANSI_BOLD_WHT "Exemplos :\n"
 	"> " ANSI_COLOR_WHT "luof --add-category\n"
 	ANSI_BOLD_CYA "Categoria pai     : " ANSI_COLOR_BLU "/\n"
-	ANSI_BOLD_CYA "Nome da categoria : " ANSI_COLOR_BLU "Jogos\n"
+	ANSI_BOLD_CYA "Nome da categoria : " ANSI_COLOR_BLU "Jogos\n\n"
 	ANSI_BOLD_CYA "Categoria adicionada com sucesso.\n\n"
 
 	ANSI_BOLD_WHT "> " ANSI_COLOR_WHT "luof -ac Jogos\n"
-	ANSI_BOLD_CYA "Categoria adicionada com sucesso.\n\n"
+	ANSI_BOLD_CYA "\nCategoria adicionada com sucesso.\n\n"
 	);
 }
 
@@ -224,17 +224,18 @@ void fHelp_rb() {
 	ANSI_BOLD_WHT "Exemplos:\n"
 	"> " ANSI_COLOR_WHT "luof --remove-bookmark\n"
 	ANSI_BOLD_CYA "Categoria : " ANSI_COLOR_BLU "Jogos/steam\n"
-	ANSI_BOLD_CYA "Nome      : " ANSI_COLOR_BLU "Dark Souls\n"
+	ANSI_BOLD_CYA "Nome      : " ANSI_COLOR_BLU "Dark Souls\n\n"
 	ANSI_BOLD_CYA "Favorito removido com sucesso.\n\n"
 
 	ANSI_BOLD_WHT "> " ANSI_COLOR_WHT "luof -rb Jogos/steam/Dark Souls\n"
-	ANSI_BOLD_CYA "Favorito removido com sucesso.\n\n"
+	ANSI_BOLD_CYA "\nFavorito removido com sucesso.\n\n"
 	);
 }
 
 void fHelp_rc() {
 	printf(
 	ANSI_BOLD_WHT "luof:" ANSI_BOLD_YEL "\t-rc\tou   --remove-category:\n\n"
+
 	ANSI_COLOR_WHT
 	"\tUse para remover uma categoria. Primeiro informe a categoria pai da categoria que"
 	" será removida, e depois o nome dela.\n"
@@ -242,15 +243,25 @@ void fHelp_rc() {
 	"\tÉ necessário preencher todos os campos requeridos. Caso tecle enter sem nada informado,"
 	" terá uma quebra de linha na saída do terminal, mas a entrada daquele dado ainda será"
 	" esperada.\n\n"
-	ANSI_BOLD_WHT "Ex:\n"
+
+	ANSI_BOLD_WHT "Args :" ANSI_COLOR_WHT "\tEssa função permite passar na linha de comando o"
+	" caminho da categoria a ser removida, ou seja, a categoria pai junto com seu nome.\n\n"
+
+	ANSI_BOLD_WHT "Exemplos:\n"
+	"> " ANSI_COLOR_WHT "luof --remove-category\n"
 	ANSI_BOLD_CYA "Categoria pai     : " ANSI_COLOR_BLU "Jogos\n"
 	ANSI_BOLD_CYA "Nome da categoria : " ANSI_COLOR_BLU "steam\n\n"
+	ANSI_BOLD_CYA "Categoria removida com sucesso.\n\n"
+
+	ANSI_BOLD_WHT "> " ANSI_COLOR_WHT "luof -rc Jogos/steam\n"
+	ANSI_BOLD_CYA "\nCategoria removida com sucesso.\n\n"
 	);
 }
 
 void fHelp_mb() {
 	printf(
 	ANSI_BOLD_WHT "luof:" ANSI_BOLD_YEL "\t-mb\tou   --modify-bookmark:\n\n"
+
 	ANSI_COLOR_WHT
 	"\tUse para modificar um favorito. Primeiramente informe a categoria a qual o favorito"
 	" pertence, depois o seu nome, qual dado dele deseja-se modificar (deve ser informado o"
@@ -258,14 +269,32 @@ void fHelp_mb() {
 	"\tÉ necessário preencher todos os campos requeridos. Caso tecle enter sem nada informado,"
 	" terá uma quebra de linha na saída do terminal, mas a entrada daquele dado ainda será"
 	" esperada.\n\n"
-	ANSI_BOLD_WHT "Ex:"
-	ANSI_COLOR_WHT " Caso quisesse-se modificar o nome, o link e o texto do favorito \"Dark Souls\""
+
+	ANSI_BOLD_WHT "Args :" ANSI_COLOR_WHT "\tEssa função permite passar na linha de comando o"
+	" caminho do favorito a ser modificado, ou seja, a categoria junto com seu nome.\n\n"
+
+	ANSI_BOLD_WHT "Exemplos:\n"
+	ANSI_COLOR_WHT "\tCaso quisesse-se modificar o nome do favorito \"Dark Souls\""
+	" pertencente a categoria \"Jogos/steam\":\n\n"
+	ANSI_BOLD_WHT "> " ANSI_COLOR_WHT "luof --modify-bookmark\n"
+	ANSI_BOLD_CYA "Categoria : " ANSI_COLOR_BLU "Jogos/steam\n"
+	ANSI_BOLD_CYA "Nome      : " ANSI_COLOR_BLU "Dark Souls\n\n"
+	ANSI_BOLD_CYA "Dados antigos:\n"
+	"Categoria : Jogos/steam\n"
+	"Nome      : Dark Souls\n"
+	"Link      : https://store.steampowered.com/app/570940/DARK_SOULS_REMASTERED/\n"
+	"Descrição : Página da steam referente ao jogo Dark Souls: Remastered\n\n"
+	"Você deseja modificar? [1]categoria [2]nome [3]link [4]descrição [5]tudo [6]nada : " ANSI_COLOR_BLU "2\n\n"
+	ANSI_BOLD_CYA "Novos dados:\n"
+	ANSI_BOLD_CYA "Nome      : " ANSI_COLOR_BLU "Dark Souls II\n\n"
+	ANSI_BOLD_CYA "Favorito modificado com sucesso.\n\n"
+
+
+	ANSI_COLOR_WHT "\tCaso quisesse-se modificar o nome, o link e o texto do favorito \"Dark Souls\""
 	" pertencente a categoria \"Jogos/steam\", poderia-se escolher a opção tudo (teclando 5"
 	" quando requisitado a entrada), fazer as modificações necessárias e copiar os dados"
 	" que não deseja-se modificar:\n\n"
-	ANSI_BOLD_WHT "Ex:\n"
-	ANSI_BOLD_CYA "Categoria : " ANSI_COLOR_BLU "Jogos/steam\n"
-	ANSI_BOLD_CYA "Nome      : " ANSI_COLOR_BLU "Dark Souls\n\n"
+	ANSI_BOLD_WHT "> " ANSI_COLOR_WHT "luof -mb Jogos/steam/Dark Souls\n"
 	ANSI_BOLD_CYA "Dados antigos:\n"
 	"Categoria : Jogos/steam\n"
 	"Nome      : Dark Souls\n"
@@ -277,12 +306,14 @@ void fHelp_mb() {
 	ANSI_BOLD_CYA "Nome      : " ANSI_COLOR_BLU "Dark Souls II\n"
 	ANSI_BOLD_CYA "Link      : " ANSI_COLOR_BLU "https://store.steampowered.com/app/335300/DARK_SOULS_II_Scholar_of_the_First_Sin/\n"
 	ANSI_BOLD_CYA "Descrição : " ANSI_COLOR_BLU "Página da steam referente ao jogo Dark souls II: Scholar Of The First Sin\n\n"
+	ANSI_BOLD_CYA "Favorito modificado com sucesso.\n\n"
 	);
 }
 
 void fHelp_mc() {
 	printf(
 	ANSI_BOLD_WHT "luof:" ANSI_BOLD_YEL "\t-mc\tou   --modify-category:\n\n"
+
 	ANSI_COLOR_WHT
 	"\tUse para modificar uma categoria. Primeiro informe a categoria pai da categoria que"
 	" será modificada, depois o nome dela, qual dado seseja-se modificar (deve ser informado o"
@@ -290,14 +321,29 @@ void fHelp_mc() {
 	"\tÉ necessário preencher todos os campos requeridos. Caso tecle enter sem nada informado,"
 	" terá uma quebra de linha na saída do terminal, mas a entrada daquele dado ainda será"
 	" esperada.\n\n"
-	ANSI_BOLD_WHT "Ex:"
-	ANSI_COLOR_WHT " Caso quisesse-se modificar a categoria pai da categoria \"Jogos/steam\" para a"
+
+	ANSI_BOLD_WHT "Args :" ANSI_COLOR_WHT "\tEssa função permite passar na linha de comando o"
+	" caminho da categoria a ser modificada, ou seja, a categoria pai junto com seu nome.\n\n"
+
+	ANSI_BOLD_WHT "Exemplos:\n"
+	ANSI_COLOR_WHT "\tCaso quisesse-se modificar a categoria pai da categoria \"Jogos/steam\" para a"
 	" categoria raiz:\n\n"
+	ANSI_BOLD_WHT "> " ANSI_COLOR_WHT "luof --modify-category\n"
 	ANSI_BOLD_CYA "Categoria pai     : " ANSI_COLOR_BLU "Jogos\n"
 	ANSI_BOLD_CYA "Nome da categoria : " ANSI_COLOR_BLU "steam\n\n"
 	ANSI_BOLD_CYA "Você deseja modificar? [1]categoria pai [2]nome da categoria [3]tudo [4]nada : " ANSI_COLOR_BLU "1\n\n"
 	ANSI_BOLD_CYA "Novos dados:\n"
 	ANSI_BOLD_CYA "Categoria pai     : " ANSI_COLOR_BLU "/\n\n"
+	ANSI_BOLD_CYA "Categoria modificada com sucesso.\n\n"
+
+	ANSI_COLOR_WHT "\tCaso quisesse-se modificar a categoria pai da categoria \"Jogos/steam\" para a"
+	" categoria raiz e seu nome para \"Steam\":\n\n"
+	ANSI_BOLD_WHT "> " ANSI_COLOR_WHT "luof -mc Jogos/steam\n"
+	ANSI_BOLD_CYA "Você deseja modificar? [1]categoria pai [2]nome da categoria [3]tudo [4]nada : " ANSI_COLOR_BLU "3\n\n"
+	ANSI_BOLD_CYA "Novos dados:\n"
+	ANSI_BOLD_CYA "Categoria pai     : " ANSI_COLOR_BLU "/\n"
+	ANSI_BOLD_CYA "Nome da categoria : " ANSI_COLOR_BLU "Steam\n\n"
+	ANSI_BOLD_CYA "Categoria modificada com sucesso.\n\n"
 	);
 }
 
@@ -305,16 +351,21 @@ void fHelp_lc(int opcao) {
 	if (opcao == 0) {
 		printf(
 		ANSI_BOLD_WHT "luof:" ANSI_BOLD_YEL "\t-lc\tou   --list-category:\n\n"
+
 		ANSI_COLOR_WHT
 		"\tUse para ver o nome das categorias e dados dos favoritos que pertencem a categoria"
 		" informada. As subcategorias serão mostradas com um apóstrofo (*) antes de seu"
-		" nome, e os favoritos terão seu nome, link e texto mostrados."
-		" O nome da categoria também pode ser passado na linha de comandos.\n\n"
-		"\tHá também a possibilidade de passar os seguintes argumentos no comando (deve ser"
-		" escrito logo após \"-lc\" ou \"--list-category\"):\n"
-		"\t-s ou --short: mostra a saída de forma resumida, mostrando apenas o nome dos"
-		" favoritos.\n\n"
-		ANSI_BOLD_WHT "Ex:\n"
+		" nome, e os favoritos terão seu nome, link e texto mostrados.\n\n"
+
+		ANSI_BOLD_WHT "Args :"
+		ANSI_COLOR_WHT "\tEssa função permite passar na linha de comando:\n"
+		"\t-s ou --short para não exibir os dados dos favoritos, apenas seus nomes.\n"
+		"\tO caminho da categoria a ser visualizada: ou seja, a categoria pai junto com seu nome.\n"
+		"\t(Caso passado os dois argumentos, o caminho da categoria deve ser passada por"
+		" último)\n\n"
+
+		ANSI_BOLD_WHT "Exemplos:\n"
+		"> " ANSI_COLOR_WHT "luof --list-category\n"
 		ANSI_BOLD_CYA "Categoria : " ANSI_COLOR_BLU "/\n\n" ANSI_BOLD_CYA
 		"* Jogos\n\n"
 		"Nome      : ilovepdf\n"
@@ -323,27 +374,42 @@ void fHelp_lc(int opcao) {
 		"Nome      : randoma11y\n"
 		"Link      : https://randoma11y.com/\n"
 		"Texto     : Site que combina cores aleatoriamente para uso em páginas web\n\n"
-		ANSI_BOLD_WHT "Ex:\n"
+
+		ANSI_BOLD_WHT "> " ANSI_COLOR_WHT "luof -lc\n"
 		ANSI_BOLD_CYA "Categoria : " ANSI_COLOR_BLU "Jogos\n\n" ANSI_BOLD_CYA
 		"* steam\n\n"
+
+		ANSI_BOLD_WHT "> " ANSI_COLOR_WHT "luof -lc -s /\n\n"
+		ANSI_BOLD_CYA
+		"* Jogos\n"
+		"ilovepdf\n"
+		"randoma11y\n\n"
 		);
 	}
 	else {
 		printf(
 		ANSI_BOLD_WHT "luof:" ANSI_BOLD_YEL "\t-lcs\tou   --list-category-short:\n\n"
+
 		ANSI_COLOR_WHT
 		"\tUse para ver o nome das categorias e nome dos favoritos que pertencem a categoria"
 		" informada. Onde as categorias serão mostradas com um apóstrofo (*) antes de seu"
 		" nome, e os favoritos terão apenas seu nome mostrado."
 		" O nome da categoria também pode ser passado na linha de comandos.\n\n"
-		ANSI_BOLD_WHT "Ex:\n"
-		ANSI_BOLD_CYA "Categoria : " ANSI_COLOR_BLU "/\n\n" ANSI_BOLD_CYA
+
+		ANSI_BOLD_WHT "Args :" ANSI_COLOR_WHT "\tEssa função permite passar na linha de comando o"
+		" caminho da categoria a ser visualizada, ou seja, a categoria pai junto com seu nome.\n\n"
+
+		ANSI_BOLD_WHT "Exemplos:\n"
+		"> " ANSI_COLOR_WHT "luof -lcs\n"
+		ANSI_BOLD_CYA "\nCategoria : " ANSI_COLOR_BLU "/\n\n" ANSI_BOLD_CYA
 		"* Jogos\n\n"
 		"ilovepdf\n"
 		"randoma11y\n\n"
-		ANSI_BOLD_WHT "Ex:\n"
-		ANSI_BOLD_CYA "Categoria : " ANSI_COLOR_BLU "Jogos\n\n" ANSI_BOLD_CYA
-		"* steam\n\n"
+
+		ANSI_BOLD_WHT "> " ANSI_COLOR_WHT "luof -lcs /\n\n"
+		ANSI_BOLD_CYA "* Jogos\n\n"
+		"ilovepdf\n"
+		"randoma11y\n\n"
 		);
 	}
 }
