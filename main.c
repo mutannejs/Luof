@@ -16,58 +16,6 @@ int main(int argc, char *argv[]) {
 
 	return 0;
 
-	/*else if (strcmp(argv[1], "-h") == 0 || strcmp(argv[1], "--help") == 0) {
-		if (argc > 2)
-			fHelp(argv[2]);
-		else
-			fHelp(NULL);
-	}
-	else if (strcmp(argv[1], "-ab") == 0 || strcmp(argv[1], "--add-bookmark") == 0) {
-		fAddBookmark();
-	}
-	else if (strcmp(argv[1], "-ac") == 0 || strcmp(argv[1], "--add-category") == 0) {
-		fAddCategory();
-	}
-	else if (strcmp(argv[1], "-rb") == 0 || strcmp(argv[1], "--remove-bookmark") == 0) {
-		fRemoveBookmark();
-	}
-	else if (strcmp(argv[1], "-rc") == 0 || strcmp(argv[1], "--remove-category") == 0) {
-		fRemoveCategory();
-	}
-	else if (strcmp(argv[1], "-mb") == 0 || strcmp(argv[1], "--modify-bookmark") == 0) {
-		fModifyBookmark();
-	}
-	else if (strcmp(argv[1], "-mc") == 0 || strcmp(argv[1], "--modify-category") == 0) {
-		fModifyCategory();
-	}
-	else if (strcmp(argv[1], "-lc") == 0 || strcmp(argv[1], "--list-category") == 0) {
-		fListCategory(0, argc, argv);
-	}
-	else if (strcmp(argv[1], "-lcs") == 0 || strcmp(argv[1], "--list-category-short") == 0) {
-		fListCategory(1, argc, argv);
-	}
-	else if (strcmp(argv[1], "-lt") == 0 || strcmp(argv[1], "--list-tree") == 0) {
-		fListTree(0);
-	}
-	else if (strcmp(argv[1], "-lts") == 0 || strcmp(argv[1], "--list-tree-short") == 0) {
-		fListTree(1);
-	}
-	else if (strcmp(argv[1], "--backup") == 0) {
-		fBackup();
-	}
-	else if (strcmp(argv[1], "--export") == 0) {
-		fExport();
-	}
-	else if (strcmp(argv[1], "--import") == 0) {
-		fImport();
-	}
-	else if (strcmp(argv[1], "--free") == 0) {
-		fFree();
-	}
-	else {
-		printf(ANSI_BOLD_WHT "Função inválida\n");
-	}*/
-
 }
 
 void fMenu() {

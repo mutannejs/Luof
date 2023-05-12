@@ -143,6 +143,10 @@ Por fim, vemos para que serve e como usar a função `--help`, fazemos isso usan
 Este projeto foi feito pensando no sistema de diretórios do linux, portanto, não deve
 funcionar em outros sistemas operacionais.
 
+## Licença
+
+Este projeto está licenciado nos termos da licença MIT.
+
 ## Autores
 
 Murillo Justino dos Santos
