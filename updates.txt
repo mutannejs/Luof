@@ -1,5 +1,8 @@
 /* ----------------------------- Atualizações ----------------------------- */
 
+12/05/2023
+	. O Luof agora está licenciado nos termos da licença MIT.
+
 07/05/2023
 	. O help foi completamente atualizado com a nova possiblidade de usar
 argumentos na linha de comando.

@@ -9,6 +9,8 @@ Este projeto foi criado com a intenção de ser outro meio de guardar links de p
  mais importantes e recorrentes no Favoritos do browser usado.
 
 ## Atualizações
+* 12/05/2023:
+	* Licença adicionada.
 * 02/05/2023:
 	* Agora pode-se passar argumentos na linha de comando.
 * 24/04/2023:
