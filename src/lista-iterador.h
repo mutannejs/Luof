@@ -1,10 +1,7 @@
-/* Lista duplamente encadeada com iterador
- * Última modificação:	25/08/22
- * linha 25: adicionado *
- * */
-
 #ifndef LISTAIT_H
 #define LISTAIT_H
+
+#include <stddef.h>
 
 /* Cria uma lista
  * Deve ser passado como argumento o tipo de dado que deseja guardar na lista
