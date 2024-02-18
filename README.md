@@ -10,7 +10,7 @@ Este projeto foi criado com a intenção de ser outro meio de guardar links de p
 
 ## Atualizações
 
-Este programa está sendo reestruturado na branch [refactor-luof](Luof/tree/refactor-luof).
+Este programa está sendo reestruturado na branch [refactor-luof](tree/refactor-luof).
 
 ## Pré-requisitos e recursos utilizados
 
